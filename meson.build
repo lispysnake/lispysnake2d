@@ -45,6 +45,10 @@ cdata = configuration_data()
 cdata.set_quoted('PACKAGE_NAME', meson.project_name())
 cdata.set_quoted('PACKAGE_VERSION', meson.project_version())
 
+
+# Now build bits
+subdir('src')
+
 report = [
     '    Build configuration:',
     '    ====================',

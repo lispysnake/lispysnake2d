@@ -23,13 +23,6 @@
 
 #include "ls2d.h"
 
-/**
- * The Ls2DEngine is responsible for core lifecycle management.
- */
-typedef struct Ls2DEngine {
-        int __reserved1;
-} Ls2DEngine;
-
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
