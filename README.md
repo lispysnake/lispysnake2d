@@ -22,6 +22,7 @@ Below is a basic list of considerations in the design:
  - Sprite notion
  - Super basic OOP approach.
  - Input handling system (event dispatch)
+ - Only support a single window system. (vsync/multiple windows = complex)
 
 ### License
 
