@@ -6,6 +6,23 @@ and applications.
 
 For now, entry-point hooks are not provided, i.e NDK/JNI.
 
+### Design Considerations
+
+Right now, no API or logic actually exists, so stand by while we flesh it out.
+Below is a basic list of considerations in the design:
+
+ - Build as either a shared or static library
+ - Be a well-behaved submodule for meson builds
+ - Platform agnosic where possible.
+ - Modern C standards/design
+ - Initially some loader-style functions to split out into a util lib in future.
+ - Provide pure-2D and isometric engine styles
+ - Basic engine tick management
+ - Simple animation handler
+ - Sprite notion
+ - Super basic OOP approach.
+ - Input handling system (event dispatch)
+
 ### License
 
 `lispysnake2d` is provided under the terms of the `ZLib` license.
