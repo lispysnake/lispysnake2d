@@ -54,7 +54,6 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                 return NULL;
         }
 
-        /* TODO: Init the engine.. */
         engine->width = width;
         engine->height = height;
         engine->window = SDL_CreateWindow("lispysnake2d",
