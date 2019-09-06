@@ -1,0 +1,55 @@
+project(
+    'lispysnake2d',
+    ['c'],
+    version: '0.0.0',
+    license: [
+        'ZLib',
+    ],
+    default_options: [
+        'c_std=c11',
+        'prefix=/usr',
+        'sysconfdir=/etc',
+        'localstatedir=/var',
+    ],
+)
+
+am_cflags = [
+    '-fstack-protector',
+    '-Wall',
+    '-pedantic',
+    '-Wstrict-prototypes',
+    '-Wundef',
+    '-fno-common',
+    '-Werror-implicit-function-declaration',
+    '-Wformat',
+    '-Wformat-security',
+    '-Werror=format-security',
+    '-Wconversion',
+    '-Wunused-variable',
+    '-Wunreachable-code',
+    '-W',
+]
+
+# Get configuration bits together
+path_prefix = get_option('prefix')
+path_sysconfdir = join_paths(path_prefix, get_option('sysconfdir'))
+
+# Sort out config.h now
+cdata = configuration_data()
+
+# General options..
+cdata.set_quoted('PACKAGE_NAME', meson.project_name())
+cdata.set_quoted('PACKAGE_VERSION', meson.project_version())
+
+report = [
+    '    Build configuration:',
+    '    ====================',
+    '',
+    '    prefix:                                 @0@'.format(path_prefix),
+    '    sysconfdir:                             @0@'.format(path_sysconfdir),
+]
+
+if meson.is_subproject() == false
+    # Output some stuff to validate the build config
+    message('\n\n\n' + '\n'.join(report) + '\n\n')
+endif
