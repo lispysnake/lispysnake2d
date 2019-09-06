@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 /**
  * The Ls2DEngine is responsible for core lifecycle management.
  */
@@ -39,6 +41,11 @@ Ls2DEngine *ls2d_engine_new(void);
  * Destroy a previously allocated Ls2DEngine object
  */
 void ls2d_engine_free(Ls2DEngine *self);
+
+/**
+ * Run an Ls2DEngine until termination.
+ */
+bool ls2d_engine_run(Ls2DEngine *self);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

@@ -46,6 +46,11 @@ void ls2d_engine_free(Ls2DEngine *self)
         free(self);
 }
 
+bool ls2d_engine_run(Ls2DEngine *self)
+{
+        return false;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
