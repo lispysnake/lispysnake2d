@@ -141,6 +141,8 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 }
 
                 /* TODO: Render */
+                SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);
+                SDL_RenderClear(self->render);
                 SDL_RenderPresent(self->render);
         }
 
