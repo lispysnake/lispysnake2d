@@ -38,7 +38,7 @@ Ls2DEngine *ls2d_engine_new(void);
 /**
  * Destroy a previously allocated Ls2DEngine object
  */
-void ls2d_engine_free(Ls2DEngine *engine);
+void ls2d_engine_free(Ls2DEngine *self);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

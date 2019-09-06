@@ -21,7 +21,30 @@
 
  */
 
+#include <stdlib.h>
+
 #include "ls2d.h"
+
+Ls2DEngine *ls2d_engine_new()
+{
+        Ls2DEngine *engine = NULL;
+
+        engine = calloc(1, sizeof(engine));
+        if (!engine) {
+                return NULL;
+        }
+
+        /* TODO: Init the engine.. */
+        return engine;
+}
+
+void ls2d_engine_free(Ls2DEngine *self)
+{
+        if (!self) {
+                return;
+        }
+        free(self);
+}
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
