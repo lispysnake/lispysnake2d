@@ -28,9 +28,7 @@
 /**
  * The Ls2DEngine is responsible for core lifecycle management.
  */
-typedef struct Ls2DEngine {
-        int __reserved1;
-} Ls2DEngine;
+typedef struct Ls2DEngine Ls2DEngine;
 
 /**
  * Return a new Ls2DEngine object

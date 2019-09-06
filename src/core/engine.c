@@ -25,6 +25,14 @@
 
 #include "ls2d.h"
 
+/**
+ * Ls2DEngine is responsible for managing the primary output, setting up
+ * the event dispatch system, etc.
+ */
+struct Ls2DEngine {
+        int __reserved1;
+};
+
 Ls2DEngine *ls2d_engine_new()
 {
         Ls2DEngine *engine = NULL;
