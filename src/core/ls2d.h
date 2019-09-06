@@ -50,6 +50,11 @@ void ls2d_engine_free(Ls2DEngine *self);
  */
 bool ls2d_engine_run(Ls2DEngine *self);
 
+/**
+ * Update the fullscreen state of the display
+ */
+void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

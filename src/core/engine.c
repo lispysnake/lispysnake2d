@@ -158,6 +158,15 @@ bool ls2d_engine_run(Ls2DEngine *self)
         return true;
 }
 
+void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)
+{
+        if (!self || !self->window) {
+                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEngine not yet initialised");
+                return;
+        }
+        SDL_SetWindowFullscreen(self->window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+}
+
 /**
  * Ensure we have initialisation of the correct subsystems
  * Note this is kinda nasty but it saves calling it from our
