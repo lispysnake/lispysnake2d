@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 {
         Ls2DEngine *engine = NULL;
 
-        engine = ls2d_engine_new();
+        engine = ls2d_engine_new_current_display();
         if (!engine) {
                 abort();
         }

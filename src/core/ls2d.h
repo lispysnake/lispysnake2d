@@ -33,7 +33,12 @@ typedef struct Ls2DEngine Ls2DEngine;
 /**
  * Return a new Ls2DEngine object
  */
-Ls2DEngine *ls2d_engine_new(void);
+Ls2DEngine *ls2d_engine_new(int width, int height);
+
+/**
+ * Return a new Ls2DEngine object for the current display size
+ */
+Ls2DEngine *ls2d_engine_new_current_display(void);
 
 /**
  * Destroy a previously allocated Ls2DEngine object

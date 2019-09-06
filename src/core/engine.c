@@ -21,6 +21,7 @@
 
  */
 
+#include <SDL.h>
 #include <stdlib.h>
 
 #include "ls2d.h"
@@ -31,9 +32,12 @@
  */
 struct Ls2DEngine {
         int __reserved1;
+        int width;
+        int height;
+        SDL_Window *window;
 };
 
-Ls2DEngine *ls2d_engine_new()
+Ls2DEngine *ls2d_engine_new(int width, int height)
 {
         Ls2DEngine *engine = NULL;
 
@@ -43,13 +47,36 @@ Ls2DEngine *ls2d_engine_new()
         }
 
         /* TODO: Init the engine.. */
+        engine->width = width;
+        engine->height = height;
+        engine->window = SDL_CreateWindow("lispysnake2d",
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          width,
+                                          height,
+                                          SDL_WINDOW_HIDDEN);
         return engine;
+}
+
+Ls2DEngine *ls2d_engine_new_current_display()
+{
+        SDL_DisplayMode mode = { 0 };
+        SDL_Rect area = { 0, 0, 320, 240 };
+        if (SDL_GetCurrentDisplayMode(0, &mode) == 0) {
+                area.w = mode.w;
+                area.h = mode.h;
+        }
+
+        return ls2d_engine_new(area.w, area.h);
 }
 
 void ls2d_engine_free(Ls2DEngine *self)
 {
         if (!self) {
                 return;
+        }
+        if (self->window) {
+                SDL_DestroyWindow(self->window);
         }
         free(self);
 }
