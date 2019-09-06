@@ -98,6 +98,7 @@ Ls2DEngine *ls2d_engine_new_current_display()
                 return NULL;
         }
 
+        /* Fetch current resolution, or fallback to busted default. */
         if (SDL_GetCurrentDisplayMode(0, &mode) == 0) {
                 area.w = mode.w;
                 area.h = mode.h;
