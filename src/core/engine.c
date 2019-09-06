@@ -35,7 +35,6 @@ static void sdl_deinit(void);
  * the event dispatch system, etc.
  */
 struct Ls2DEngine {
-        int __reserved1;
         int width;
         int height;
         SDL_Window *window;
