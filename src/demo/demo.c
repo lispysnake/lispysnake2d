@@ -37,6 +37,8 @@ int main(int argc, char **argv)
                 abort();
         }
 
+        ls2d_engine_run(engine);
+
         ls2d_engine_free(engine);
 
         return EXIT_FAILURE;

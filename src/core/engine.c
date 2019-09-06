@@ -39,6 +39,7 @@ struct Ls2DEngine {
         int width;
         int height;
         SDL_Window *window;
+        bool running;
 };
 
 Ls2DEngine *ls2d_engine_new(int width, int height)
@@ -49,13 +50,14 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                 return NULL;
         }
 
-        engine = calloc(1, sizeof(engine));
+        engine = calloc(1, sizeof(struct Ls2DEngine));
         if (!engine) {
                 return NULL;
         }
 
         engine->width = width;
         engine->height = height;
+        engine->running = false;
         engine->window = SDL_CreateWindow("lispysnake2d",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -92,8 +94,30 @@ cleanup:
         sdl_deinit();
 }
 
+/**
+ * Internally we're responsible for the primary event queue, so we'll
+ * manage it here and if necessary dispatch it.
+ */
 bool ls2d_engine_run(Ls2DEngine *self)
 {
+        SDL_Event event = { 0 };
+
+        self->running = true;
+
+        /* Make sure to show he window */
+        SDL_ShowWindow(self->window);
+
+        /* TODO: Split to non-polling event and render-cycle */
+        while (self->running) {
+                while (SDL_PollEvent(&event) != 0) {
+                        if (event.type == SDL_QUIT) {
+                                self->running = false;
+                        }
+                }
+
+                /* TODO: Render */
+        }
+
         return false;
 }
 
@@ -110,7 +134,7 @@ static bool sdl_init()
 
         did_init_sdl = true;
 
-        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
                 return false;
         }
 
