@@ -39,3 +39,16 @@ Ls2DEngine *ls2d_engine_new(void);
  * Destroy a previously allocated Ls2DEngine object
  */
 void ls2d_engine_free(Ls2DEngine *engine);
+
+/*
+ * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
+ *
+ * Local variables:
+ * c-basic-offset: 8
+ * tab-width: 8
+ * indent-tabs-mode: nil
+ * End:
+ *
+ * vi: set shiftwidth=8 tabstop=8 expandtab:
+ * :indentSize=8:tabSize=8:noTabs=true:
+ */
