@@ -39,6 +39,7 @@ struct Ls2DEngine {
         int width;
         int height;
         SDL_Window *window;
+        SDL_Renderer *render;
         bool running;
 };
 
@@ -58,12 +59,30 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
         engine->width = width;
         engine->height = height;
         engine->running = false;
+
+        /* Setup the window */
         engine->window = SDL_CreateWindow("lispysnake2d",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
                                           width,
                                           height,
                                           SDL_WINDOW_HIDDEN);
+        if (!engine->window) {
+                SDL_Log("No window");
+                ls2d_engine_free(engine);
+                return NULL;
+        }
+
+        /* Setup our renderer, lock vsync for now. */
+        engine->render = SDL_CreateRenderer(engine->window,
+                                            -1,
+                                            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        if (!engine->render) {
+                SDL_Log("No renderer");
+                ls2d_engine_free(engine);
+                return NULL;
+        }
+
         return engine;
 }
 
@@ -122,6 +141,7 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 }
 
                 /* TODO: Render */
+                SDL_RenderPresent(self->render);
         }
 
         return false;
