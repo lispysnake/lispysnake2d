@@ -1,6 +1,6 @@
 ## lispysnake2d
 
-A simple, lightweight 2D engine for Lispy Snake, Ltd. graphical applications.
+A simple, lightweight 2D engine for [Lispy Snake, Ltd.](https://lispysnake.com/) graphical applications.
 Provides basic SDL wrapping facilities to create cross-platform 2D games
 and applications.
 
