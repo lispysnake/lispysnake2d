@@ -21,7 +21,7 @@
 
  */
 
-#pragma once
+#include "ls2d.h"
 
 /**
  * The Ls2DEngine is responsible for core lifecycle management.
@@ -29,13 +29,3 @@
 typedef struct Ls2DEngine {
         int __reserved1;
 } Ls2DEngine;
-
-/**
- * Return a new Ls2DEngine object
- */
-Ls2DEngine *ls2d_engine_new(void);
-
-/**
- * Destroy a previously allocated Ls2DEngine object
- */
-void ls2d_engine_free(Ls2DEngine *engine);
