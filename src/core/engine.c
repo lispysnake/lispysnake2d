@@ -26,6 +26,10 @@
 
 #include "ls2d.h"
 
+static bool did_init_sdl = false;
+static bool sdl_init(void);
+static void sdl_deinit(void);
+
 /**
  * Ls2DEngine is responsible for managing the primary output, setting up
  * the event dispatch system, etc.
@@ -40,6 +44,10 @@ struct Ls2DEngine {
 Ls2DEngine *ls2d_engine_new(int width, int height)
 {
         Ls2DEngine *engine = NULL;
+
+        if (!sdl_init()) {
+                return NULL;
+        }
 
         engine = calloc(1, sizeof(engine));
         if (!engine) {
@@ -62,6 +70,7 @@ Ls2DEngine *ls2d_engine_new_current_display()
 {
         SDL_DisplayMode mode = { 0 };
         SDL_Rect area = { 0, 0, 320, 240 };
+
         if (SDL_GetCurrentDisplayMode(0, &mode) == 0) {
                 area.w = mode.w;
                 area.h = mode.h;
@@ -73,17 +82,50 @@ Ls2DEngine *ls2d_engine_new_current_display()
 void ls2d_engine_free(Ls2DEngine *self)
 {
         if (!self) {
-                return;
+                goto cleanup;
         }
         if (self->window) {
                 SDL_DestroyWindow(self->window);
         }
         free(self);
+
+cleanup:
+        sdl_deinit();
 }
 
 bool ls2d_engine_run(Ls2DEngine *self)
 {
         return false;
+}
+
+/**
+ * Ensure we have initialisation of the correct subsystems
+ * Note this is kinda nasty but it saves calling it from our
+ * application.
+ */
+static bool sdl_init()
+{
+        if (did_init_sdl) {
+                return true;
+        }
+
+        did_init_sdl = true;
+
+        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+                return false;
+        }
+
+        return true;
+}
+
+/**
+ * Ensure we unload SDL when the Engine is destroyed. Again this
+ * is kinda nasty, and not appropriate for most libraries, but it fits
+ * in with the single-engine-game approach we need.
+ */
+static void sdl_deinit()
+{
+        SDL_Quit();
 }
 
 /*
