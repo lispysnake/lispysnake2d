@@ -21,6 +21,7 @@
 
  */
 
+#include <SDL.h>
 #include <stdlib.h>
 
 #include "ls2d.h"
@@ -31,17 +32,22 @@
 int main(int argc, char **argv)
 {
         Ls2DEngine *engine = NULL;
+        int ret = EXIT_SUCCESS;
 
         engine = ls2d_engine_new_current_display();
         if (!engine) {
-                abort();
+                return EXIT_FAILURE;
         }
 
-        ls2d_engine_run(engine);
+        if (!ls2d_engine_run(engine)) {
+                SDL_Log("Failed to run");
+        } else {
+                ret = EXIT_SUCCESS;
+        }
 
         ls2d_engine_free(engine);
 
-        return EXIT_FAILURE;
+        return ret;
 }
 
 /*

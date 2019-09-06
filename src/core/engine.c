@@ -67,7 +67,9 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                                           height,
                                           SDL_WINDOW_HIDDEN);
         if (!engine->window) {
-                SDL_Log("No window");
+                SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
+                                "Couldn't create window: %s",
+                                SDL_GetError());
                 ls2d_engine_free(engine);
                 return NULL;
         }
@@ -77,7 +79,9 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                                             -1,
                                             SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         if (!engine->render) {
-                SDL_Log("No renderer");
+                SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
+                                "Couldn't create a renderer: %s",
+                                SDL_GetError());
                 ls2d_engine_free(engine);
                 return NULL;
         }
@@ -98,7 +102,9 @@ Ls2DEngine *ls2d_engine_new_current_display()
                 area.w = mode.w;
                 area.h = mode.h;
         } else {
-                SDL_Log("failed to fetch display mode");
+                SDL_LogError(SDL_LOG_CATEGORY_VIDEO,
+                             "Failed to fetch display mode: %s",
+                             SDL_GetError());
         }
 
         return ls2d_engine_new(area.w, area.h);
@@ -148,7 +154,7 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 SDL_RenderPresent(self->render);
         }
 
-        return false;
+        return true;
 }
 
 /**
