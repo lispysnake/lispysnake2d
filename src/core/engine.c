@@ -72,9 +72,15 @@ Ls2DEngine *ls2d_engine_new_current_display()
         SDL_DisplayMode mode = { 0 };
         SDL_Rect area = { 0, 0, 320, 240 };
 
+        if (!sdl_init()) {
+                return NULL;
+        }
+
         if (SDL_GetCurrentDisplayMode(0, &mode) == 0) {
                 area.w = mode.w;
                 area.h = mode.h;
+        } else {
+                SDL_Log("failed to fetch display mode");
         }
 
         return ls2d_engine_new(area.w, area.h);
