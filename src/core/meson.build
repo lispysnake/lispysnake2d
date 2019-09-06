@@ -18,4 +18,5 @@ libcore = static_library(
 link_libcore = declare_dependency(
     link_with: libcore,
     dependencies: core_deps,
+    include_directories: include_directories('.'),
 )

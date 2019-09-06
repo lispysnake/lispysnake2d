@@ -1,1 +1,2 @@
 subdir('core')
+subdir('demo')
