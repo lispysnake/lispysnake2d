@@ -110,6 +110,9 @@ void ls2d_engine_free(Ls2DEngine *self)
         if (!self) {
                 goto cleanup;
         }
+        if (self->render) {
+                SDL_DestroyRenderer(self->render);
+        }
         if (self->window) {
                 SDL_DestroyWindow(self->window);
         }
