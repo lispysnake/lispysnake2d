@@ -36,6 +36,12 @@ static void ls2d_engine_process_keyboard(Ls2DEngine *self, SDL_KeyboardEvent *ev
         case SDLK_q:
                 self->running = false;
                 break;
+        case SDLK_RIGHT:
+        case SDLK_LEFT:
+        case SDLK_DOWN:
+        case SDLK_UP:
+                SDL_Log("Pressed an arrow :O");
+                break;
         default:
                 break;
         }
