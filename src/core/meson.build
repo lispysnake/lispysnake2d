@@ -8,6 +8,7 @@ core_sources = [
 
 core_deps = [
     dep_sdl_core,
+    libuf.get_variable('link_libuf'),
 ]
 
 libcore = static_library(
