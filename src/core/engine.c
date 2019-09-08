@@ -173,7 +173,7 @@ bool ls2d_engine_run(Ls2DEngine *self)
         tick_start = SDL_GetTicks();
         frame.prev_ticks = tick_start - 1;
 
-        /* TODO: Split to non-polling event and render-cycle */
+        /* Primary event loop */
         while (self->running) {
                 /* Update frameinfo */
                 frame.ticks = SDL_GetTicks() - tick_start;
