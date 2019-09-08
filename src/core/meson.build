@@ -2,6 +2,7 @@
 
 core_sources = [
      'engine.c',
+     'engine-draw.c',
 ]
 
 core_deps = [

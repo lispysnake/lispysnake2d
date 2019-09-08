@@ -21,38 +21,17 @@
 
  */
 
-#pragma once
-
 #include <SDL.h>
-#include <stdbool.h>
-#include <stdlib.h>
 
-#include "ls2d.h"
+#include "engine-private.h"
 
-/** Private API headers for the engine implementation */
-
-/**
- * Ls2DEngine is responsible for managing the primary output, setting up
- * the event dispatch system, etc.
- */
-struct Ls2DEngine {
-        int width;
-        int height;
-        uint16_t fps_delay;
-        SDL_Window *window;
-        SDL_Renderer *render;
-        bool running;
-};
-
-/**
- * Process all incoming events to the engine (input/updates)
- */
-void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame);
-
-/**
- * Pump any and all drawing events
- */
-void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame);
+void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
+{
+        /* Render update */
+        SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);
+        SDL_RenderClear(self->render);
+        SDL_RenderPresent(self->render);
+}
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

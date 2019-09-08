@@ -194,14 +194,6 @@ void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame)
         }
 }
 
-void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
-{
-        /* Render update */
-        SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);
-        SDL_RenderClear(self->render);
-        SDL_RenderPresent(self->render);
-}
-
 void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)
 {
         if (!self || !self->window) {
