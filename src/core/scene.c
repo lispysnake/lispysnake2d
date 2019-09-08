@@ -23,18 +23,33 @@
 
 #include <stdlib.h>
 
+#include "object.h"
 #include "scene.h"
 
 /**
  * Opaque Ls2DScene implementation
  */
 struct Ls2DScene {
-        int __reserved;
+        Ls2DObject object; /*< Parent */
+};
+
+/**
+ * We don't yet do anything fancy.
+ */
+Ls2DObjectVTable scene_vtable = {
+        .destroy = NULL,
 };
 
 Ls2DScene *ls2d_scene_new()
 {
-        return calloc(1, sizeof(struct Ls2DScene));
+        Ls2DScene *self = NULL;
+
+        self = calloc(1, sizeof(struct Ls2DScene));
+        if (!self) {
+                return NULL;
+        }
+
+        return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
 }
 
 void ls2d_scene_free(Ls2DScene *self)

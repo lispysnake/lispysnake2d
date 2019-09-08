@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <stdatomic.h>
+
 typedef struct Ls2DObject Ls2DObject;
 
 /**
@@ -37,6 +39,14 @@ typedef void (*ls2d_object_vfunc_destroy)(void *);
 typedef struct Ls2DObjectVTable {
         ls2d_object_vfunc_destroy destroy;
 } Ls2DObjectVTable;
+
+/**
+ * Opaque object implementation.
+ */
+struct Ls2DObject {
+        atomic_int ref_count;
+        Ls2DObjectVTable *vtable;
+};
 
 /**
  * Increase reference count on the given Ls2DObject

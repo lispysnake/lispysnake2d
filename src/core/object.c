@@ -27,14 +27,6 @@
 
 #include "object.h"
 
-/**
- * Opaque object implementation.
- */
-struct Ls2DObject {
-        atomic_int ref_count;
-        Ls2DObjectVTable *vtable;
-};
-
 void *ls2d_object_ref(void *v)
 {
         Ls2DObject *object = v;
