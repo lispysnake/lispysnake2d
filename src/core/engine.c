@@ -43,6 +43,30 @@ struct Ls2DEngine {
         bool running;
 };
 
+/**
+ * Helper to get a useful framerate limit.
+ */
+static inline uint16_t ls2d_get_framerate(void)
+{
+        SDL_DisplayMode mode = { 0 };
+
+        if (SDL_GetCurrentDisplayMode(0, &mode) != 0) {
+                goto fail;
+        }
+
+        SDL_Log("Refresh rate discovered: %d", mode.refresh_rate);
+        if (mode.refresh_rate < 50) {
+                SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Slow limit framerate, enforcing 60fps");
+                return 60;
+        }
+
+        return mode.refresh_rate;
+
+fail:
+        SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Failed to get refresh rate: %s", SDL_GetError());
+        return 0;
+}
+
 Ls2DEngine *ls2d_engine_new(int width, int height)
 {
         Ls2DEngine *engine = NULL;
@@ -60,6 +84,8 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
         engine->height = height;
         engine->running = false;
         engine->fps_delay = 0; /*< TODO: Autoset. */
+
+        engine->fps_delay = ls2d_get_framerate();
 
         /* Setup the window */
         engine->window = SDL_CreateWindow("lispysnake2d",
@@ -162,7 +188,6 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 /* If framerate cap is set, use it. */
                 if (self->fps_delay > 0 && tick_delay < 1000 / self->fps_delay) {
                         SDL_Delay((1000 / self->fps_delay) - (tick_delay));
-                        SDL_Log("delay: %d", tick_delay);
                 }
         }
 
