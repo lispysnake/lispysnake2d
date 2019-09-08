@@ -36,8 +36,9 @@ struct Ls2DScene {
 /**
  * We don't yet do anything fancy.
  */
-Ls2DObjectVTable scene_vtable = {
+Ls2DObjectTable scene_vtable = {
         .destroy = NULL,
+        .obj_name = "Ls2DScene",
 };
 
 Ls2DScene *ls2d_scene_new()

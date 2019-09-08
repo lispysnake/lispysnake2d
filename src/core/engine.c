@@ -36,8 +36,9 @@ static void ls2d_engine_destroy(Ls2DEngine *self);
 /**
  * Main vtable for our engine
  */
-static Ls2DObjectVTable engine_vtable = {
+static Ls2DObjectTable engine_vtable = {
         .destroy = (ls2d_object_vfunc_destroy)ls2d_engine_destroy,
+        .obj_name = "Ls2DEngine",
 };
 
 /**

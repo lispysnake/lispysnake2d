@@ -36,16 +36,17 @@ typedef void (*ls2d_object_vfunc_destroy)(void *);
  * Simple vtable definition for Ls2DObjects so that they can be
  * extended.
  */
-typedef struct Ls2DObjectVTable {
+typedef struct Ls2DObjectTable {
         ls2d_object_vfunc_destroy destroy;
-} Ls2DObjectVTable;
+        const char *obj_name;
+} Ls2DObjectTable;
 
 /**
  * Opaque object implementation.
  */
 struct Ls2DObject {
         atomic_int ref_count;
-        Ls2DObjectVTable *vtable;
+        Ls2DObjectTable *vtable;
 };
 
 /**
@@ -55,7 +56,7 @@ void *ls2d_object_ref(void *);
 
 void *ls2d_object_unref(void *v);
 
-void *ls2d_object_init(Ls2DObject *object, Ls2DObjectVTable *vtable);
+void *ls2d_object_init(Ls2DObject *object, Ls2DObjectTable *vtable);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

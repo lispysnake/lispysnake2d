@@ -57,7 +57,7 @@ void *ls2d_object_unref(void *v)
         return object;
 }
 
-void *ls2d_object_init(Ls2DObject *object, Ls2DObjectVTable *vtable)
+void *ls2d_object_init(Ls2DObject *object, Ls2DObjectTable *vtable)
 {
         assert(object != NULL);
         assert(vtable != NULL);
