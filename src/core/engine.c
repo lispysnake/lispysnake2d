@@ -24,24 +24,12 @@
 #include <SDL.h>
 #include <stdlib.h>
 
+#include "engine-private.h"
 #include "ls2d.h"
 
 static bool did_init_sdl = false;
 static bool sdl_init(void);
 static void sdl_deinit(void);
-
-/**
- * Ls2DEngine is responsible for managing the primary output, setting up
- * the event dispatch system, etc.
- */
-struct Ls2DEngine {
-        int width;
-        int height;
-        uint16_t fps_delay;
-        SDL_Window *window;
-        SDL_Renderer *render;
-        bool running;
-};
 
 /**
  * Helper to get a useful framerate limit.
