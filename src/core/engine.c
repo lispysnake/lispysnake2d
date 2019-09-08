@@ -134,7 +134,6 @@ cleanup:
  */
 bool ls2d_engine_run(Ls2DEngine *self)
 {
-        SDL_Event event = { 0 };
         uint32_t tick_start = 0;
         Ls2DFrameInfo frame = { 0 };
 
@@ -151,17 +150,8 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 /* Update frameinfo */
                 frame.ticks = SDL_GetTicks() - tick_start;
 
-                /* Event update */
-                while (SDL_PollEvent(&event) != 0) {
-                        if (event.type == SDL_QUIT) {
-                                self->running = false;
-                        }
-                }
-
-                /* Render update */
-                SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);
-                SDL_RenderClear(self->render);
-                SDL_RenderPresent(self->render);
+                ls2d_engine_process_events(self, &frame);
+                ls2d_engine_draw(self, &frame);
 
                 /* Stash ticks */
                 uint32_t tick_delay = frame.ticks - frame.prev_ticks;
@@ -174,6 +164,26 @@ bool ls2d_engine_run(Ls2DEngine *self)
         }
 
         return true;
+}
+
+void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame)
+{
+        SDL_Event event = { 0 };
+
+        /* Event update */
+        while (SDL_PollEvent(&event) != 0) {
+                if (event.type == SDL_QUIT) {
+                        self->running = false;
+                }
+        }
+}
+
+void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
+{
+        /* Render update */
+        SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);
+        SDL_RenderClear(self->render);
+        SDL_RenderPresent(self->render);
 }
 
 void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)

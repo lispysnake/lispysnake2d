@@ -64,6 +64,18 @@ bool ls2d_engine_run(Ls2DEngine *self);
  */
 void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
 
+/** TODO: Split to private API! */
+
+/**
+ * Process all incoming events to the engine (input/updates)
+ */
+void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame);
+
+/**
+ * Pump any and all drawing events
+ */
+void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame);
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
