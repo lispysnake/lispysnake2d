@@ -46,8 +46,8 @@ cdata.set_quoted('PACKAGE_NAME', meson.project_name())
 cdata.set_quoted('PACKAGE_VERSION', meson.project_version())
 
 # Build our convenience library..
-libuf = subproject(
-    'libuf',
+libls = subproject(
+    'libls',
     default_options: [
         'c_std=c11',
         'with-tests=false',
