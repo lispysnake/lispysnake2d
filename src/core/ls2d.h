@@ -31,6 +31,15 @@
 typedef struct Ls2DEngine Ls2DEngine;
 
 /**
+ * The Ls2DFrameInfo object is passed to renderer and update cycles
+ * to give them information about the current frame pass.
+ */
+typedef struct Ls2DFrameInfo {
+        uint32_t ticks;      /**<Current tick count */
+        uint32_t prev_ticks; /**<Previous tick count */
+} Ls2DFrameInfo;
+
+/**
  * Return a new Ls2DEngine object
  */
 Ls2DEngine *ls2d_engine_new(int width, int height);

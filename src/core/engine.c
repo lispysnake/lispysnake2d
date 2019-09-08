@@ -135,24 +135,36 @@ cleanup:
 bool ls2d_engine_run(Ls2DEngine *self)
 {
         SDL_Event event = { 0 };
+        uint32_t tick_start = 0;
+        Ls2DFrameInfo frame = { 0 };
 
-        self->running = true;
-
-        /* Make sure to show he window */
+        /* Make sure to show the window */
         SDL_ShowWindow(self->window);
+
+        /* Get the ball rolling */
+        self->running = true;
+        tick_start = SDL_GetTicks();
+        frame.prev_ticks = tick_start - 1;
 
         /* TODO: Split to non-polling event and render-cycle */
         while (self->running) {
+                /* Update frameinfo */
+                frame.ticks = SDL_GetTicks() - tick_start;
+
+                /* Event update */
                 while (SDL_PollEvent(&event) != 0) {
                         if (event.type == SDL_QUIT) {
                                 self->running = false;
                         }
                 }
 
-                /* TODO: Render */
+                /* Render update */
                 SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);
                 SDL_RenderClear(self->render);
                 SDL_RenderPresent(self->render);
+
+                /* Stash ticks */
+                frame.prev_ticks = frame.ticks;
         }
 
         return true;
