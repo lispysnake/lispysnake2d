@@ -46,7 +46,7 @@ int main(int argc, char **argv)
                 ret = EXIT_SUCCESS;
         }
 
-        ls2d_engine_free(engine);
+        ls2d_engine_unref(engine);
 
         return ret;
 }

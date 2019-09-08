@@ -63,7 +63,7 @@ void *ls2d_object_init(Ls2DObject *object, Ls2DObjectVTable *vtable)
         assert(vtable != NULL);
         object->ref_count = ATOMIC_VAR_INIT(1);
         object->vtable = vtable;
-        return NULL;
+        return object;
 }
 
 /*

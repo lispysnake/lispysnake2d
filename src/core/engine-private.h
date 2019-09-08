@@ -28,6 +28,7 @@
 #include <stdlib.h>
 
 #include "ls2d.h"
+#include "object.h"
 
 /** Private API headers for the engine implementation */
 
@@ -36,6 +37,7 @@
  * the event dispatch system, etc.
  */
 struct Ls2DEngine {
+        Ls2DObject object; /*< Parent */
         int width;
         int height;
         uint16_t fps_delay;

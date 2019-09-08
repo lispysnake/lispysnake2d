@@ -26,10 +26,19 @@
 
 #include "engine-private.h"
 #include "ls2d.h"
+#include "object.h"
 
 static bool did_init_sdl = false;
 static bool sdl_init(void);
 static void sdl_deinit(void);
+static void ls2d_engine_destroy(Ls2DEngine *self);
+
+/**
+ * Main vtable for our engine
+ */
+static Ls2DObjectVTable engine_vtable = {
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_engine_destroy,
+};
 
 /**
  * Helper to get a useful framerate limit.
@@ -87,7 +96,7 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                 SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
                                 "Couldn't create window: %s",
                                 SDL_GetError());
-                ls2d_engine_free(engine);
+                ls2d_engine_destroy(engine);
                 return NULL;
         }
 
@@ -99,11 +108,11 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                 SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
                                 "Couldn't create a renderer: %s",
                                 SDL_GetError());
-                ls2d_engine_free(engine);
+                ls2d_engine_destroy(engine);
                 return NULL;
         }
 
-        return engine;
+        return ls2d_object_init((Ls2DObject *)engine, &engine_vtable);
 }
 
 Ls2DEngine *ls2d_engine_new_current_display()
@@ -128,7 +137,12 @@ Ls2DEngine *ls2d_engine_new_current_display()
         return ls2d_engine_new(area.w, area.h);
 }
 
-void ls2d_engine_free(Ls2DEngine *self)
+void ls2d_engine_unref(Ls2DEngine *self)
+{
+        ls2d_object_unref(self);
+}
+
+static void ls2d_engine_destroy(Ls2DEngine *self)
 {
         if (!self) {
                 goto cleanup;
