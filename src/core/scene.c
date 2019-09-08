@@ -53,12 +53,9 @@ Ls2DScene *ls2d_scene_new()
         return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
 }
 
-void ls2d_scene_free(Ls2DScene *self)
+Ls2DScene *ls2d_scene_unref(Ls2DScene *self)
 {
-        if (!self) {
-                return;
-        }
-        free(self);
+        return ls2d_object_unref(self);
 }
 
 /*

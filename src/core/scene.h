@@ -34,10 +34,10 @@ typedef struct Ls2DScene Ls2DScene;
 Ls2DScene *ls2d_scene_new(void);
 
 /**
- * Free a previously allocated Scene. This will also deference any
+ * Unref an allocated Scene. This will also deference any
  * attached resources.
  */
-void ls2d_scene_free(Ls2DScene *self);
+Ls2DScene *ls2d_scene_unref(Ls2DScene *self);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

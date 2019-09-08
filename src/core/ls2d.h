@@ -50,9 +50,9 @@ Ls2DEngine *ls2d_engine_new(int width, int height);
 Ls2DEngine *ls2d_engine_new_current_display(void);
 
 /**
- * Destroy a previously allocated Ls2DEngine object
+ * Unref a previously allocated Ls2DEngine object
  */
-void ls2d_engine_unref(Ls2DEngine *self);
+Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self);
 
 /**
  * Run an Ls2DEngine until termination.

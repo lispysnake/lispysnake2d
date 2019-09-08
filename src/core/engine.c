@@ -138,9 +138,9 @@ Ls2DEngine *ls2d_engine_new_current_display()
         return ls2d_engine_new(area.w, area.h);
 }
 
-void ls2d_engine_unref(Ls2DEngine *self)
+Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self)
 {
-        ls2d_object_unref(self);
+        return ls2d_object_unref(self);
 }
 
 static void ls2d_engine_destroy(Ls2DEngine *self)
