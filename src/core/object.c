@@ -47,6 +47,7 @@ void *ls2d_object_unref(void *v)
         int ref_count = atomic_fetch_sub(&(object->ref_count), 1);
         assert(ref_count > 0);
         if (ref_count == 1) {
+                printf("Killing object %s* %p\n", object->vtable->obj_name, object);
                 if (object->vtable->destroy) {
                         object->vtable->destroy(v);
                 } else {
