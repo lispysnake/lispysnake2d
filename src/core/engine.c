@@ -182,18 +182,6 @@ bool ls2d_engine_run(Ls2DEngine *self)
         return true;
 }
 
-void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame)
-{
-        SDL_Event event = { 0 };
-
-        /* Event update */
-        while (SDL_PollEvent(&event) != 0) {
-                if (event.type == SDL_QUIT) {
-                        self->running = false;
-                }
-        }
-}
-
 void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)
 {
         if (!self || !self->window) {
