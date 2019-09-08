@@ -4,6 +4,7 @@ core_sources = [
      'engine.c',
      'engine-draw.c',
      'engine-update.c',
+     'scene.c',
 ]
 
 core_deps = [
