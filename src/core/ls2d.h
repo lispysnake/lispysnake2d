@@ -64,6 +64,11 @@ bool ls2d_engine_run(Ls2DEngine *self);
  */
 void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
 
+/**
+ * Set a framerate cap on the engine. If set to 0, there will be no cap.
+ */
+void ls2d_engine_set_fps_cap(Ls2DEngine *self, int16_t fps);
+
 /** TODO: Split to private API! */
 
 /**

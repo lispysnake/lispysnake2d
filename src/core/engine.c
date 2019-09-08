@@ -37,6 +37,7 @@ static void sdl_deinit(void);
 struct Ls2DEngine {
         int width;
         int height;
+        uint16_t fps_delay;
         SDL_Window *window;
         SDL_Renderer *render;
         bool running;
@@ -58,6 +59,7 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
         engine->width = width;
         engine->height = height;
         engine->running = false;
+        engine->fps_delay = 0; /*< TODO: Autoset. */
 
         /* Setup the window */
         engine->window = SDL_CreateWindow("lispysnake2d",
@@ -157,9 +159,10 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 uint32_t tick_delay = frame.ticks - frame.prev_ticks;
                 frame.prev_ticks = frame.ticks;
 
-                /* Temp hard limit of 60fps */
-                if (tick_delay < 1000 / 60) {
-                        SDL_Delay((1000 / 60) - (tick_delay));
+                /* If framerate cap is set, use it. */
+                if (self->fps_delay > 0 && tick_delay < 1000 / self->fps_delay) {
+                        SDL_Delay((1000 / self->fps_delay) - (tick_delay));
+                        SDL_Log("delay: %d", tick_delay);
                 }
         }
 
@@ -193,6 +196,14 @@ void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)
                 return;
         }
         SDL_SetWindowFullscreen(self->window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+}
+
+void ls2d_engine_set_fps_cap(Ls2DEngine *self, int16_t fps)
+{
+        if (!self) {
+                return;
+        }
+        self->fps_delay = fps;
 }
 
 /**

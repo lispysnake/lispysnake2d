@@ -38,6 +38,7 @@ int main(int argc, char **argv)
         if (!engine) {
                 return EXIT_FAILURE;
         }
+        ls2d_engine_set_fps_cap(engine, 60);
 
         if (!ls2d_engine_run(engine)) {
                 SDL_Log("Failed to run");
