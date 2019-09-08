@@ -42,6 +42,7 @@ struct Ls2DEngine {
         SDL_Window *window;
         SDL_Renderer *render;
         bool running;
+        bool fullscreen;
 };
 
 /**

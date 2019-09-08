@@ -25,14 +25,39 @@
 
 #include "engine-private.h"
 
+static void ls2d_engine_process_keyboard(Ls2DEngine *self, SDL_KeyboardEvent *event)
+{
+        switch (event->keysym.sym) {
+        case SDLK_f:
+                if (event->type == SDL_KEYUP) {
+                        ls2d_engine_set_fullscreen(self, !self->fullscreen);
+                }
+                break;
+        case SDLK_q:
+                self->running = false;
+                break;
+        default:
+                break;
+        }
+        return;
+}
+
 void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame)
 {
         SDL_Event event = { 0 };
 
         /* Event update */
         while (SDL_PollEvent(&event) != 0) {
-                if (event.type == SDL_QUIT) {
+                switch (event.type) {
+                case SDL_KEYUP:
+                case SDL_KEYDOWN:
+                        ls2d_engine_process_keyboard(self, &(event.key));
+                        break;
+                case SDL_QUIT:
                         self->running = false;
+                        break;
+                default:
+                        break;
                 }
         }
 }

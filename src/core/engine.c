@@ -71,8 +71,9 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
         engine->width = width;
         engine->height = height;
         engine->running = false;
-        engine->fps_delay = 0; /*< TODO: Autoset. */
+        engine->fullscreen = false;
 
+        /* autoset fps cap */
         engine->fps_delay = ls2d_get_framerate();
 
         /* Setup the window */
@@ -188,6 +189,7 @@ void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)
                 SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEngine not yet initialised");
                 return;
         }
+        self->fullscreen = fullscreen;
         SDL_SetWindowFullscreen(self->window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
