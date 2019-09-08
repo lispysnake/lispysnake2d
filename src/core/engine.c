@@ -164,7 +164,13 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 SDL_RenderPresent(self->render);
 
                 /* Stash ticks */
+                uint32_t tick_delay = frame.ticks - frame.prev_ticks;
                 frame.prev_ticks = frame.ticks;
+
+                /* Temp hard limit of 60fps */
+                if (tick_delay < 1000 / 60) {
+                        SDL_Delay((1000 / 60) - (tick_delay));
+                }
         }
 
         return true;
