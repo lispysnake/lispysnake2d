@@ -45,6 +45,15 @@ cdata = configuration_data()
 cdata.set_quoted('PACKAGE_NAME', meson.project_name())
 cdata.set_quoted('PACKAGE_VERSION', meson.project_version())
 
+# Build our convenience library..
+libuf = subproject(
+    'libuf',
+    default_options: [
+        'c_std=c11',
+        'with-tests=false',
+        'with-static=true',
+    ]
+)
 
 # Now build bits
 subdir('src')
