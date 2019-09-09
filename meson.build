@@ -30,6 +30,8 @@ am_cflags = [
     '-W',
 ]
 
+add_global_arguments(am_cflags, language: 'c')
+
 # Compute dependencies
 dep_sdl_core = dependency('sdl2', version: '>= 2.0.9')
 dep_sdl_image = dependency('SDL2_image', version: '>= 2.0.4')
