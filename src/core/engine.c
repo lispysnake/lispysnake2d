@@ -27,6 +27,7 @@
 #include "engine-private.h"
 #include "ls2d.h"
 #include "object.h"
+#include "util.h"
 
 static bool did_init_sdl = false;
 static bool sdl_init(void);
@@ -145,7 +146,7 @@ Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self)
 
 static void ls2d_engine_destroy(Ls2DEngine *self)
 {
-        if (!self) {
+        if (ls_unlikely(!self)) {
                 goto cleanup;
         }
         if (self->render) {
@@ -210,7 +211,7 @@ void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)
 
 void ls2d_engine_set_fps_cap(Ls2DEngine *self, int16_t fps)
 {
-        if (!self) {
+        if (ls_unlikely(!self)) {
                 return;
         }
         self->fps_delay = fps;

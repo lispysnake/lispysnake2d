@@ -48,7 +48,7 @@ Ls2DScene *ls2d_scene_new(const char *name)
         Ls2DScene *self = NULL;
 
         self = calloc(1, sizeof(struct Ls2DScene));
-        if (!self) {
+        if (ls_unlikely(!self)) {
                 return NULL;
         }
         /* Scene name for traversal */
