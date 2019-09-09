@@ -25,6 +25,8 @@
 
 #include <stdbool.h>
 
+#include "libls.h"
+
 /**
  * The Ls2DEngine is responsible for core lifecycle management.
  */
@@ -68,6 +70,8 @@ void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
  * Set a framerate cap on the engine. If set to 0, there will be no cap.
  */
 void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps);
+
+DEF_AUTOFREE(Ls2DEngine, ls2d_engine_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

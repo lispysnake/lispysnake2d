@@ -32,7 +32,7 @@
  */
 int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
-        Ls2DEngine *engine = NULL;
+        autofree(Ls2DEngine) *engine = NULL;
         int ret = EXIT_SUCCESS;
 
         engine = ls2d_engine_new_current_display();
@@ -46,8 +46,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         } else {
                 ret = EXIT_SUCCESS;
         }
-
-        ls2d_engine_unref(engine);
 
         return ret;
 }
