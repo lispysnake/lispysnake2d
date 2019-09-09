@@ -23,9 +23,9 @@
 
 #include <stdlib.h>
 
+#include "libls.h"
 #include "object.h"
 #include "scene.h"
-#include "util.h"
 
 /**
  * Opaque Ls2DScene implementation

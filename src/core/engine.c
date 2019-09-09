@@ -25,9 +25,9 @@
 #include <stdlib.h>
 
 #include "engine-private.h"
+#include "libls.h"
 #include "ls2d.h"
 #include "object.h"
-#include "util.h"
 
 static bool did_init_sdl = false;
 static bool sdl_init(void);
