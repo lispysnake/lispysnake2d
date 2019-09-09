@@ -25,12 +25,14 @@
 
 #include "object.h"
 #include "scene.h"
+#include "util.h"
 
 /**
  * Opaque Ls2DScene implementation
  */
 struct Ls2DScene {
         Ls2DObject object; /*< Parent */
+        const char *name;
 };
 
 /**
@@ -41,7 +43,7 @@ Ls2DObjectTable scene_vtable = {
         .obj_name = "Ls2DScene",
 };
 
-Ls2DScene *ls2d_scene_new()
+Ls2DScene *ls2d_scene_new(const char *name)
 {
         Ls2DScene *self = NULL;
 
@@ -49,6 +51,8 @@ Ls2DScene *ls2d_scene_new()
         if (!self) {
                 return NULL;
         }
+        /* Scene name for traversal */
+        self->name = name;
 
         return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
 }
@@ -56,6 +60,14 @@ Ls2DScene *ls2d_scene_new()
 Ls2DScene *ls2d_scene_unref(Ls2DScene *self)
 {
         return ls2d_object_unref(self);
+}
+
+const char *ls2d_scene_get_name(Ls2DScene *self)
+{
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+        return self->name;
 }
 
 /*

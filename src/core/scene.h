@@ -31,13 +31,18 @@ typedef struct Ls2DScene Ls2DScene;
  * Notably, this optimises the event queue as we'll only dispatch the
  * input handling to the visible renderables within the active scene.
  */
-Ls2DScene *ls2d_scene_new(void);
+Ls2DScene *ls2d_scene_new(const char *name);
 
 /**
  * Unref an allocated Scene. This will also deference any
  * attached resources.
  */
 Ls2DScene *ls2d_scene_unref(Ls2DScene *self);
+
+/**
+ * Get the name of this scene object
+ */
+const char *ls2d_scene_get_name(Ls2DScene *self);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
