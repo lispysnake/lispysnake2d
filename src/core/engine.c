@@ -165,7 +165,7 @@ cleanup:
  * Internally we're responsible for the primary event queue, so we'll
  * manage it here and if necessary dispatch it.
  */
-bool ls2d_engine_run(Ls2DEngine *self)
+int ls2d_engine_run(Ls2DEngine *self)
 {
         uint32_t tick_start = 0;
         Ls2DFrameInfo frame = { 0 };
@@ -196,7 +196,7 @@ bool ls2d_engine_run(Ls2DEngine *self)
                 }
         }
 
-        return true;
+        return EXIT_SUCCESS;
 }
 
 void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)

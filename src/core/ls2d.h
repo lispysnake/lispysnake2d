@@ -58,8 +58,10 @@ Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self);
 
 /**
  * Run an Ls2DEngine until termination.
+ * For convenience this will return standard EXIT_SUCCESS/EXIT_FAILURE
+ * codes.
  */
-bool ls2d_engine_run(Ls2DEngine *self);
+int ls2d_engine_run(Ls2DEngine *self);
 
 /**
  * Update the fullscreen state of the display

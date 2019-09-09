@@ -33,7 +33,6 @@
 int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
-        int ret = EXIT_SUCCESS;
 
         engine = ls2d_engine_new_current_display();
         if (!engine) {
@@ -41,13 +40,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         }
         ls2d_engine_set_fps_cap(engine, 60);
 
-        if (!ls2d_engine_run(engine)) {
-                SDL_Log("Failed to run");
-        } else {
-                ret = EXIT_SUCCESS;
-        }
-
-        return ret;
+        return ls2d_engine_run(engine);
 }
 
 /*
