@@ -23,38 +23,58 @@
 
 #pragma once
 
-#include <SDL.h>
 #include <stdbool.h>
-#include <stdlib.h>
 
-#include "engine.h"
-
-/** Private API headers for the engine implementation */
+#include "libls.h"
+#include "object.h"
 
 /**
- * Ls2DEngine is responsible for managing the primary output, setting up
- * the event dispatch system, etc.
+ * The Ls2DEngine is responsible for core lifecycle management.
  */
-struct Ls2DEngine {
-        Ls2DObject object; /*< Parent */
-        int width;
-        int height;
-        uint32_t fps_delay;
-        SDL_Window *window;
-        SDL_Renderer *render;
-        bool running;
-        bool fullscreen;
-};
+typedef struct Ls2DEngine Ls2DEngine;
 
 /**
- * Process all incoming events to the engine (input/updates)
+ * The Ls2DFrameInfo object is passed to renderer and update cycles
+ * to give them information about the current frame pass.
  */
-void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame);
+typedef struct Ls2DFrameInfo {
+        uint32_t ticks;      /**<Current tick count */
+        uint32_t prev_ticks; /**<Previous tick count */
+} Ls2DFrameInfo;
 
 /**
- * Pump any and all drawing events
+ * Return a new Ls2DEngine object
  */
-void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame);
+Ls2DEngine *ls2d_engine_new(int width, int height);
+
+/**
+ * Return a new Ls2DEngine object for the current display size
+ */
+Ls2DEngine *ls2d_engine_new_current_display(void);
+
+/**
+ * Unref a previously allocated Ls2DEngine object
+ */
+Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self);
+
+/**
+ * Run an Ls2DEngine until termination.
+ * For convenience this will return standard EXIT_SUCCESS/EXIT_FAILURE
+ * codes.
+ */
+int ls2d_engine_run(Ls2DEngine *self);
+
+/**
+ * Update the fullscreen state of the display
+ */
+void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
+
+/**
+ * Set a framerate cap on the engine. If set to 0, there will be no cap.
+ */
+void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps);
+
+DEF_AUTOFREE(Ls2DEngine, ls2d_engine_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

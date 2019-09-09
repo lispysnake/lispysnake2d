@@ -24,6 +24,7 @@
 #pragma once
 
 #include "libls.h"
+#include "object.h"
 
 typedef struct Ls2DScene Ls2DScene;
 

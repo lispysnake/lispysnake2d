@@ -23,57 +23,14 @@
 
 #pragma once
 
-#include <stdbool.h>
-
-#include "libls.h"
-
 /**
- * The Ls2DEngine is responsible for core lifecycle management.
+ * This is the main inclusion header for lispysnake2d and will take care
+ * of including any component headers.
  */
-typedef struct Ls2DEngine Ls2DEngine;
 
-/**
- * The Ls2DFrameInfo object is passed to renderer and update cycles
- * to give them information about the current frame pass.
- */
-typedef struct Ls2DFrameInfo {
-        uint32_t ticks;      /**<Current tick count */
-        uint32_t prev_ticks; /**<Previous tick count */
-} Ls2DFrameInfo;
-
-/**
- * Return a new Ls2DEngine object
- */
-Ls2DEngine *ls2d_engine_new(int width, int height);
-
-/**
- * Return a new Ls2DEngine object for the current display size
- */
-Ls2DEngine *ls2d_engine_new_current_display(void);
-
-/**
- * Unref a previously allocated Ls2DEngine object
- */
-Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self);
-
-/**
- * Run an Ls2DEngine until termination.
- * For convenience this will return standard EXIT_SUCCESS/EXIT_FAILURE
- * codes.
- */
-int ls2d_engine_run(Ls2DEngine *self);
-
-/**
- * Update the fullscreen state of the display
- */
-void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
-
-/**
- * Set a framerate cap on the engine. If set to 0, there will be no cap.
- */
-void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps);
-
-DEF_AUTOFREE(Ls2DEngine, ls2d_engine_unref)
+#include "engine.h"
+#include "object.h"
+#include "scene.h"
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
