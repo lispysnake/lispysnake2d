@@ -147,11 +147,14 @@ static void ls2d_engine_destroy(Ls2DEngine *self)
         if (ls_unlikely(!self)) {
                 goto cleanup;
         }
-        if (self->render) {
+        if (ls_likely(self->render != NULL)) {
                 SDL_DestroyRenderer(self->render);
         }
-        if (self->window) {
+        if (ls_likely(self->window != NULL)) {
                 SDL_DestroyWindow(self->window);
+        }
+        if (ls_likely(self->scenes != NULL)) {
+                ls2d_scene_unref(self->scenes);
         }
         free(self);
 
@@ -213,6 +216,16 @@ void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps)
                 return;
         }
         self->fps_delay = fps;
+}
+
+void ls2d_engine_add_scene(Ls2DEngine *self, Ls2DScene *scene)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!scene)) {
+                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEngine not yet initialised");
+                return;
+        }
+        /* TODO: Have a list of scenes.. */
+        self->scenes = ls2d_object_ref(scene);
 }
 
 /**

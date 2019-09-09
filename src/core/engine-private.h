@@ -28,6 +28,7 @@
 #include <stdlib.h>
 
 #include "engine.h"
+#include "scene.h"
 
 /** Private API headers for the engine implementation */
 
@@ -44,6 +45,9 @@ struct Ls2DEngine {
         SDL_Renderer *render;
         bool running;
         bool fullscreen;
+
+        /* Eventually we'll have a list of scenes. */
+        Ls2DScene *scenes;
 };
 
 /**

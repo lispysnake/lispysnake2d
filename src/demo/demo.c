@@ -45,6 +45,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         /* Create root scene */
         scene = ls2d_scene_new("title_screen");
+        ls2d_engine_add_scene(engine, scene);
 
         /* TODO: Have engine own the scene.. */
 
