@@ -26,6 +26,7 @@
 
 #include "libls.h"
 #include "ls2d.h"
+#include "scene.h"
 
 /**
  * Main entry point to the demo.
@@ -33,12 +34,19 @@
 int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
+        autofree(Ls2DScene) *scene = NULL;
 
+        /* Construct new engine */
         engine = ls2d_engine_new_current_display();
         if (!engine) {
                 return EXIT_FAILURE;
         }
         ls2d_engine_set_fps_cap(engine, 60);
+
+        /* Create root scene */
+        scene = ls2d_scene_new("title_screen");
+
+        /* TODO: Have engine own the scene.. */
 
         return ls2d_engine_run(engine);
 }
