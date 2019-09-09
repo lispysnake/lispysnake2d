@@ -36,7 +36,7 @@ void *ls2d_object_ref(void *v)
         }
         int ref_count = atomic_fetch_add(&(object->ref_count), 1);
         assert(ref_count >= 0);
-        return NULL;
+        return v;
 }
 
 void *ls2d_object_unref(void *v)
@@ -56,7 +56,7 @@ void *ls2d_object_unref(void *v)
                 }
                 return NULL;
         }
-        return object;
+        return v;
 }
 
 void *ls2d_object_init(Ls2DObject *object, Ls2DObjectTable *vtable)
