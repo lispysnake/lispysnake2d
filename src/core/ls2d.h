@@ -67,7 +67,7 @@ void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
 /**
  * Set a framerate cap on the engine. If set to 0, there will be no cap.
  */
-void ls2d_engine_set_fps_cap(Ls2DEngine *self, int16_t fps);
+void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

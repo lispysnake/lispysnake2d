@@ -40,7 +40,7 @@ struct Ls2DEngine {
         Ls2DObject object; /*< Parent */
         int width;
         int height;
-        uint16_t fps_delay;
+        uint32_t fps_delay;
         SDL_Window *window;
         SDL_Renderer *render;
         bool running;

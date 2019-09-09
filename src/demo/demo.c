@@ -24,12 +24,13 @@
 #include <SDL.h>
 #include <stdlib.h>
 
+#include "libls.h"
 #include "ls2d.h"
 
 /**
  * Main entry point to the demo.
  */
-int main(int argc, char **argv)
+int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         Ls2DEngine *engine = NULL;
         int ret = EXIT_SUCCESS;

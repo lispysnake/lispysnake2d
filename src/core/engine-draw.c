@@ -24,8 +24,9 @@
 #include <SDL.h>
 
 #include "engine-private.h"
+#include "libls.h"
 
-void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
+void ls2d_engine_draw(Ls2DEngine *self, __ls_unused__ Ls2DFrameInfo *frame)
 {
         /* Render update */
         SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);

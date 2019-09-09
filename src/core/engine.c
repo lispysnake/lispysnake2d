@@ -45,7 +45,7 @@ static Ls2DObjectTable engine_vtable = {
 /**
  * Helper to get a useful framerate limit.
  */
-static inline uint16_t ls2d_get_framerate(void)
+static inline uint32_t ls2d_get_framerate(void)
 {
         SDL_DisplayMode mode = { 0 };
 
@@ -59,7 +59,7 @@ static inline uint16_t ls2d_get_framerate(void)
                 return 60;
         }
 
-        return mode.refresh_rate;
+        return (uint32_t)mode.refresh_rate;
 
 fail:
         SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Failed to get refresh rate: %s", SDL_GetError());
@@ -209,7 +209,7 @@ void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen)
         SDL_SetWindowFullscreen(self->window, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
-void ls2d_engine_set_fps_cap(Ls2DEngine *self, int16_t fps)
+void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps)
 {
         if (ls_unlikely(!self)) {
                 return;

@@ -24,6 +24,7 @@
 #include <SDL.h>
 
 #include "engine-private.h"
+#include "libls.h"
 
 static void ls2d_engine_process_keyboard(Ls2DEngine *self, SDL_KeyboardEvent *event)
 {
@@ -48,7 +49,7 @@ static void ls2d_engine_process_keyboard(Ls2DEngine *self, SDL_KeyboardEvent *ev
         return;
 }
 
-void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame)
+void ls2d_engine_process_events(Ls2DEngine *self, __ls_unused__ Ls2DFrameInfo *frame)
 {
         SDL_Event event = { 0 };
 
