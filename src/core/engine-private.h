@@ -46,8 +46,8 @@ struct Ls2DEngine {
         bool running;
         bool fullscreen;
 
-        /* Eventually we'll have a list of scenes. */
-        Ls2DScene *scenes;
+        /* List of scenes. */
+        LsList *scenes;
 };
 
 /**

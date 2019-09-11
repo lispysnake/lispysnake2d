@@ -154,7 +154,7 @@ static void ls2d_engine_destroy(Ls2DEngine *self)
                 SDL_DestroyWindow(self->window);
         }
         if (ls_likely(self->scenes != NULL)) {
-                ls2d_scene_unref(self->scenes);
+                ls_list_free_full(self->scenes, (ls_free_func)ls2d_object_unref);
         }
         free(self);
 
@@ -224,8 +224,7 @@ void ls2d_engine_add_scene(Ls2DEngine *self, Ls2DScene *scene)
                 SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEngine not yet initialised");
                 return;
         }
-        /* TODO: Have a list of scenes.. */
-        self->scenes = ls2d_object_ref(scene);
+        self->scenes = ls_list_append(self->scenes, ls2d_object_ref(scene));
 }
 
 /**
