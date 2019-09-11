@@ -8,21 +8,30 @@ For now, entry-point hooks are not provided, i.e NDK/JNI.
 
 ### Design Considerations
 
-Right now, no API or logic actually exists, so stand by while we flesh it out.
-Below is a basic list of considerations in the design:
+ - Modern C standards
+ - Initially implemented using SDL_Renderer
+ - In future, convert to 3D rendering pipeline (more below)
+ - Support multiple standard 2D perspectives
+ - Support sprites, tiling, etc.
+ - Support for animations
+ - Tick based
+ - Framerate limiting
+ - Simple OOP design
+ - Menu system
 
- - Build as either a shared or static library
- - Be a well-behaved submodule for meson builds
- - Platform agnosic where possible.
- - Modern C standards/design
- - Initially some loader-style functions to split out into a util lib in future.
- - Provide pure-2D and isometric engine styles
- - Basic engine tick management
- - Simple animation handler
- - Sprite notion
- - Super basic OOP approach.
- - Input handling system (event dispatch)
- - Only support a single window system. (vsync/multiple windows = complex)
+### Basic 2D Pipeline
+
+Initially we'll have a simple 2D pipeline using SDL_Renderer, which will
+be linked into the input system. Effectively, we'll have layers and
+renderables within a scene to ensure we mask unnecessary input testing.
+
+### Future 3D pipeline
+
+Eventually we're going to swap out the pipeline for one that's 3D. This
+will leverage the underlying SDL library to support various OpenGL profiles
+and Vulkan. With this, we'll provide stock shaders, and allow implementing
+custom ones. The API will largely remain the same but users will now get
+a 3D pipeline for slick visual effects, whilst working in a 2D space.
 
 ### License
 
