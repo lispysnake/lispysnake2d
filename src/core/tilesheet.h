@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "engine.h"
 #include "libls.h"
 #include "object.h"
 
@@ -38,13 +39,18 @@ typedef struct Ls2DTilesheet Ls2DTilesheet;
 /**
  * Construct a new Tilesheet object.
  */
-Ls2DTilesheet *ls2d_tilesheet_new(void);
+Ls2DTilesheet *ls2d_tilesheet_new(Ls2DEngine *engine);
 
 /**
  * Unref an allocated Scene. This will also deference any
  * attached resources.
  */
 Ls2DTilesheet *ls2d_tilesheet_unref(Ls2DTilesheet *self);
+
+/**
+ * Draw the named image at the given X and Y coordinates.
+ */
+void ls2d_tilesheet_draw(Ls2DTilesheet *self, const char *image_name, int x, int y);
 
 DEF_AUTOFREE(Ls2DTilesheet, ls2d_tilesheet_unref)
 

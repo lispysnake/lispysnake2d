@@ -32,6 +32,8 @@
  */
 struct Ls2DTilesheet {
         Ls2DObject object; /*< Parent */
+
+        Ls2DEngine *engine; /*< Parent engine */
 };
 
 /**
@@ -42,7 +44,7 @@ Ls2DObjectTable scene_vtable = {
         .obj_name = "Ls2DTilesheet",
 };
 
-Ls2DTilesheet *ls2d_tilesheet_new()
+Ls2DTilesheet *ls2d_tilesheet_new(Ls2DEngine *engine)
 {
         Ls2DTilesheet *self = NULL;
 
@@ -51,12 +53,21 @@ Ls2DTilesheet *ls2d_tilesheet_new()
                 return NULL;
         }
 
+        self->engine = engine;
+
         return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
 }
 
 Ls2DTilesheet *ls2d_tilesheet_unref(Ls2DTilesheet *self)
 {
         return ls2d_object_unref(self);
+}
+
+/**
+ * Do the actual drawing.
+ */
+void ls2d_tilesheet_draw(Ls2DTilesheet *self, const char *image_name, int x, int y)
+{
 }
 
 /*
