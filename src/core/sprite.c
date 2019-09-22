@@ -21,6 +21,7 @@
 
  */
 
+#include <SDL_image.h>
 #include <stdlib.h>
 
 #include "libls.h"
@@ -33,15 +34,50 @@
 struct Ls2DSprite {
         Ls2DObject object; /*< Parent */
         SDL_Rect area;
+        SDL_Texture *texture;
 };
+
+static void ls2d_sprite_destroy(Ls2DSprite *self);
 
 /**
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable sprite_vtable = {
-        .destroy = NULL,
+        .destroy = ls2d_sprite_destroy,
         .obj_name = "Ls2DSprite",
 };
+
+DEF_AUTOFREE(SDL_Surface, SDL_FreeSurface)
+
+static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window *window)
+{
+        autofree(SDL_Surface) *img_surface = NULL;
+        autofree(SDL_Surface) *opt_surface = NULL;
+        SDL_Surface *win_surface = NULL;
+
+        img_surface = IMG_Load(path);
+        if (!img_surface) {
+                fprintf(stderr, "Failed to load %s: %s\n", path, IMG_GetError());
+                return NULL;
+        }
+
+        /* Mask magenta as transparent */
+        SDL_SetColorKey(img_surface, SDL_TRUE, 0xFF00FF);
+
+        /* If the window has no surface, we can't optimize it */
+        win_surface = SDL_GetWindowSurface(window);
+        if (!win_surface) {
+                return SDL_CreateTextureFromSurface(ren, img_surface);
+        }
+
+        /* Try to optimize it */
+        opt_surface = SDL_ConvertSurface(img_surface, win_surface->format, 0);
+        if (!opt_surface) {
+                fprintf(stderr, "Failed to optimize surface %s: %s\n", path, SDL_GetError());
+                return SDL_CreateTextureFromSurface(ren, img_surface);
+        }
+        return SDL_CreateTextureFromSurface(ren, opt_surface);
+}
 
 Ls2DSprite *ls2d_sprite_new()
 {
@@ -51,7 +87,7 @@ Ls2DSprite *ls2d_sprite_new()
         if (ls_unlikely(!self)) {
                 return NULL;
         }
-        self->area = (SDL_Rect){ 50, 50, 100, 100 };
+        self->area = (SDL_Rect){ 500, 500, 100, 100 };
 
         return ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
 }
@@ -61,6 +97,13 @@ Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self)
         return ls2d_object_unref(self);
 }
 
+static void ls2d_sprite_destroy(Ls2DSprite *self)
+{
+        if (self->texture) {
+                SDL_DestroyTexture(self->texture);
+        }
+}
+
 /**
  * Perform the actual sprite drawing. Long story short, we need to
  * draw to our X, Y coordinates if within clip using our set
@@ -68,8 +111,29 @@ Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self)
  */
 void ls2d_sprite_draw(Ls2DSprite *self, Ls2DFrameInfo *frame)
 {
-        SDL_SetRenderDrawColor(frame->renderer, 255, 255, 255, 255);
-        SDL_RenderFillRect(frame->renderer, &self->area);
+        // 	<SubTexture name="spaceShips_005.png" x="344" y="1050" width="136" height="84"/>
+        // 	<SubTexture name="spaceShips_005.png" x="440" y="800" width="342" height="301"/>
+
+        if (!self->texture) {
+                self->texture =
+                    load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png",
+                                 frame->renderer,
+                                 frame->window);
+        }
+        // TODO: Use a blit approach and single SDL_RenderCopy which will be far more efficient.
+        {
+                SDL_Rect src = { 440, 800, 342, 301 };
+                SDL_Rect dst = { self->area.x, self->area.y, 342, 301 };
+                SDL_RenderCopy(frame->renderer, self->texture, &src, &dst);
+        }
+
+        // 	<SubTexture name="spaceShips_009.png" x="1365" y="1547" width="202" height="149"/>
+
+        {
+                SDL_Rect src = { 1365, 1547, 202, 149 };
+                SDL_Rect dst = { self->area.x + 400, self->area.y, 202, 149 };
+                SDL_RenderCopy(frame->renderer, self->texture, &src, &dst);
+        }
 }
 
 /*
