@@ -32,19 +32,17 @@
  */
 struct Ls2DSprite {
         Ls2DObject object; /*< Parent */
-
-        Ls2DEngine *engine; /*< Parent engine */
 };
 
 /**
  * We don't yet do anything fancy.
  */
-Ls2DObjectTable scene_vtable = {
+Ls2DObjectTable sprite_vtable = {
         .destroy = NULL,
         .obj_name = "Ls2DSprite",
 };
 
-Ls2DSprite *ls2d_sprite_new(Ls2DEngine *engine)
+Ls2DSprite *ls2d_sprite_new()
 {
         Ls2DSprite *self = NULL;
 
@@ -53,9 +51,7 @@ Ls2DSprite *ls2d_sprite_new(Ls2DEngine *engine)
                 return NULL;
         }
 
-        self->engine = engine;
-
-        return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
+        return ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
 }
 
 Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self)

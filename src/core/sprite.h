@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "engine.h"
 #include "libls.h"
 #include "object.h"
 
@@ -36,7 +35,7 @@ typedef struct Ls2DSprite Ls2DSprite;
 /**
  * Construct a new Sprite object.
  */
-Ls2DSprite *ls2d_sprite_new(Ls2DEngine *engine);
+Ls2DSprite *ls2d_sprite_new(void);
 
 /**
  * Unref an allocated Sprite. This will also deference any

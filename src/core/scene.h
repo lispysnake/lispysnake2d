@@ -25,6 +25,7 @@
 
 #include "libls.h"
 #include "object.h"
+#include "sprite.h"
 
 typedef struct Ls2DScene Ls2DScene;
 
@@ -46,6 +47,12 @@ Ls2DScene *ls2d_scene_unref(Ls2DScene *self);
  * Get the name of this scene object
  */
 const char *ls2d_scene_get_name(Ls2DScene *self);
+
+/**
+ * Attach the sprite to the this scene.
+ * We'll increase the refcount here to retain a link to it.
+ */
+void ls2d_scene_add_sprite(Ls2DScene *self, Ls2DSprite *sprite);
 
 DEF_AUTOFREE(Ls2DScene, ls2d_scene_unref)
 

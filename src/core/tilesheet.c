@@ -39,7 +39,7 @@ struct Ls2DTilesheet {
 /**
  * We don't yet do anything fancy.
  */
-Ls2DObjectTable scene_vtable = {
+Ls2DObjectTable tile_vtable = {
         .destroy = NULL,
         .obj_name = "Ls2DTilesheet",
 };
@@ -55,7 +55,7 @@ Ls2DTilesheet *ls2d_tilesheet_new(Ls2DEngine *engine)
 
         self->engine = engine;
 
-        return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
+        return ls2d_object_init((Ls2DObject *)self, &tile_vtable);
 }
 
 Ls2DTilesheet *ls2d_tilesheet_unref(Ls2DTilesheet *self)

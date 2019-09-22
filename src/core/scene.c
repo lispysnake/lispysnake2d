@@ -21,11 +21,14 @@
 
  */
 
+#include <SDL.h>
 #include <stdlib.h>
 
 #include "libls.h"
 #include "object.h"
 #include "scene.h"
+
+static void ls2d_scene_destroy(Ls2DScene *self);
 
 /**
  * Opaque Ls2DScene implementation
@@ -33,13 +36,15 @@
 struct Ls2DScene {
         Ls2DObject object; /*< Parent */
         const char *name;
+
+        LsList *sprites; /**<We maintain a linked list of sprites */
 };
 
 /**
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable scene_vtable = {
-        .destroy = NULL,
+        .destroy = ls2d_scene_destroy,
         .obj_name = "Ls2DScene",
 };
 
@@ -62,12 +67,28 @@ Ls2DScene *ls2d_scene_unref(Ls2DScene *self)
         return ls2d_object_unref(self);
 }
 
+static void ls2d_scene_destroy(Ls2DScene *self)
+{
+        ls_list_free_full(self->sprites, ls2d_sprite_unref);
+}
+
 const char *ls2d_scene_get_name(Ls2DScene *self)
 {
         if (ls_unlikely(!self)) {
                 return NULL;
         }
         return self->name;
+}
+
+void ls2d_scene_add_sprite(Ls2DScene *self, Ls2DSprite *sprite)
+{
+        if (ls_unlikely(!self) || !sprite) {
+                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DSprite not yet initialised");
+                return;
+        }
+
+        /* Insert the sprite into the list */
+        self->sprites = ls_list_prepend(self->sprites, ls2d_object_ref(sprite));
 }
 
 /*

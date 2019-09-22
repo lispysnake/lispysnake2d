@@ -35,7 +35,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
-        autofree(Ls2DScene) *scene2 = NULL;
 
         /* Construct new engine */
         engine = ls2d_engine_new_current_display();
@@ -45,11 +44,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_engine_set_fps_cap(engine, 60);
 
         /* Create root scene */
-        scene = ls2d_scene_new("title_screen");
+        scene = ls2d_scene_new("game_screen");
         ls2d_engine_add_scene(engine, scene);
-
-        scene2 = ls2d_scene_new("game_screen");
-        ls2d_engine_add_scene(engine, scene2);
 
         return ls2d_engine_run(engine);
 }
