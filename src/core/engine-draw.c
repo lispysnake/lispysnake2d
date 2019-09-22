@@ -29,7 +29,7 @@
 void ls2d_engine_draw(Ls2DEngine *self, __ls_unused__ Ls2DFrameInfo *frame)
 {
         /* Render update */
-        SDL_SetRenderDrawColor(self->render, 169, 203, 152, 255);
+        SDL_SetRenderDrawColor(self->render, 0, 0, 0, 255);
         SDL_RenderClear(self->render);
         SDL_RenderPresent(self->render);
 }
