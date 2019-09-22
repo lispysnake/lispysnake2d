@@ -10,6 +10,7 @@ core_sources = [
 
 core_deps = [
     dep_sdl_core,
+    dep_xml,
     libls.get_variable('link_libls'),
 ]
 

@@ -36,6 +36,9 @@ add_global_arguments(am_cflags, language: 'c')
 dep_sdl_core = dependency('sdl2', version: '>= 2.0.9')
 dep_sdl_image = dependency('SDL2_image', version: '>= 2.0.4')
 
+# We need libxml2 for format parsers
+dep_xml = dependency('libxml-2.0', version: '>= 2.9.4')
+
 # Get configuration bits together
 path_prefix = get_option('prefix')
 path_sysconfdir = join_paths(path_prefix, get_option('sysconfdir'))
