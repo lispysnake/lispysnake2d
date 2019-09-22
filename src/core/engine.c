@@ -178,6 +178,8 @@ int ls2d_engine_run(Ls2DEngine *self)
         self->running = true;
         tick_start = SDL_GetTicks();
         frame.prev_ticks = tick_start - 1;
+        frame.window = self->window;
+        frame.renderer = self->render;
 
         /* Primary event loop */
         while (self->running) {

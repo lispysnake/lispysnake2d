@@ -59,6 +59,16 @@ Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self)
         return ls2d_object_unref(self);
 }
 
+/**
+ * Perform the actual sprite drawing. Long story short, we need to
+ * draw to our X, Y coordinates if within clip using our set
+ * texture.
+ */
+void ls2d_sprite_draw(Ls2DSprite *self, Ls2DFrameInfo *frame)
+{
+        SDL_Log("Drawing..");
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

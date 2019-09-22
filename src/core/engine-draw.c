@@ -26,11 +26,17 @@
 #include "engine-private.h"
 #include "libls.h"
 
-void ls2d_engine_draw(Ls2DEngine *self, __ls_unused__ Ls2DFrameInfo *frame)
+void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
 {
-        /* Render update */
+        /* Blit the background */
         SDL_SetRenderDrawColor(self->render, 0, 0, 0, 255);
         SDL_RenderClear(self->render);
+
+        /* Draw scenes. TODO: Draw only active scene! */
+        for (LsList *node = self->scenes; node != NULL; node = node->next) {
+                ls2d_scene_draw((Ls2DScene *)node->data, frame);
+        }
+
         SDL_RenderPresent(self->render);
 }
 

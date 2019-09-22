@@ -25,6 +25,7 @@
 
 #include <stdbool.h>
 
+#include "frame.h"
 #include "libls.h"
 #include "object.h"
 #include "scene.h"
@@ -33,15 +34,6 @@
  * The Ls2DEngine is responsible for core lifecycle management.
  */
 typedef struct Ls2DEngine Ls2DEngine;
-
-/**
- * The Ls2DFrameInfo object is passed to renderer and update cycles
- * to give them information about the current frame pass.
- */
-typedef struct Ls2DFrameInfo {
-        uint32_t ticks;      /**<Current tick count */
-        uint32_t prev_ticks; /**<Previous tick count */
-} Ls2DFrameInfo;
 
 /**
  * Return a new Ls2DEngine object

@@ -91,6 +91,16 @@ void ls2d_scene_add_sprite(Ls2DScene *self, Ls2DSprite *sprite)
         self->sprites = ls_list_prepend(self->sprites, ls2d_object_ref(sprite));
 }
 
+void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame)
+{
+        for (LsList *node = self->sprites; node != NULL; node = node->next) {
+                Ls2DSprite *sprite = node->data;
+
+                /* TODO: Check visibility, etc. */
+                ls2d_sprite_draw(sprite, frame);
+        }
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

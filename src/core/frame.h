@@ -23,33 +23,21 @@
 
 #pragma once
 
-#include "frame.h"
-#include "libls.h"
-#include "object.h"
+#include <SDL.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 /**
- * Ls2DSprite is used to provide a renderable *thing* within the
- * world. In short, it is the thing that is drawn.
+ * The Ls2DFrameInfo object is passed to renderer and update cycles
+ * to give them information about the current frame pass.
  */
-typedef struct Ls2DSprite Ls2DSprite;
-
-/**
- * Construct a new Sprite object.
- */
-Ls2DSprite *ls2d_sprite_new(void);
-
-/**
- * Unref an allocated Sprite. This will also deference any
- * attached resources.
- */
-Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self);
-
-/**
- * Draw the sprite on the screen.
- */
-void ls2d_sprite_draw(Ls2DSprite *self, Ls2DFrameInfo *frame);
-
-DEF_AUTOFREE(Ls2DSprite, ls2d_sprite_unref)
+typedef struct Ls2DFrameInfo {
+        uint32_t ticks;         /**<Current tick count */
+        uint32_t prev_ticks;    /**<Previous tick count */
+        SDL_Renderer *renderer; /**<Current renderer */
+        SDL_Window *window;     /**<Displayed window */
+} Ls2DFrameInfo;
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
