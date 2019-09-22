@@ -32,6 +32,7 @@
  */
 struct Ls2DSprite {
         Ls2DObject object; /*< Parent */
+        SDL_Rect area;
 };
 
 /**
@@ -50,6 +51,7 @@ Ls2DSprite *ls2d_sprite_new()
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+        self->area = (SDL_Rect){ 50, 50, 100, 100 };
 
         return ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
 }
@@ -66,7 +68,8 @@ Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self)
  */
 void ls2d_sprite_draw(Ls2DSprite *self, Ls2DFrameInfo *frame)
 {
-        SDL_Log("Drawing..");
+        SDL_SetRenderDrawColor(frame->renderer, 255, 255, 255, 255);
+        SDL_RenderFillRect(frame->renderer, &self->area);
 }
 
 /*
