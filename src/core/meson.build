@@ -6,6 +6,7 @@ core_sources = [
      'engine-update.c',
      'object.c',
      'scene.c',
+     'tilesheet.c',
 ]
 
 core_deps = [
