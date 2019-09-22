@@ -42,7 +42,7 @@ typedef struct Ls2DTilesheet Ls2DTilesheet;
 Ls2DTilesheet *ls2d_tilesheet_new(Ls2DEngine *engine);
 
 /**
- * Unref an allocated Scene. This will also deference any
+ * Unref an allocated Tilesheet. This will also deference any
  * attached resources.
  */
 Ls2DTilesheet *ls2d_tilesheet_unref(Ls2DTilesheet *self);
