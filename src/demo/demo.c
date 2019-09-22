@@ -28,6 +28,18 @@
 #include "ls2d.h"
 #include "scene.h"
 
+static void add_player(Ls2DScene *scene)
+{
+        autofree(Ls2DSprite) *sprite = NULL;
+
+        sprite = ls2d_sprite_new();
+        if (!sprite) {
+                exit(1);
+        }
+
+        ls2d_scene_add_sprite(scene, sprite);
+}
+
 /**
  * Main entry point to the demo.
  */
@@ -46,6 +58,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         /* Create root scene */
         scene = ls2d_scene_new("game_screen");
         ls2d_engine_add_scene(engine, scene);
+        add_player(scene);
 
         return ls2d_engine_run(engine);
 }
