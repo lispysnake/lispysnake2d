@@ -25,6 +25,16 @@
 
 static void ls2d_entity_destroy(Ls2DEntity *self);
 
+struct Ls2DEntity {
+        Ls2DObject parent;
+
+        const char *name;
+        bool had_init;
+
+        /* components storage */
+        LsList *components;
+};
+
 /**
  * We don't yet do anything fancy.
  */
@@ -87,9 +97,16 @@ void ls2d_entity_draw(Ls2DEntity *self, Ls2DFrameInfo *frame)
  */
 void ls2d_entity_update(Ls2DEntity *self, Ls2DFrameInfo *frame)
 {
+        bool had_init = self->had_init;
         for (LsList *node = self->components; node != NULL; node = node->next) {
                 Ls2DComponent *comp = node->data;
+                if (!had_init) {
+                        ls2d_component_init(comp);
+                }
                 ls2d_component_update(comp, frame);
+        }
+        if (!had_init) {
+                self->had_init = true;
         }
 }
 

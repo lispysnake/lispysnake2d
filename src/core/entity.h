@@ -32,14 +32,7 @@
  * An Ls2DEntity is the core drawable *type* within the engine.
  * It can have any number of components which add behaviours.
  */
-typedef struct Ls2DEntity {
-        Ls2DObject parent;
-
-        const char *name;
-
-        /* components storage */
-        LsList *components;
-} Ls2DEntity;
+typedef struct Ls2DEntity Ls2DEntity;
 
 /**
  * Construct a new Ls2DEntity with the given name
