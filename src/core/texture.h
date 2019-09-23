@@ -23,32 +23,29 @@
 
 #pragma once
 
-#include "component.h"
 #include "frame.h"
 #include "libls.h"
 #include "object.h"
-#include "texture.h"
+
+typedef struct Ls2DTexture Ls2DTexture;
 
 /**
- * Ls2DSpriteComponent adds drawable behaviours to an Ls2DEntity.
+ * Construct a new texture object.
  */
-typedef struct Ls2DSpriteComponent Ls2DSpriteComponent;
+Ls2DTexture *ls2d_texture_new_from_filename(const char *filename);
 
 /**
- * Construct a new Sprite object.
- */
-Ls2DComponent *ls2d_sprite_component_new(void);
-
-/**
- * Unref an allocated Sprite. This will also deference any
+ * Unref an allocated Scene. This will also deference any
  * attached resources.
  */
-Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self);
+Ls2DTexture *ls2d_texture_unref(Ls2DTexture *self);
 
-void ls2d_sprite_component_add_texture(Ls2DSpriteComponent *self, const char *texture_id,
-                                       Ls2DTexture *texture);
+/**
+ * Instruct the texture to draw to the given position
+ */
+void ls2d_texture_draw(Ls2DTexture *texture, Ls2DFrameInfo *frame, SDL_Point position);
 
-DEF_AUTOFREE(Ls2DSpriteComponent, ls2d_sprite_component_unref)
+DEF_AUTOFREE(Ls2DTexture, ls2d_texture_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

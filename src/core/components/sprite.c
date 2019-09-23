@@ -21,8 +21,11 @@
 
  */
 
+#define _GNU_SOURCE
+
 #include <SDL_image.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "component.h"
 #include "libls.h"
@@ -84,6 +87,11 @@ static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window
         return SDL_CreateTextureFromSurface(ren, opt_surface);
 }
 
+static void free_texture(void *v)
+{
+        (void)ls2d_texture_unref(v);
+}
+
 Ls2DComponent *ls2d_sprite_component_new()
 {
         Ls2DSpriteComponent *self = NULL;
@@ -99,8 +107,10 @@ Ls2DComponent *ls2d_sprite_component_new()
         self->parent.draw = ls2d_sprite_component_draw;
 
         /* We store textures within our texture map */
-        self->textures =
-            ls_hashmap_new_full(ls_hashmap_string_hash, ls_hashmap_string_equal, free, NULL);
+        self->textures = ls_hashmap_new_full(ls_hashmap_string_hash,
+                                             ls_hashmap_string_equal,
+                                             free,
+                                             free_texture);
 
         return (Ls2DComponent *)self;
 }
@@ -130,6 +140,20 @@ static void ls2d_sprite_component_init(Ls2DComponent *component, Ls2DFrameInfo *
         self->texture = load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png",
                                      frame->renderer,
                                      frame->window);
+}
+
+void ls2d_sprite_component_add_texture(Ls2DSpriteComponent *self, const char *texture_id,
+                                       Ls2DTexture *texture)
+{
+        char *tex_id = NULL;
+        tex_id = strdup(texture_id);
+
+        ls_hashmap_put(self->textures, tex_id, ls2d_object_ref(texture));
+}
+
+void ls2d_sprite_component_remove_texture(Ls2DSpriteComponent *self, const char *texture_id)
+{
+        ls_hashmap_remove(self->textures, (void *)texture_id);
 }
 
 /**

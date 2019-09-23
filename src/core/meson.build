@@ -8,6 +8,7 @@ core_sources = [
      'engine-update.c',
      'object.c',
      'scene.c',
+     'texture.c',
      'components/sprite.c',
 ]
 
