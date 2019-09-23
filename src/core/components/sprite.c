@@ -145,14 +145,6 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DFrameInfo *frame)
                 SDL_Rect dst = { self->area.x, self->area.y, 342, 301 };
                 SDL_RenderCopy(frame->renderer, self->texture, &src, &dst);
         }
-
-        // 	<SubTexture name="spaceShips_009.png" x="1365" y="1547" width="202" height="149"/>
-
-        {
-                SDL_Rect src = { 1365, 1547, 202, 149 };
-                SDL_Rect dst = { self->area.x + 400, self->area.y, 202, 149 };
-                SDL_RenderCopy(frame->renderer, self->texture, &src, &dst);
-        }
 }
 
 /*
