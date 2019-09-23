@@ -54,6 +54,8 @@ const char *ls2d_scene_get_name(Ls2DScene *self);
  */
 void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame);
 
+void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame);
+
 /**
  * Attach an entity to this scene.
  */

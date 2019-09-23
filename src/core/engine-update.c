@@ -49,9 +49,14 @@ static void ls2d_engine_process_keyboard(Ls2DEngine *self, SDL_KeyboardEvent *ev
         return;
 }
 
-void ls2d_engine_process_events(Ls2DEngine *self, __ls_unused__ Ls2DFrameInfo *frame)
+void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame)
 {
         SDL_Event event = { 0 };
+
+        /* Uodate scenes. TODO: Update only active scene! */
+        for (LsList *node = self->scenes; node != NULL; node = node->next) {
+                ls2d_scene_update(node->data, frame);
+        }
 
         /* Event update */
         while (SDL_PollEvent(&event) != 0) {

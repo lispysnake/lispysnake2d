@@ -34,7 +34,7 @@ void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
 
         /* Draw scenes. TODO: Draw only active scene! */
         for (LsList *node = self->scenes; node != NULL; node = node->next) {
-                ls2d_scene_draw((Ls2DScene *)node->data, frame);
+                ls2d_scene_draw(node->data, frame);
         }
 
         SDL_RenderPresent(self->render);
