@@ -24,12 +24,12 @@
 #include "component.h"
 #include "libls.h"
 
-void ls2d_component_init(Ls2DComponent *self)
+void ls2d_component_init(Ls2DComponent *self, Ls2DFrameInfo *frame)
 {
         if (ls_unlikely(!self) || ls_unlikely(!self->init)) {
                 return;
         }
-        self->init(self);
+        self->init(self, frame);
 }
 
 void ls2d_component_draw(Ls2DComponent *self, Ls2DFrameInfo *info)

@@ -40,7 +40,7 @@ struct Ls2DSpriteComponent {
 
 static void ls2d_sprite_component_destroy(Ls2DComponent *self);
 static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DFrameInfo *frame);
-static void ls2d_sprite_component_init(Ls2DComponent *self);
+static void ls2d_sprite_component_init(Ls2DComponent *self, Ls2DFrameInfo *frame);
 
 /**
  * We don't yet do anything fancy.
@@ -113,11 +113,12 @@ static void ls2d_sprite_component_destroy(Ls2DComponent *component)
         }
 }
 
-static void ls2d_sprite_component_init(Ls2DComponent *component)
+static void ls2d_sprite_component_init(Ls2DComponent *component, Ls2DFrameInfo *frame)
 {
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
 
         self->area = (SDL_Rect){ 500, 500, 100, 100 };
+        self->texture = load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png", frame->renderer, frame->window);
 }
 
 /**
@@ -132,13 +133,6 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DFrameInfo *frame)
         // 	<SubTexture name="spaceShips_005.png" x="344" y="1050" width="136" height="84"/>
         // 	<SubTexture name="spaceShips_005.png" x="440" y="800" width="342" height="301"/>
 
-        // TODO: Move into init!
-        if (!self->texture) {
-                self->texture =
-                    load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png",
-                                 frame->renderer,
-                                 frame->window);
-        }
         // TODO: Use a blit approach and single SDL_RenderCopy which will be far more efficient.
         {
                 SDL_Rect src = { 440, 800, 342, 301 };

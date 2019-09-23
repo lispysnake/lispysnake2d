@@ -41,10 +41,10 @@ typedef struct Ls2DComponent {
         void (*update)(struct Ls2DComponent *, Ls2DFrameInfo *);
 
         /* The component needs to be constructed */
-        void (*init)(struct Ls2DComponent *);
+        void (*init)(struct Ls2DComponent *, Ls2DFrameInfo *);
 } Ls2DComponent;
 
-void ls2d_component_init(Ls2DComponent *self);
+void ls2d_component_init(Ls2DComponent *self, Ls2DFrameInfo *frame);
 
 /**
  * Inform the component it needs to draw now.

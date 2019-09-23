@@ -101,7 +101,7 @@ void ls2d_entity_update(Ls2DEntity *self, Ls2DFrameInfo *frame)
         for (LsList *node = self->components; node != NULL; node = node->next) {
                 Ls2DComponent *comp = node->data;
                 if (!had_init) {
-                        ls2d_component_init(comp);
+                        ls2d_component_init(comp, frame);
                 }
                 ls2d_component_update(comp, frame);
         }
