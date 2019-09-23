@@ -33,7 +33,9 @@
 #include "entity.h"
 #include "object.h"
 #include "scene.h"
-#include "sprite.h"
+
+/* Our components */
+#include "components/sprite.h"
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
