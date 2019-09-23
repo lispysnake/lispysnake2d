@@ -26,18 +26,17 @@
 
 #include "libls.h"
 #include "ls2d.h"
-#include "scene.h"
 
 static void add_player(Ls2DScene *scene)
 {
-        autofree(Ls2DSprite) *sprite = NULL;
+        autofree(Ls2DEntity) *entity = NULL;
 
-        sprite = ls2d_sprite_new();
-        if (!sprite) {
+        entity = ls2d_entity_new("player");
+        if (!entity) {
                 exit(1);
         }
 
-        ls2d_scene_add_sprite(scene, sprite);
+        ls2d_scene_add_entity(scene, entity);
 }
 
 /**

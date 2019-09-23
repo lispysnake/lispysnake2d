@@ -26,6 +26,7 @@
 #include "component.h"
 #include "frame.h"
 #include "libls.h"
+#include "object.h"
 
 /**
  * An Ls2DEntity is the core drawable *type* within the engine.
@@ -34,10 +35,25 @@
  * of Ls2DComponent types.
  */
 typedef struct Ls2DEntity {
+        Ls2DObject parent;
+
+        const char *name;
+
         /* Our components created at build time. These cannot be changed */
         Ls2DComponent *static_components;
         unsigned int n_static_components;
 } Ls2DEntity;
+
+/**
+ * Construct a new Ls2DEntity with the given name
+ */
+Ls2DEntity *ls2d_entity_new(const char *name);
+
+/**
+ * Construct a new Ls2DEntity with the given static components.
+ */
+Ls2DEntity *ls2d_entity_new_with_components(const char *name, Ls2DComponent *components,
+                                            unsigned int n_components);
 
 /**
  * Inform the entity that all components need to draw now
@@ -48,6 +64,13 @@ void ls2d_entity_draw(Ls2DEntity *self, Ls2DFrameInfo *frame);
  * Inform the entity that all components need to update now.
  */
 void ls2d_entity_update(Ls2DEntity *self, Ls2DFrameInfo *frame);
+
+/**
+ * Unref the allocated Ls2DEntity
+ */
+Ls2DEntity *ls2d_entity_unref(Ls2DEntity *self);
+
+DEF_AUTOFREE(Ls2DEntity, ls2d_entity_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

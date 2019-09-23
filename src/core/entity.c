@@ -23,6 +23,64 @@
 
 #include "entity.h"
 
+static void ls2d_entity_destroy(Ls2DEntity *self);
+
+/**
+ * We don't yet do anything fancy.
+ */
+Ls2DObjectTable entity_vtable = {
+        .destroy = ls2d_entity_destroy,
+        .obj_name = "Ls2DEntity",
+};
+
+Ls2DEntity *ls2d_entity_new(const char *name)
+{
+        Ls2DEntity *self = NULL;
+
+        self = calloc(1, sizeof(struct Ls2DEntity));
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+        /* Scene name for traversal */
+        self->name = name;
+
+        return ls2d_object_init((Ls2DObject *)self, &entity_vtable);
+}
+
+Ls2DEntity *ls2d_entity_new_with_components(const char *name, Ls2DComponent *components,
+                                            unsigned int n_components)
+{
+        Ls2DEntity *self = NULL;
+
+        self = ls2d_entity_new(name);
+        if (!self) {
+                return NULL;
+        }
+
+        self->static_components = components;
+        self->n_static_components = n_components;
+
+        /* Ensure we init the resources..? */
+        for (unsigned int i = 0; i < self->n_static_components; i++) {
+                Ls2DComponent *comp = &self->static_components[i];
+                ls2d_component_init(comp);
+        }
+}
+
+Ls2DEntity *ls2d_entity_unref(Ls2DEntity *self)
+{
+        return ls2d_object_unref(self);
+}
+
+static void ls2d_entity_destroy(Ls2DEntity *self)
+{
+        /* Clean up entity resources. */
+        for (unsigned int i = 0; i < self->n_static_components; i++) {
+                Ls2DComponent *comp = &self->static_components[i];
+                ls2d_component_destroy(comp);
+        }
+}
+
 /**
  * Inform the entity that all components need to draw now
  */

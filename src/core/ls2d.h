@@ -28,7 +28,9 @@
  * of including any component headers.
  */
 
+#include "component.h"
 #include "engine.h"
+#include "entity.h"
 #include "object.h"
 #include "scene.h"
 

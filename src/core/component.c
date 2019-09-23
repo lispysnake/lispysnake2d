@@ -21,41 +21,40 @@
 
  */
 
-#pragma once
+#include "component.h"
+#include "libls.h"
 
-#include "frame.h"
+void ls2d_component_init(Ls2DComponent *self)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!self->init)) {
+                return;
+        }
+        self->init(self);
+}
 
-/**
- * Ls2DComponent is a basic block of behaviour for any given entity,
- * and must be added to an Ls2DEntity.
- */
-typedef struct Ls2DComponent {
-        /* Draw callback that all components should implemented */
-        void (*draw)(struct Ls2DComponent *, Ls2DFrameInfo *);
+void ls2d_component_draw(Ls2DComponent *self, Ls2DFrameInfo *info)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!self->draw)) {
+                return;
+        }
+        self->draw(self, info);
+}
 
-        /* Update callback that all components should implement */
-        void (*update)(struct Ls2DComponent *, Ls2DFrameInfo *);
+void ls2d_component_update(Ls2DComponent *self, Ls2DFrameInfo *info)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!self->update)) {
+                return;
+        }
+        self->update(self, info);
+}
 
-        /* The component needs to be constructed */
-        void (*init)(struct Ls2DComponent *);
-
-        /* The component needs to be destroyed */
-        void (*destroy)(struct Ls2DComponent *);
-} Ls2DComponent;
-
-void ls2d_component_init(Ls2DComponent *self);
-
-/**
- * Inform the component it needs to draw now.
- */
-void ls2d_component_draw(Ls2DComponent *self, Ls2DFrameInfo *info);
-
-/**
- * Inform the component it needs to update now.
- */
-void ls2d_component_update(Ls2DComponent *self, Ls2DFrameInfo *info);
-
-void ls2d_component_destroy(Ls2DComponent *self);
+void ls2d_component_destroy(Ls2DComponent *self)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!self->destroy)) {
+                return;
+        }
+        self->destroy(self);
+}
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

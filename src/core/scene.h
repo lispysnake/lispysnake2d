@@ -23,10 +23,10 @@
 
 #pragma once
 
+#include "entity.h"
 #include "frame.h"
 #include "libls.h"
 #include "object.h"
-#include "sprite.h"
 
 typedef struct Ls2DScene Ls2DScene;
 
@@ -50,15 +50,14 @@ Ls2DScene *ls2d_scene_unref(Ls2DScene *self);
 const char *ls2d_scene_get_name(Ls2DScene *self);
 
 /**
- * Attach the sprite to the this scene.
- * We'll increase the refcount here to retain a link to it.
- */
-void ls2d_scene_add_sprite(Ls2DScene *self, Ls2DSprite *sprite);
-
-/**
  * Draw the scene using the current FrameInfo
  */
 void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame);
+
+/**
+ * Attach an entity to this scene.
+ */
+void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity);
 
 DEF_AUTOFREE(Ls2DScene, ls2d_scene_unref)
 

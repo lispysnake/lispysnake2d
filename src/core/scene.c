@@ -37,7 +37,7 @@ struct Ls2DScene {
         Ls2DObject object; /*< Parent */
         const char *name;
 
-        LsList *sprites; /**<We maintain a linked list of sprites */
+        LsList *entities; /**<Our list of entities to render. */
 };
 
 /**
@@ -69,7 +69,7 @@ Ls2DScene *ls2d_scene_unref(Ls2DScene *self)
 
 static void ls2d_scene_destroy(Ls2DScene *self)
 {
-        ls_list_free_full(self->sprites, ls2d_sprite_unref);
+        ls_list_free_full(self->entities, ls2d_entity_unref);
 }
 
 const char *ls2d_scene_get_name(Ls2DScene *self)
@@ -80,24 +80,30 @@ const char *ls2d_scene_get_name(Ls2DScene *self)
         return self->name;
 }
 
-void ls2d_scene_add_sprite(Ls2DScene *self, Ls2DSprite *sprite)
+void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity)
 {
-        if (ls_unlikely(!self) || !sprite) {
-                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DSprite not yet initialised");
+        if (ls_unlikely(!self) || ls_unlikely(!entity)) {
+                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DScene not yet initialised");
                 return;
         }
 
-        /* Insert the sprite into the list */
-        self->sprites = ls_list_prepend(self->sprites, ls2d_object_ref(sprite));
+        /* Insert entity into our list */
+        self->entities = ls_list_prepend(self->entities, ls2d_object_ref(entity));
 }
 
 void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
-        for (LsList *node = self->sprites; node != NULL; node = node->next) {
-                Ls2DSprite *sprite = node->data;
+        for (LsList *node = self->entities; node != NULL; node = node->next) {
+                Ls2DEntity *entity = node->data;
+                ls2d_entity_draw(entity, frame);
+        }
+}
 
-                /* TODO: Check visibility, etc. */
-                ls2d_sprite_draw(sprite, frame);
+void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame)
+{
+        for (LsList *node = self->entities; node != NULL; node = node->next) {
+                Ls2DEntity *entity = node->data;
+                ls2d_entity_update(entity, frame);
         }
 }
 
