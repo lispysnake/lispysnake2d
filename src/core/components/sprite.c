@@ -36,6 +36,8 @@ struct Ls2DSpriteComponent {
         Ls2DComponent parent; /*< Parent */
         SDL_Rect area;
         SDL_Texture *texture;
+
+        LsHashmap *textures;
 };
 
 static void ls2d_sprite_component_destroy(Ls2DComponent *self);
@@ -96,6 +98,10 @@ Ls2DComponent *ls2d_sprite_component_new()
         self->parent.init = ls2d_sprite_component_init;
         self->parent.draw = ls2d_sprite_component_draw;
 
+        /* We store textures within our texture map */
+        self->textures =
+            ls_hashmap_new_full(ls_hashmap_string_hash, ls_hashmap_string_equal, free, NULL);
+
         return (Ls2DComponent *)self;
 }
 
@@ -110,6 +116,9 @@ static void ls2d_sprite_component_destroy(Ls2DComponent *component)
 
         if (self->texture) {
                 SDL_DestroyTexture(self->texture);
+        }
+        if (self->textures) {
+                ls_hashmap_free(self->textures);
         }
 }
 
