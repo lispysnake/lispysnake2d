@@ -30,12 +30,18 @@
 static void add_player(Ls2DScene *scene)
 {
         autofree(Ls2DEntity) *entity = NULL;
+        autofree(Ls2DComponent) *sprite = NULL;
 
         entity = ls2d_entity_new("player");
         if (!entity) {
                 exit(1);
         }
+        sprite = ls2d_sprite_component_new();
+        if (!sprite) {
+                exit(1);
+        }
 
+        ls2d_entity_add_component(entity, sprite);
         ls2d_scene_add_entity(scene, entity);
 }
 

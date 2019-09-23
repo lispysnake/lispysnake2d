@@ -23,33 +23,28 @@
 
 #pragma once
 
+#include "component.h"
 #include "frame.h"
 #include "libls.h"
 #include "object.h"
 
 /**
- * Ls2DSprite is used to provide a renderable *thing* within the
- * world. In short, it is the thing that is drawn.
+ * Ls2DSpriteComponent adds drawable behaviours to an Ls2DEntity.
  */
-typedef struct Ls2DSprite Ls2DSprite;
+typedef struct Ls2DSpriteComponent Ls2DSpriteComponent;
 
 /**
  * Construct a new Sprite object.
  */
-Ls2DSprite *ls2d_sprite_new(void);
+Ls2DComponent *ls2d_sprite_component_new(void);
 
 /**
  * Unref an allocated Sprite. This will also deference any
  * attached resources.
  */
-Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self);
+Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self);
 
-/**
- * Draw the sprite on the screen.
- */
-void ls2d_sprite_draw(Ls2DSprite *self, Ls2DFrameInfo *frame);
-
-DEF_AUTOFREE(Ls2DSprite, ls2d_sprite_unref)
+DEF_AUTOFREE(Ls2DSpriteComponent, ls2d_sprite_component_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

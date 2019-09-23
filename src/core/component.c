@@ -48,12 +48,9 @@ void ls2d_component_update(Ls2DComponent *self, Ls2DFrameInfo *info)
         self->update(self, info);
 }
 
-void ls2d_component_destroy(Ls2DComponent *self)
+Ls2DComponent *ls2d_component_unref(Ls2DComponent *self)
 {
-        if (ls_unlikely(!self) || ls_unlikely(!self->destroy)) {
-                return;
-        }
-        self->destroy(self);
+        return ls2d_object_unref(self);
 }
 
 /*

@@ -24,27 +24,30 @@
 #include <SDL_image.h>
 #include <stdlib.h>
 
+#include "component.h"
 #include "libls.h"
 #include "object.h"
 #include "sprite.h"
 
 /**
- * Opaque Ls2DSprite implementation
+ * Opaque Ls2DSpriteComponent implementation
  */
-struct Ls2DSprite {
-        Ls2DObject object; /*< Parent */
+struct Ls2DSpriteComponent {
+        Ls2DComponent parent; /*< Parent */
         SDL_Rect area;
         SDL_Texture *texture;
 };
 
-static void ls2d_sprite_destroy(Ls2DSprite *self);
+static void ls2d_sprite_component_destroy(Ls2DComponent *self);
+static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DFrameInfo *frame);
+static void ls2d_sprite_component_init(Ls2DComponent *self);
 
 /**
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable sprite_vtable = {
-        .destroy = (ls2d_object_vfunc_destroy)ls2d_sprite_destroy,
-        .obj_name = "Ls2DSprite",
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_sprite_component_destroy,
+        .obj_name = "Ls2DSpriteComponent",
 };
 
 DEF_AUTOFREE(SDL_Surface, SDL_FreeSurface)
@@ -79,29 +82,42 @@ static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window
         return SDL_CreateTextureFromSurface(ren, opt_surface);
 }
 
-Ls2DSprite *ls2d_sprite_new()
+Ls2DComponent *ls2d_sprite_component_new()
 {
-        Ls2DSprite *self = NULL;
+        Ls2DSpriteComponent *self = NULL;
 
-        self = calloc(1, sizeof(struct Ls2DSprite));
+        self = calloc(1, sizeof(struct Ls2DSpriteComponent));
         if (ls_unlikely(!self)) {
                 return NULL;
         }
-        self->area = (SDL_Rect){ 500, 500, 100, 100 };
 
-        return ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
+        self = ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
+
+        self->parent.init = ls2d_sprite_component_init;
+        self->parent.draw = ls2d_sprite_component_draw;
+
+        return (Ls2DComponent *)self;
 }
 
-Ls2DSprite *ls2d_sprite_unref(Ls2DSprite *self)
+Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self)
 {
         return ls2d_object_unref(self);
 }
 
-static void ls2d_sprite_destroy(Ls2DSprite *self)
+static void ls2d_sprite_component_destroy(Ls2DComponent *component)
 {
+        Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
+
         if (self->texture) {
                 SDL_DestroyTexture(self->texture);
         }
+}
+
+static void ls2d_sprite_component_init(Ls2DComponent *component)
+{
+        Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
+
+        self->area = (SDL_Rect){ 500, 500, 100, 100 };
 }
 
 /**
@@ -109,11 +125,14 @@ static void ls2d_sprite_destroy(Ls2DSprite *self)
  * draw to our X, Y coordinates if within clip using our set
  * texture.
  */
-void ls2d_sprite_draw(Ls2DSprite *self, Ls2DFrameInfo *frame)
+void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DFrameInfo *frame)
 {
+        Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
+
         // 	<SubTexture name="spaceShips_005.png" x="344" y="1050" width="136" height="84"/>
         // 	<SubTexture name="spaceShips_005.png" x="440" y="800" width="342" height="301"/>
 
+        // TODO: Move into init!
         if (!self->texture) {
                 self->texture =
                     load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png",

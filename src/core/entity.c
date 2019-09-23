@@ -47,40 +47,28 @@ Ls2DEntity *ls2d_entity_new(const char *name)
         return ls2d_object_init((Ls2DObject *)self, &entity_vtable);
 }
 
-Ls2DEntity *ls2d_entity_new_with_components(const char *name, Ls2DComponent *components,
-                                            unsigned int n_components)
-{
-        Ls2DEntity *self = NULL;
-
-        self = ls2d_entity_new(name);
-        if (!self) {
-                return NULL;
-        }
-
-        self->static_components = components;
-        self->n_static_components = n_components;
-
-        /* Ensure we init the resources..? */
-        for (unsigned int i = 0; i < self->n_static_components; i++) {
-                Ls2DComponent *comp = &self->static_components[i];
-                ls2d_component_init(comp);
-        }
-
-        return self;
-}
-
 Ls2DEntity *ls2d_entity_unref(Ls2DEntity *self)
 {
         return ls2d_object_unref(self);
 }
 
+static inline void free_component(void *v)
+{
+        (void)ls2d_component_unref(v);
+}
+
 static void ls2d_entity_destroy(Ls2DEntity *self)
 {
-        /* Clean up entity resources. */
-        for (unsigned int i = 0; i < self->n_static_components; i++) {
-                Ls2DComponent *comp = &self->static_components[i];
-                ls2d_component_destroy(comp);
+        ls_list_free_full(self->components, free_component);
+}
+
+void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!component)) {
+                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEntity not correctly initialised");
+                return;
         }
+        self->components = ls_list_prepend(self->components, ls2d_object_ref(component));
 }
 
 /**
@@ -88,8 +76,8 @@ static void ls2d_entity_destroy(Ls2DEntity *self)
  */
 void ls2d_entity_draw(Ls2DEntity *self, Ls2DFrameInfo *frame)
 {
-        for (unsigned int i = 0; i < self->n_static_components; i++) {
-                Ls2DComponent *comp = &self->static_components[i];
+        for (LsList *node = self->components; node != NULL; node = node->next) {
+                Ls2DComponent *comp = node->data;
                 ls2d_component_draw(comp, frame);
         }
 }
@@ -99,8 +87,8 @@ void ls2d_entity_draw(Ls2DEntity *self, Ls2DFrameInfo *frame)
  */
 void ls2d_entity_update(Ls2DEntity *self, Ls2DFrameInfo *frame)
 {
-        for (unsigned int i = 0; i < self->n_static_components; i++) {
-                Ls2DComponent *comp = &self->static_components[i];
+        for (LsList *node = self->components; node != NULL; node = node->next) {
+                Ls2DComponent *comp = node->data;
                 ls2d_component_update(comp, frame);
         }
 }

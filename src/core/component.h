@@ -24,12 +24,16 @@
 #pragma once
 
 #include "frame.h"
+#include "libls.h"
+#include "object.h"
 
 /**
  * Ls2DComponent is a basic block of behaviour for any given entity,
  * and must be added to an Ls2DEntity.
  */
 typedef struct Ls2DComponent {
+        Ls2DObject object;
+
         /* Draw callback that all components should implemented */
         void (*draw)(struct Ls2DComponent *, Ls2DFrameInfo *);
 
@@ -38,9 +42,6 @@ typedef struct Ls2DComponent {
 
         /* The component needs to be constructed */
         void (*init)(struct Ls2DComponent *);
-
-        /* The component needs to be destroyed */
-        void (*destroy)(struct Ls2DComponent *);
 } Ls2DComponent;
 
 void ls2d_component_init(Ls2DComponent *self);
@@ -55,7 +56,9 @@ void ls2d_component_draw(Ls2DComponent *self, Ls2DFrameInfo *info);
  */
 void ls2d_component_update(Ls2DComponent *self, Ls2DFrameInfo *info);
 
-void ls2d_component_destroy(Ls2DComponent *self);
+Ls2DComponent *ls2d_component_unref(Ls2DComponent *self);
+
+DEF_AUTOFREE(Ls2DComponent, ls2d_component_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
