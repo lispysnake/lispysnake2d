@@ -9,6 +9,7 @@ demo_dependencies = [
 demo = executable(
      'lispysnake2d_demo',
      sources: demo_sources,
+     c_args: am_cflags,
      dependencies: demo_dependencies,
      install: false,
 )

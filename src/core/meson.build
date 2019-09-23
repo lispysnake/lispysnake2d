@@ -22,6 +22,7 @@ core_deps = [
 libcore = static_library(
     'lispysnake2d_core',
     sources: core_sources,
+    c_args: am_cflags,
     dependencies: core_deps,
     install: false,
 )

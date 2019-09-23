@@ -30,7 +30,9 @@ am_cflags = [
     '-W',
 ]
 
-add_global_arguments(am_cflags, language: 'c')
+if meson.is_subproject() == false
+    add_global_arguments(am_cflags, language: 'c')
+endif
 
 # Compute dependencies
 dep_sdl_core = dependency('sdl2', version: '>= 2.0.9')
