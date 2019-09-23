@@ -118,7 +118,9 @@ static void ls2d_sprite_component_init(Ls2DComponent *component, Ls2DFrameInfo *
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
 
         self->area = (SDL_Rect){ 500, 500, 100, 100 };
-        self->texture = load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png", frame->renderer, frame->window);
+        self->texture = load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png",
+                                     frame->renderer,
+                                     frame->window);
 }
 
 /**
