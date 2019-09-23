@@ -37,7 +37,7 @@ struct Ls2DScene {
         Ls2DObject object; /*< Parent */
         const char *name;
 
-        LsList *entities; /**<Our list of entities to render. */
+        LsPtrArray *entities; /**<Our list of entities to render. */
 };
 
 /**
@@ -58,6 +58,11 @@ Ls2DScene *ls2d_scene_new(const char *name)
         }
         /* Scene name for traversal */
         self->name = name;
+        self->entities = ls_ptr_array_new();
+        if (ls_unlikely(!self->entities)) {
+                free(self);
+                return NULL;
+        }
 
         return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
 }
@@ -74,7 +79,7 @@ static inline void free_entity(void *v)
 
 static void ls2d_scene_destroy(Ls2DScene *self)
 {
-        ls_list_free_full(self->entities, free_entity);
+        ls_array_free(self->entities, free_entity);
 }
 
 const char *ls2d_scene_get_name(Ls2DScene *self)
@@ -93,21 +98,21 @@ void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity)
         }
 
         /* Insert entity into our list */
-        self->entities = ls_list_prepend(self->entities, ls2d_object_ref(entity));
+        ls_array_add(self->entities, ls2d_object_ref(entity));
 }
 
 void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
-        for (LsList *node = self->entities; node != NULL; node = node->next) {
-                Ls2DEntity *entity = node->data;
+        for (uint16_t i = 0; i < self->entities->len; i++) {
+                Ls2DEntity *entity = self->entities->data[i];
                 ls2d_entity_draw(entity, frame);
         }
 }
 
 void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
-        for (LsList *node = self->entities; node != NULL; node = node->next) {
-                Ls2DEntity *entity = node->data;
+        for (uint16_t i = 0; i < self->entities->len; i++) {
+                Ls2DEntity *entity = self->entities->data[i];
                 ls2d_entity_update(entity, frame);
         }
 }

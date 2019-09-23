@@ -32,10 +32,7 @@ void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
         SDL_SetRenderDrawColor(self->render, 0, 0, 0, 255);
         SDL_RenderClear(self->render);
 
-        /* Draw scenes. TODO: Draw only active scene! */
-        for (LsList *node = self->scenes; node != NULL; node = node->next) {
-                ls2d_scene_draw(node->data, frame);
-        }
+        ls2d_scene_draw(self->active_scene, frame);
 
         SDL_RenderPresent(self->render);
 }

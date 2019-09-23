@@ -232,6 +232,9 @@ void ls2d_engine_add_scene(Ls2DEngine *self, Ls2DScene *scene)
                 return;
         }
         self->scenes = ls_list_append(self->scenes, ls2d_object_ref(scene));
+        if (!self->active_scene) {
+                self->active_scene = scene;
+        }
 }
 
 /**

@@ -48,6 +48,7 @@ struct Ls2DEngine {
 
         /* List of scenes. */
         LsList *scenes;
+        Ls2DScene *active_scene;
 };
 
 /**

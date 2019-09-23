@@ -32,7 +32,7 @@ struct Ls2DEntity {
         bool had_init;
 
         /* components storage */
-        LsList *components;
+        LsPtrArray *components;
 };
 
 /**
@@ -51,6 +51,12 @@ Ls2DEntity *ls2d_entity_new(const char *name)
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+        self->components = ls_ptr_array_new();
+        if (ls_unlikely(!self->components)) {
+                free(self);
+                return NULL;
+        }
+
         /* Scene name for traversal */
         self->name = name;
 
@@ -69,7 +75,7 @@ static inline void free_component(void *v)
 
 static void ls2d_entity_destroy(Ls2DEntity *self)
 {
-        ls_list_free_full(self->components, free_component);
+        ls_array_free(self->components, free_component);
 }
 
 void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
@@ -78,7 +84,7 @@ void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
                 SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEntity not correctly initialised");
                 return;
         }
-        self->components = ls_list_prepend(self->components, ls2d_object_ref(component));
+        ls_array_add(self->components, ls2d_object_ref(component));
 }
 
 /**
@@ -86,8 +92,8 @@ void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
  */
 void ls2d_entity_draw(Ls2DEntity *self, Ls2DFrameInfo *frame)
 {
-        for (LsList *node = self->components; node != NULL; node = node->next) {
-                Ls2DComponent *comp = node->data;
+        for (uint16_t i = 0; i < self->components->len; i++) {
+                Ls2DComponent *comp = self->components->data[i];
                 ls2d_component_draw(comp, frame);
         }
 }
@@ -98,8 +104,8 @@ void ls2d_entity_draw(Ls2DEntity *self, Ls2DFrameInfo *frame)
 void ls2d_entity_update(Ls2DEntity *self, Ls2DFrameInfo *frame)
 {
         bool had_init = self->had_init;
-        for (LsList *node = self->components; node != NULL; node = node->next) {
-                Ls2DComponent *comp = node->data;
+        for (uint16_t i = 0; i < self->components->len; i++) {
+                Ls2DComponent *comp = self->components->data[i];
                 if (!had_init) {
                         ls2d_component_init(comp, frame);
                 }
