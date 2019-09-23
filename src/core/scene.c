@@ -44,7 +44,7 @@ struct Ls2DScene {
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable scene_vtable = {
-        .destroy = ls2d_scene_destroy,
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_scene_destroy,
         .obj_name = "Ls2DScene",
 };
 
@@ -67,9 +67,14 @@ Ls2DScene *ls2d_scene_unref(Ls2DScene *self)
         return ls2d_object_unref(self);
 }
 
+static inline void free_entity(void *v)
+{
+        (void)ls2d_entity_unref(v);
+}
+
 static void ls2d_scene_destroy(Ls2DScene *self)
 {
-        ls_list_free_full(self->entities, ls2d_entity_unref);
+        ls_list_free_full(self->entities, free_entity);
 }
 
 const char *ls2d_scene_get_name(Ls2DScene *self)

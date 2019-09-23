@@ -29,7 +29,7 @@ static void ls2d_entity_destroy(Ls2DEntity *self);
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable entity_vtable = {
-        .destroy = ls2d_entity_destroy,
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_entity_destroy,
         .obj_name = "Ls2DEntity",
 };
 
@@ -65,6 +65,8 @@ Ls2DEntity *ls2d_entity_new_with_components(const char *name, Ls2DComponent *com
                 Ls2DComponent *comp = &self->static_components[i];
                 ls2d_component_init(comp);
         }
+
+        return self;
 }
 
 Ls2DEntity *ls2d_entity_unref(Ls2DEntity *self)

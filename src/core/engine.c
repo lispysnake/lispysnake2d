@@ -142,6 +142,11 @@ Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self)
         return ls2d_object_unref(self);
 }
 
+static inline void free_scene(void *v)
+{
+        (void)ls2d_scene_unref(v);
+}
+
 static void ls2d_engine_destroy(Ls2DEngine *self)
 {
         if (ls_unlikely(!self)) {
@@ -154,7 +159,7 @@ static void ls2d_engine_destroy(Ls2DEngine *self)
                 SDL_DestroyWindow(self->window);
         }
         if (ls_likely(self->scenes != NULL)) {
-                ls_list_free_full(self->scenes, (ls_free_func)ls2d_scene_unref);
+                ls_list_free_full(self->scenes, free_scene);
         }
         free(self);
 

@@ -43,7 +43,7 @@ static void ls2d_sprite_destroy(Ls2DSprite *self);
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable sprite_vtable = {
-        .destroy = ls2d_sprite_destroy,
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_sprite_destroy,
         .obj_name = "Ls2DSprite",
 };
 
