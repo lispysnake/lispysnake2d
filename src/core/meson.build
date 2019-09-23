@@ -9,7 +9,6 @@ core_sources = [
      'object.c',
      'scene.c',
      'sprite.c',
-     'tilesheet.c',
 ]
 
 core_deps = [
