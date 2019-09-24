@@ -33,6 +33,7 @@
 #include "entity.h"
 #include "object.h"
 #include "scene.h"
+#include "texture-cache.h"
 
 /* Our components */
 #include "components/sprite.h"

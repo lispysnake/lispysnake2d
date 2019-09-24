@@ -53,7 +53,7 @@ typedef struct Ls2DTextureNode {
 /**
  * We don't yet do anything fancy.
  */
-Ls2DObjectTable texture_vtable = {
+Ls2DObjectTable texture_cache_vtable = {
         .destroy = (ls2d_object_vfunc_destroy)ls2d_texture_cache_destroy,
         .obj_name = "Ls2DTextureCache",
 };
@@ -72,7 +72,7 @@ Ls2DTextureCache *ls2d_texture_cache_new()
                 return NULL;
         }
 
-        return ls2d_object_init((Ls2DObject *)self, &texture_vtable);
+        return ls2d_object_init((Ls2DObject *)self, &texture_cache_vtable);
 }
 
 Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self)
