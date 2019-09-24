@@ -9,6 +9,7 @@ core_sources = [
      'object.c',
      'scene.c',
      'texture.c',
+     'texture-cache.c',
      'components/sprite.c',
 ]
 
