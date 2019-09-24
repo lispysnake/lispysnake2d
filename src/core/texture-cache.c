@@ -24,7 +24,6 @@
 #define _GNU_SOURCE
 
 #include <SDL.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -114,7 +113,7 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
         /* Preallocate cached texture */
         ls_array_add(self->cache, NULL);
         index = (uint32_t)self->cache->len - 1;
-        node = ((Ls2DTextureNode **)&self->cache->data)[0];
+        node = ((Ls2DTextureNode **)&self->cache->data)[index];
 
         /* Sort out the cache */
         node->filename = strdup(filename);
@@ -133,7 +132,7 @@ bool ls2d_texture_cache_draw(Ls2DTextureCache *self, Ls2DFrameInfo *frame, SDL_R
                 return false;
         }
 
-        node = ((Ls2DTextureNode **)&self->cache->data)[0];
+        node = ((Ls2DTextureNode **)&self->cache->data)[handle];
         if (!node) {
                 return false;
         }
