@@ -59,7 +59,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
-        autofree(Ls2DTextureCache) *cache = NULL;
 
         /* Construct new engine */
         engine = ls2d_engine_new_current_display();
@@ -67,8 +66,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
                 return EXIT_FAILURE;
         }
         ls2d_engine_set_fps_cap(engine, 60);
-
-        cache = ls2d_texture_cache_new();
 
         /* Create root scene */
         scene = ls2d_scene_new("game_screen");

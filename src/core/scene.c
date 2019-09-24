@@ -37,7 +37,8 @@ struct Ls2DScene {
         Ls2DObject object; /*< Parent */
         const char *name;
 
-        LsPtrArray *entities; /**<Our list of entities to render. */
+        LsPtrArray *entities;        /**<Our list of entities to render. */
+        Ls2DTextureCache *tex_cache; /**< Our private texture cache. */
 };
 
 /**
@@ -63,6 +64,12 @@ Ls2DScene *ls2d_scene_new(const char *name)
                 free(self);
                 return NULL;
         }
+        self->tex_cache = ls2d_texture_cache_new();
+        if (ls_unlikely(!self->tex_cache)) {
+                ls_array_free(self->entities, NULL);
+                free(self);
+                return NULL;
+        }
 
         return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
 }
@@ -80,6 +87,7 @@ static inline void free_entity(void *v)
 static void ls2d_scene_destroy(Ls2DScene *self)
 {
         ls_array_free(self->entities, free_entity);
+        ls2d_texture_cache_unref(self->tex_cache);
 }
 
 const char *ls2d_scene_get_name(Ls2DScene *self)
@@ -88,6 +96,14 @@ const char *ls2d_scene_get_name(Ls2DScene *self)
                 return NULL;
         }
         return self->name;
+}
+
+Ls2DTextureCache *ls2d_scene_get_texture_cache(Ls2DScene *self)
+{
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+        return self->tex_cache;
 }
 
 void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity)

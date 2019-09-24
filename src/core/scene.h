@@ -27,6 +27,7 @@
 #include "frame.h"
 #include "libls.h"
 #include "object.h"
+#include "texture-cache.h"
 
 typedef struct Ls2DScene Ls2DScene;
 
@@ -60,6 +61,11 @@ void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame);
  * Attach an entity to this scene.
  */
 void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity);
+
+/**
+ * Return access to the texture cache
+ */
+Ls2DTextureCache *ls2d_scene_get_texture_cache(Ls2DScene *self);
 
 DEF_AUTOFREE(Ls2DScene, ls2d_scene_unref)
 
