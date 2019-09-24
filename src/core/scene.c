@@ -121,7 +121,7 @@ void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
         for (uint16_t i = 0; i < self->entities->len; i++) {
                 Ls2DEntity *entity = self->entities->data[i];
-                ls2d_entity_draw(entity, frame);
+                ls2d_entity_draw(entity, self->tex_cache, frame);
         }
 }
 
@@ -129,7 +129,7 @@ void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
         for (uint16_t i = 0; i < self->entities->len; i++) {
                 Ls2DEntity *entity = self->entities->data[i];
-                ls2d_entity_update(entity, frame);
+                ls2d_entity_update(entity, self->tex_cache, frame);
         }
 }
 

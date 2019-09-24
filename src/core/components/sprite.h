@@ -45,8 +45,8 @@ Ls2DComponent *ls2d_sprite_component_new(void);
  */
 Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self);
 
-void ls2d_sprite_component_add_texture(Ls2DSpriteComponent *self, const char *texture_id,
-                                       Ls2DTexture *texture);
+Ls2DSpriteComponent *ls2d_sprite_component_set_texture(Ls2DSpriteComponent *self,
+                                                       Ls2DTextureHandle handle);
 
 DEF_AUTOFREE(Ls2DSpriteComponent, ls2d_sprite_component_unref)
 

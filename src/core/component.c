@@ -24,28 +24,28 @@
 #include "component.h"
 #include "libls.h"
 
-void ls2d_component_init(Ls2DComponent *self, Ls2DFrameInfo *frame)
+void ls2d_component_init(Ls2DComponent *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         if (ls_unlikely(!self) || ls_unlikely(!self->init)) {
                 return;
         }
-        self->init(self, frame);
+        self->init(self, cache, frame);
 }
 
-void ls2d_component_draw(Ls2DComponent *self, Ls2DFrameInfo *info)
+void ls2d_component_draw(Ls2DComponent *self, Ls2DTextureCache *cache, Ls2DFrameInfo *info)
 {
         if (ls_unlikely(!self) || ls_unlikely(!self->draw)) {
                 return;
         }
-        self->draw(self, info);
+        self->draw(self, cache, info);
 }
 
-void ls2d_component_update(Ls2DComponent *self, Ls2DFrameInfo *info)
+void ls2d_component_update(Ls2DComponent *self, Ls2DTextureCache *cache, Ls2DFrameInfo *info)
 {
         if (ls_unlikely(!self) || ls_unlikely(!self->update)) {
                 return;
         }
-        self->update(self, info);
+        self->update(self, cache, info);
 }
 
 Ls2DComponent *ls2d_component_unref(Ls2DComponent *self)

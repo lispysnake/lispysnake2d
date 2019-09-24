@@ -26,6 +26,7 @@
 #include "frame.h"
 #include "libls.h"
 #include "object.h"
+#include "texture-cache.h"
 
 /**
  * Ls2DComponent is a basic block of behaviour for any given entity,
@@ -35,26 +36,26 @@ typedef struct Ls2DComponent {
         Ls2DObject object;
 
         /* Draw callback that all components should implemented */
-        void (*draw)(struct Ls2DComponent *, Ls2DFrameInfo *);
+        void (*draw)(struct Ls2DComponent *, Ls2DTextureCache *, Ls2DFrameInfo *);
 
         /* Update callback that all components should implement */
-        void (*update)(struct Ls2DComponent *, Ls2DFrameInfo *);
+        void (*update)(struct Ls2DComponent *, Ls2DTextureCache *, Ls2DFrameInfo *);
 
         /* The component needs to be constructed */
-        void (*init)(struct Ls2DComponent *, Ls2DFrameInfo *);
+        void (*init)(struct Ls2DComponent *, Ls2DTextureCache *, Ls2DFrameInfo *);
 } Ls2DComponent;
 
-void ls2d_component_init(Ls2DComponent *self, Ls2DFrameInfo *frame);
+void ls2d_component_init(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo *frame);
 
 /**
  * Inform the component it needs to draw now.
  */
-void ls2d_component_draw(Ls2DComponent *self, Ls2DFrameInfo *info);
+void ls2d_component_draw(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo *info);
 
 /**
  * Inform the component it needs to update now.
  */
-void ls2d_component_update(Ls2DComponent *self, Ls2DFrameInfo *info);
+void ls2d_component_update(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo *info);
 
 Ls2DComponent *ls2d_component_unref(Ls2DComponent *self);
 

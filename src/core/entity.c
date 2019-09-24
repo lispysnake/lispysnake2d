@@ -90,26 +90,26 @@ void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
 /**
  * Inform the entity that all components need to draw now
  */
-void ls2d_entity_draw(Ls2DEntity *self, Ls2DFrameInfo *frame)
+void ls2d_entity_draw(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         for (uint16_t i = 0; i < self->components->len; i++) {
                 Ls2DComponent *comp = self->components->data[i];
-                ls2d_component_draw(comp, frame);
+                ls2d_component_draw(comp, cache, frame);
         }
 }
 
 /**
  * Inform the entity that all components need to update now.
  */
-void ls2d_entity_update(Ls2DEntity *self, Ls2DFrameInfo *frame)
+void ls2d_entity_update(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         bool had_init = self->had_init;
         for (uint16_t i = 0; i < self->components->len; i++) {
                 Ls2DComponent *comp = self->components->data[i];
                 if (!had_init) {
-                        ls2d_component_init(comp, frame);
+                        ls2d_component_init(comp, cache, frame);
                 }
-                ls2d_component_update(comp, frame);
+                ls2d_component_update(comp, cache, frame);
         }
         if (!had_init) {
                 self->had_init = true;

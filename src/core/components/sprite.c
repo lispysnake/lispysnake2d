@@ -38,20 +38,18 @@
 struct Ls2DSpriteComponent {
         Ls2DComponent parent; /*< Parent */
         SDL_Rect area;
-        SDL_Texture *texture;
-
-        LsHashmap *textures;
+        Ls2DTextureHandle handle;
 };
 
-static void ls2d_sprite_component_destroy(Ls2DComponent *self);
-static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DFrameInfo *frame);
-static void ls2d_sprite_component_init(Ls2DComponent *self, Ls2DFrameInfo *frame);
+static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DTextureCache *cache,
+                                       Ls2DFrameInfo *frame);
+static void ls2d_sprite_component_init(Ls2DComponent *self, Ls2DTextureCache *cache,
+                                       Ls2DFrameInfo *frame);
 
 /**
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable sprite_vtable = {
-        .destroy = (ls2d_object_vfunc_destroy)ls2d_sprite_component_destroy,
         .obj_name = "Ls2DSpriteComponent",
 };
 
@@ -87,11 +85,6 @@ static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window
         return SDL_CreateTextureFromSurface(ren, opt_surface);
 }
 
-static void free_texture(void *v)
-{
-        (void)ls2d_texture_unref(v);
-}
-
 Ls2DComponent *ls2d_sprite_component_new()
 {
         Ls2DSpriteComponent *self = NULL;
@@ -106,12 +99,6 @@ Ls2DComponent *ls2d_sprite_component_new()
         self->parent.init = ls2d_sprite_component_init;
         self->parent.draw = ls2d_sprite_component_draw;
 
-        /* We store textures within our texture map */
-        self->textures = ls_hashmap_new_full(ls_hashmap_string_hash,
-                                             ls_hashmap_string_equal,
-                                             free,
-                                             free_texture);
-
         return (Ls2DComponent *)self;
 }
 
@@ -120,40 +107,18 @@ Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self)
         return ls2d_object_unref(self);
 }
 
-static void ls2d_sprite_component_destroy(Ls2DComponent *component)
+Ls2DSpriteComponent *ls2d_sprite_component_set_texture(Ls2DSpriteComponent *self,
+                                                       Ls2DTextureHandle handle)
 {
-        Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
-
-        if (self->texture) {
-                SDL_DestroyTexture(self->texture);
-        }
-        if (self->textures) {
-                ls_hashmap_free(self->textures);
-        }
+        self->handle = handle;
 }
 
-static void ls2d_sprite_component_init(Ls2DComponent *component, Ls2DFrameInfo *frame)
+static void ls2d_sprite_component_init(Ls2DComponent *component, Ls2DTextureCache *cache,
+                                       Ls2DFrameInfo *frame)
 {
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
 
         self->area = (SDL_Rect){ 500, 500, 100, 100 };
-        self->texture = load_texture("demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png",
-                                     frame->renderer,
-                                     frame->window);
-}
-
-void ls2d_sprite_component_add_texture(Ls2DSpriteComponent *self, const char *texture_id,
-                                       Ls2DTexture *texture)
-{
-        char *tex_id = NULL;
-        tex_id = strdup(texture_id);
-
-        ls_hashmap_put(self->textures, tex_id, ls2d_object_ref(texture));
-}
-
-void ls2d_sprite_component_remove_texture(Ls2DSpriteComponent *self, const char *texture_id)
-{
-        ls_hashmap_remove(self->textures, (void *)texture_id);
 }
 
 /**
@@ -161,19 +126,17 @@ void ls2d_sprite_component_remove_texture(Ls2DSpriteComponent *self, const char 
  * draw to our X, Y coordinates if within clip using our set
  * texture.
  */
-void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DFrameInfo *frame)
+void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cache,
+                                Ls2DFrameInfo *frame)
 {
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
 
         // 	<SubTexture name="spaceShips_005.png" x="344" y="1050" width="136" height="84"/>
         // 	<SubTexture name="spaceShips_005.png" x="440" y="800" width="342" height="301"/>
-
+        SDL_Rect dst = { self->area.x, self->area.y, 342, 301 };
+        ls2d_texture_cache_draw(cache, frame, dst, self->handle);
         // TODO: Use a blit approach and single SDL_RenderCopy which will be far more efficient.
-        {
-                SDL_Rect src = { 440, 800, 342, 301 };
-                SDL_Rect dst = { self->area.x, self->area.y, 342, 301 };
-                SDL_RenderCopy(frame->renderer, self->texture, &src, &dst);
-        }
+        // SDL_RenderCopy(frame->renderer, self->texture, &src, &dst);
 }
 
 /*

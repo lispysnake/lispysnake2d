@@ -24,6 +24,7 @@
 #define _GNU_SOURCE
 
 #include <SDL.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -46,8 +47,8 @@ struct Ls2DTextureCache {
 typedef struct Ls2DTextureNode {
         SDL_Texture *texture; /**< The real SDL_Texture */
         SDL_Rect area;        /**< Displayable area for the texture. */
-        bool subregion;       /**< Whether this node is a subregion. */
         char *filename;       /**<The filename we come from */
+        bool subregion;       /**< Whether this node is a subregion. */
 } Ls2DTextureNode;
 
 /**
@@ -66,7 +67,7 @@ Ls2DTextureCache *ls2d_texture_cache_new()
         if (ls_unlikely(!self)) {
                 return NULL;
         }
-        self->cache = ls_array_new_size(sizeof(void *), DEFAULT_CACHE_SIZE);
+        self->cache = ls_array_new_size(sizeof(struct Ls2DTextureNode), DEFAULT_CACHE_SIZE);
         if (ls_unlikely(!self->cache)) {
                 free(self);
                 return NULL;
@@ -83,10 +84,8 @@ Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self)
 /**
  * Clear out the allocated texture.
  */
-static void clear_texture(void *v)
+static void clear_texture(Ls2DTextureNode *node)
 {
-        Ls2DTextureNode *node = v;
-
         if (node->subregion) {
                 return;
         }
@@ -101,20 +100,26 @@ static void clear_texture(void *v)
 
 static void ls2d_texture_cache_destroy(Ls2DTextureCache *self)
 {
-        if (self->cache) {
-                ls_array_free(self->cache, clear_texture);
+        for (uint16_t i = 0; i < self->cache->len; i++) {
+                clear_texture(((Ls2DTextureNode **)&self->cache->data)[i]);
         }
+        ls_array_free(self->cache, NULL);
 }
 
 Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const char *filename)
 {
-        ls_array_add(self->cache, NULL);
-        uint32_t index = (uint32_t)self->cache->len - 1;
-        Ls2DTextureNode *node = self->cache->data[index];
+        struct Ls2DTextureNode *node = NULL;
+        uint32_t index = 0;
 
-        node->texture = NULL;
-        node->subregion = false;
+        /* Preallocate cached texture */
+        ls_array_add(self->cache, NULL);
+        index = (uint32_t)self->cache->len - 1;
+        node = ((Ls2DTextureNode **)&self->cache->data)[0];
+
+        /* Sort out the cache */
         node->filename = strdup(filename);
+        node->subregion = false;
+        node->texture = NULL;
 
         return (Ls2DTextureHandle)index;
 }
@@ -122,9 +127,18 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
 bool ls2d_texture_cache_draw(Ls2DTextureCache *self, Ls2DFrameInfo *frame, SDL_Rect where,
                              Ls2DTextureHandle handle)
 {
+        struct Ls2DTextureNode *node = NULL;
+
         if (ls_unlikely(!self) || ls_unlikely(handle > self->cache->len)) {
                 return false;
         }
+
+        node = ((Ls2DTextureNode **)&self->cache->data)[0];
+        if (!node) {
+                return false;
+        }
+
+        /* TODO: Actually blit the texture */
 
         return true;
 }
