@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "frame.h"
 #include "libls.h"
 #include "object.h"
 
@@ -39,6 +40,19 @@ Ls2DTextureCache *ls2d_texture_cache_new(void);
  * Unref an allocated Ls2DTextureCache
  */
 Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self);
+
+/**
+ * Allocate a texture handle by loading from the given file.
+ * @note: The texture should ONLY be loaded when an SDL window is available!
+ */
+Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const char *filename);
+
+/**
+ * Draw the texture for the current frame at the given position.
+ * @returns True if rendering succeeded.
+ */
+bool ls2d_texture_cache_draw(Ls2DTextureCache *self, Ls2DFrameInfo *frame, SDL_Rect where,
+                             Ls2DTextureHandle handle);
 
 DEF_AUTOFREE(Ls2DTextureCache, ls2d_texture_cache_unref)
 
