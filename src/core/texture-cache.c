@@ -76,7 +76,6 @@ Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self)
         return ls2d_object_unref(self);
 }
 
-
 static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window *window)
 {
         autofree(SDL_Surface) *img_surface = NULL;
