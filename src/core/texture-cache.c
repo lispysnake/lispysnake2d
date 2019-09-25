@@ -24,6 +24,7 @@
 #define _GNU_SOURCE
 
 #include <SDL.h>
+#include <SDL_image.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -31,6 +32,8 @@
 #include "texture-cache.h"
 
 #define DEFAULT_CACHE_SIZE 200
+
+DEF_AUTOFREE(SDL_Surface, SDL_FreeSurface)
 
 static void ls2d_texture_cache_destroy(Ls2DTextureCache *self);
 
@@ -71,6 +74,37 @@ Ls2DTextureCache *ls2d_texture_cache_new()
 Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self)
 {
         return ls2d_object_unref(self);
+}
+
+
+static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window *window)
+{
+        autofree(SDL_Surface) *img_surface = NULL;
+        autofree(SDL_Surface) *opt_surface = NULL;
+        SDL_Surface *win_surface = NULL;
+
+        img_surface = IMG_Load(path);
+        if (!img_surface) {
+                fprintf(stderr, "Failed to load %s: %s\n", path, IMG_GetError());
+                return NULL;
+        }
+
+        /* Mask magenta as transparent */
+        // SDL_SetColorKey(img_surface, SDL_TRUE, 0xFF00FF);
+
+        /* If the window has no surface, we can't optimize it */
+        win_surface = SDL_GetWindowSurface(window);
+        if (!win_surface) {
+                return SDL_CreateTextureFromSurface(ren, img_surface);
+        }
+
+        /* Try to optimize it */
+        opt_surface = SDL_ConvertSurface(img_surface, win_surface->format, 0);
+        if (!opt_surface) {
+                fprintf(stderr, "Failed to optimize surface %s: %s\n", path, SDL_GetError());
+                return SDL_CreateTextureFromSurface(ren, img_surface);
+        }
+        return SDL_CreateTextureFromSurface(ren, opt_surface);
 }
 
 /**
