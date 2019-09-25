@@ -43,13 +43,6 @@ struct Ls2DTextureCache {
         LsArray *cache; /*< Cache of textures in an array */
 };
 
-typedef struct Ls2DTextureNode {
-        SDL_Texture *texture; /**< The real SDL_Texture */
-        SDL_Rect area;        /**< Displayable area for the texture. */
-        char *filename;       /**<The filename we come from */
-        bool subregion;       /**< Whether this node is a subregion. */
-} Ls2DTextureNode;
-
 /**
  * We don't yet do anything fancy.
  */
@@ -123,23 +116,15 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
         return (Ls2DTextureHandle)index;
 }
 
-bool ls2d_texture_cache_draw(Ls2DTextureCache *self, Ls2DFrameInfo *frame, SDL_Rect where,
-                             Ls2DTextureHandle handle)
+const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DTextureHandle handle)
 {
-        struct Ls2DTextureNode *node = NULL;
-
-        if (ls_unlikely(!self) || ls_unlikely(handle > self->cache->len)) {
-                return false;
+        if (ls_unlikely(!self)) {
+                return NULL;
         }
-
-        node = ((Ls2DTextureNode **)&self->cache->data)[handle];
-        if (!node) {
-                return false;
+        if (ls_unlikely(handle > self->cache->len)) {
+                return NULL;
         }
-
-        /* TODO: Actually blit the texture */
-
-        return true;
+        return (const Ls2DTextureNode *)((Ls2DTextureNode **)&self->cache->data)[handle];
 }
 
 /*

@@ -31,6 +31,13 @@ typedef uint16_t Ls2DTextureHandle;
 
 typedef struct Ls2DTextureCache Ls2DTextureCache;
 
+typedef struct Ls2DTextureNode {
+        SDL_Texture *texture; /**< The real SDL_Texture */
+        SDL_Rect area;        /**< Displayable area for the texture. */
+        char *filename;       /**<The filename we come from */
+        bool subregion;       /**< Whether this node is a subregion. */
+} Ls2DTextureNode;
+
 /**
  * Construct a new Ls2DTextureCache Object
  */
@@ -48,11 +55,9 @@ Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self);
 Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const char *filename);
 
 /**
- * Draw the texture for the current frame at the given position.
- * @returns True if rendering succeeded.
+ * Lookup a texture for rendering
  */
-bool ls2d_texture_cache_draw(Ls2DTextureCache *self, Ls2DFrameInfo *frame, SDL_Rect where,
-                             Ls2DTextureHandle handle);
+const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DTextureHandle handle);
 
 DEF_AUTOFREE(Ls2DTextureCache, ls2d_texture_cache_unref)
 
