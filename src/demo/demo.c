@@ -55,6 +55,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DScene) *scene = NULL;
         Ls2DTextureCache *cache = NULL;
         Ls2DTextureHandle handle;
+        Ls2DTextureHandle handle2;
+        Ls2DTextureHandle handle3;
 
         /* Construct new engine */
         engine = ls2d_engine_new_current_display();
@@ -70,9 +72,22 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         cache = ls2d_scene_get_texture_cache(scene);
         handle = ls2d_texture_cache_load_file(cache,
                                               "demo_data/PNG/Sprites X2/Ships/spaceShips_006.png");
+        handle2 = ls2d_texture_cache_load_file(cache,
+                                               "demo_data/PNG/Sprites X2/Ships/spaceShips_004.png");
 
-        for (int i = 0; i < 10; i++) {
+        handle3 = ls2d_texture_cache_load_file(cache,
+                                               "demo_data/PNG/Sprites X2/Ships/spaceShips_007.png");
+
+        for (int i = 0; i < 5; i++) {
                 add_player(scene, handle);
+        }
+
+        for (int i = 0; i < 5; i++) {
+                add_player(scene, handle2);
+        }
+
+        for (int i = 0; i < 5; i++) {
+                add_player(scene, handle3);
         }
 
         return ls2d_engine_run(engine);
