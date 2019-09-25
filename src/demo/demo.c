@@ -27,12 +27,10 @@
 #include "libls.h"
 #include "ls2d.h"
 
-static void add_player(Ls2DScene *scene)
+static void add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
 {
         autofree(Ls2DEntity) *entity = NULL;
         autofree(Ls2DComponent) *sprite = NULL;
-        Ls2DTextureCache *cache = NULL;
-        Ls2DTextureHandle handle;
 
         entity = ls2d_entity_new("player");
         if (!entity) {
@@ -43,9 +41,6 @@ static void add_player(Ls2DScene *scene)
                 exit(1);
         }
 
-        cache = ls2d_scene_get_texture_cache(scene);
-        handle = ls2d_texture_cache_load_file(cache,
-                                              "demo_data/PNG/Sprites X2/Ships/spaceShips_004.png");
         ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
         ls2d_entity_add_component(entity, sprite);
         ls2d_scene_add_entity(scene, entity);
@@ -58,6 +53,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
+        Ls2DTextureCache *cache = NULL;
+        Ls2DTextureHandle handle;
 
         /* Construct new engine */
         engine = ls2d_engine_new_current_display();
@@ -69,7 +66,14 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         /* Create root scene */
         scene = ls2d_scene_new("game_screen");
         ls2d_engine_add_scene(engine, scene);
-        add_player(scene);
+
+        cache = ls2d_scene_get_texture_cache(scene);
+        handle = ls2d_texture_cache_load_file(cache,
+                                              "demo_data/PNG/Sprites X2/Ships/spaceShips_006.png");
+
+        for (int i = 0; i < 10; i++) {
+                add_player(scene, handle);
+        }
 
         return ls2d_engine_run(engine);
 }

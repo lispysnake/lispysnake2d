@@ -44,6 +44,8 @@ static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DTextureCache *ca
                                        Ls2DFrameInfo *frame);
 static void ls2d_sprite_component_init(Ls2DComponent *self, Ls2DTextureCache *cache,
                                        Ls2DFrameInfo *frame);
+static int offset_x = 100;
+static int offset_y = 0;
 
 /**
  * We don't yet do anything fancy.
@@ -84,8 +86,10 @@ static void ls2d_sprite_component_init(Ls2DComponent *component, Ls2DTextureCach
                                        Ls2DFrameInfo *frame)
 {
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
+        offset_x += 210;
+        // offset_y += 0;
 
-        self->area = (SDL_Rect){ 500, 500, 100, 100 };
+        self->area = (SDL_Rect){ 200 + offset_x, 200 + offset_y, 100, 100 };
 }
 
 /**
