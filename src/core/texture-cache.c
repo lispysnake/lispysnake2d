@@ -76,15 +76,15 @@ Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self)
         return ls2d_object_unref(self);
 }
 
-static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window *window)
+static SDL_Texture *load_texture_internal(Ls2DTextureNode *node, Ls2DFrameInfo *frame)
 {
         autofree(SDL_Surface) *img_surface = NULL;
         autofree(SDL_Surface) *opt_surface = NULL;
         SDL_Surface *win_surface = NULL;
 
-        img_surface = IMG_Load(path);
+        img_surface = IMG_Load(node->filename);
         if (!img_surface) {
-                fprintf(stderr, "Failed to load %s: %s\n", path, IMG_GetError());
+                fprintf(stderr, "Failed to load %s: %s\n", node->filename, IMG_GetError());
                 return NULL;
         }
 
@@ -92,18 +92,38 @@ static SDL_Texture *load_texture(const char *path, SDL_Renderer *ren, SDL_Window
         // SDL_SetColorKey(img_surface, SDL_TRUE, 0xFF00FF);
 
         /* If the window has no surface, we can't optimize it */
-        win_surface = SDL_GetWindowSurface(window);
+        win_surface = SDL_GetWindowSurface(frame->window);
         if (!win_surface) {
-                return SDL_CreateTextureFromSurface(ren, img_surface);
+                return SDL_CreateTextureFromSurface(frame->renderer, img_surface);
         }
 
         /* Try to optimize it */
         opt_surface = SDL_ConvertSurface(img_surface, win_surface->format, 0);
         if (!opt_surface) {
-                fprintf(stderr, "Failed to optimize surface %s: %s\n", path, SDL_GetError());
-                return SDL_CreateTextureFromSurface(ren, img_surface);
+                fprintf(stderr,
+                        "Failed to optimize surface %s: %s\n",
+                        node->filename,
+                        SDL_GetError());
+                return SDL_CreateTextureFromSurface(frame->renderer, img_surface);
         }
-        return SDL_CreateTextureFromSurface(ren, opt_surface);
+        return SDL_CreateTextureFromSurface(frame->renderer, opt_surface);
+}
+
+static SDL_Texture *load_texture(Ls2DTextureNode *node, Ls2DFrameInfo *frame)
+{
+        SDL_Texture *texture = NULL;
+
+        texture = load_texture_internal(node, frame);
+        if (ls_unlikely(!texture)) {
+                return NULL;
+        }
+
+        /* Find out real width and height
+         * TODO: Don't bother for subregions.
+         */
+        SDL_QueryTexture(texture, NULL, NULL, &node->area.w, &node->area.h);
+        return texture;
+        ;
 }
 
 /**
@@ -149,15 +169,24 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
         return (Ls2DTextureHandle)index;
 }
 
-const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DTextureHandle handle)
+const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DFrameInfo *frame,
+                                                 Ls2DTextureHandle handle)
 {
+        Ls2DTextureNode *node = NULL;
+
         if (ls_unlikely(!self)) {
                 return NULL;
         }
         if (ls_unlikely(handle > self->cache->len)) {
                 return NULL;
         }
-        return (const Ls2DTextureNode *)((Ls2DTextureNode **)&self->cache->data)[handle];
+
+        node = ((Ls2DTextureNode **)&self->cache->data)[handle];
+        if (!node->texture) {
+                node->texture = load_texture(node, frame);
+        }
+
+        return (const Ls2DTextureNode *)node;
 }
 
 /*

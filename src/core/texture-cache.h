@@ -57,7 +57,8 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
 /**
  * Lookup a texture for rendering
  */
-const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DTextureHandle handle);
+const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DFrameInfo *frame,
+                                                 Ls2DTextureHandle handle);
 
 DEF_AUTOFREE(Ls2DTextureCache, ls2d_texture_cache_unref)
 
