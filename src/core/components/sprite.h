@@ -27,7 +27,7 @@
 #include "frame.h"
 #include "libls.h"
 #include "object.h"
-#include "texture.h"
+#include "texture-cache.h"
 
 /**
  * Ls2DSpriteComponent adds drawable behaviours to an Ls2DEntity.
