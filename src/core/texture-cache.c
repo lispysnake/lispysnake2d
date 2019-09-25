@@ -123,7 +123,6 @@ static SDL_Texture *load_texture(Ls2DTextureNode *node, Ls2DFrameInfo *frame)
          */
         SDL_QueryTexture(texture, NULL, NULL, &node->area.w, &node->area.h);
         return texture;
-        ;
 }
 
 /**
@@ -146,7 +145,7 @@ static void clear_texture(Ls2DTextureNode *node)
 static void ls2d_texture_cache_destroy(Ls2DTextureCache *self)
 {
         for (uint16_t i = 0; i < self->cache->len; i++) {
-                clear_texture(((Ls2DTextureNode **)&self->cache->data)[i]);
+                clear_texture(&((Ls2DTextureNode *)self->cache->data)[i]);
         }
         ls_array_free(self->cache, NULL);
 }
@@ -159,7 +158,8 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
         /* Preallocate cached texture */
         ls_array_add(self->cache, NULL);
         index = (uint32_t)self->cache->len - 1;
-        node = ((Ls2DTextureNode **)&self->cache->data)[index];
+        node = &((Ls2DTextureNode *)self->cache->data)[index];
+        fprintf(stderr, "Now at index %d with len %d\n", index, self->cache->len);
 
         /* Sort out the cache */
         node->filename = strdup(filename);
@@ -181,7 +181,7 @@ const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DFra
                 return NULL;
         }
 
-        node = ((Ls2DTextureNode **)&self->cache->data)[handle];
+        node = &((Ls2DTextureNode *)self->cache->data)[handle];
         if (!node->texture) {
                 node->texture = load_texture(node, frame);
         }
