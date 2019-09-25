@@ -159,7 +159,6 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
         ls_array_add(self->cache, NULL);
         index = (uint32_t)self->cache->len - 1;
         node = &((Ls2DTextureNode *)self->cache->data)[index];
-        fprintf(stderr, "Now at index %d with len %d\n", index, self->cache->len);
 
         /* Sort out the cache */
         node->filename = strdup(filename);
