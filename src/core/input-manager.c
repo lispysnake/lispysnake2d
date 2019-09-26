@@ -30,6 +30,8 @@ static void ls2d_input_manager_destroy(Ls2DInputManager *self);
  */
 struct Ls2DInputManager {
         Ls2DObject object; /*< Parent */
+        LsHashmap *key_callbacks;
+        LsHashmap *mouse_callbacks;
 };
 
 /**
@@ -49,6 +51,18 @@ Ls2DInputManager *ls2d_input_manager_new()
                 return NULL;
         }
 
+        self->key_callbacks = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
+        if (ls_unlikely(!self->key_callbacks)) {
+                ls2d_input_manager_destroy(self);
+                return NULL;
+        }
+
+        self->mouse_callbacks = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
+        if (ls_unlikely(!self->mouse_callbacks)) {
+                ls2d_input_manager_destroy(self);
+                return NULL;
+        }
+
         return ls2d_object_init((Ls2DObject *)self, &input_manager_vtable);
 }
 
@@ -57,7 +71,17 @@ Ls2DInputManager *ls2d_input_manager_unref(Ls2DInputManager *self)
         return ls2d_object_unref(self);
 }
 
-static void ls2d_input_manager_destroy(__ls_unused__ Ls2DInputManager *self)
+static void ls2d_input_manager_destroy(Ls2DInputManager *self)
+{
+        if (ls_likely(self->key_callbacks != NULL)) {
+                ls_hashmap_free(self->key_callbacks);
+        }
+        if (ls_likely(self->mouse_callbacks != NULL)) {
+                ls_hashmap_free(self->mouse_callbacks);
+        }
+}
+
+void ls2d_input_manager_process(Ls2DInputManager *self, Ls2DFrameInfo *frame)
 {
 }
 

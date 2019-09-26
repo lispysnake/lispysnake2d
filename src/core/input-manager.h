@@ -35,6 +35,11 @@ Ls2DInputManager *ls2d_input_manager_new(void);
  */
 Ls2DInputManager *ls2d_input_manager_unref(Ls2DInputManager *self);
 
+/**
+ * Ensure batching of events occurs
+ */
+void ls2d_input_manager_process(Ls2DInputManager *self, Ls2DFrameInfo *frame);
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
