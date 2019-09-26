@@ -66,6 +66,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DEntity) *player = NULL;
         Ls2DTextureCache *cache = NULL;
         Ls2DTextureHandle handle;
+        Ls2DTextureHandle subhandle;
 
         /* Construct new engine */
         engine = ls2d_engine_new_current_display();
@@ -79,11 +80,16 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_engine_add_scene(engine, scene);
 
         cache = ls2d_scene_get_texture_cache(scene);
-        handle = ls2d_texture_cache_load_file(cache,
-                                              "demo_data/PNG/Sprites X2/Ships/spaceShips_006.png");
+        handle =
+            ls2d_texture_cache_load_file(cache,
+                                         "demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png");
+        subhandle =
+            ls2d_texture_cache_subregion(cache,
+                                         handle,
+                                         (SDL_Rect){ .x = 440, .y = 800, .w = 342, .h = 301 });
 
         /* Sort out our player */
-        player = demo_add_player(scene, handle);
+        player = demo_add_player(scene, subhandle);
 
         return ls2d_engine_run(engine);
 }

@@ -25,6 +25,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -167,6 +168,38 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
         return (Ls2DTextureHandle)index;
 }
 
+Ls2DTextureHandle ls2d_texture_cache_subregion(Ls2DTextureCache *self, Ls2DTextureHandle parent,
+                                               SDL_Rect subregion)
+{
+        struct Ls2DTextureNode *parent_node = NULL;
+        struct Ls2DTextureNode *node = NULL;
+        uint32_t index = 0;
+
+        if (ls_unlikely(!self)) {
+                return 0;
+        }
+        if (ls_unlikely(parent > self->cache->len)) {
+                return 0;
+        }
+
+        parent_node = &((Ls2DTextureNode *)self->cache->data)[parent];
+        assert(parent_node->subregion != true);
+
+        /* Preallocate cached texture */
+        ls_array_add(self->cache, NULL);
+        index = (uint32_t)self->cache->len - 1;
+        node = &((Ls2DTextureNode *)self->cache->data)[index];
+
+        /* Sort out the cache */
+        node->filename = NULL;
+        node->subregion = true;
+        node->area = subregion;
+        node->texture = NULL;
+        node->parent = parent_node;
+
+        return (Ls2DTextureHandle)index;
+}
+
 const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DFrameInfo *frame,
                                                  Ls2DTextureHandle handle)
 {
@@ -181,7 +214,12 @@ const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DFra
 
         node = &((Ls2DTextureNode *)self->cache->data)[handle];
         if (!node->texture) {
-                node->texture = load_texture(node, frame);
+                if (node->parent && !node->parent->texture) {
+                        node->parent->texture = load_texture(node->parent, frame);
+                        node->texture = node->parent->texture;
+                } else {
+                        node->texture = load_texture(node, frame);
+                }
         }
 
         return (const Ls2DTextureNode *)node;

@@ -30,6 +30,7 @@ struct Ls2DTextureNode {
         SDL_Rect area;        /**< Displayable area for the texture. */
         char *filename;       /**<The filename we come from */
         bool subregion;       /**< Whether this node is a subregion. */
+        struct Ls2DTextureNode *parent;
 };
 
 /**
@@ -47,6 +48,13 @@ Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self);
  * @note: The texture should ONLY be loaded when an SDL window is available!
  */
 Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const char *filename);
+
+/**
+ * Create a texture handle subregion from a parent texture.
+ * This allows us to split up texture into subtextures when using tilesheets.
+ */
+Ls2DTextureHandle ls2d_texture_cache_subregion(Ls2DTextureCache *self, Ls2DTextureHandle parent,
+                                               SDL_Rect subregion);
 
 /**
  * Lookup a texture for rendering
