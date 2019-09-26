@@ -56,6 +56,35 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
         return entity;
 }
 
+static int x_offset = 0;
+
+static void demo_add_baddy(Ls2DScene *scene, Ls2DTextureHandle handle)
+{
+        autofree(Ls2DEntity) *entity = NULL;
+        autofree(Ls2DComponent) *sprite = NULL;
+        autofree(Ls2DComponent) *pos = NULL;
+
+        entity = ls2d_entity_new("bad_guy");
+        if (!entity) {
+                return NULL;
+        }
+        sprite = ls2d_sprite_component_new();
+        if (!sprite) {
+                return NULL;
+        }
+        pos = ls2d_position_component_new();
+        if (!pos) {
+                return NULL;
+        }
+        ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
+        ls2d_entity_add_component(entity, sprite);
+        ls2d_entity_add_component(entity, pos);
+        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
+                                       (SDL_Point){ .x = x_offset, .y = 200 });
+        x_offset += 20;
+        ls2d_scene_add_entity(scene, entity);
+}
+
 static bool mouse_button_callback(SDL_MouseButtonEvent *event, Ls2DFrameInfo *frame, void *userdata)
 {
         fprintf(stderr, "Clicked at %d %d!\n", event->x, event->y);
@@ -83,6 +112,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         Ls2DTextureCache *cache = NULL;
         Ls2DTextureHandle handle;
         Ls2DTextureHandle subhandle;
+        Ls2DTextureHandle subhandle2;
         Ls2DInputManager *imanager = NULL;
 
         /* Construct new engine */
@@ -107,8 +137,15 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
                                          handle,
                                          (SDL_Rect){ .x = 896, .y = 305, .w = 228, .h = 163 });
 
+        subhandle2 =
+            ls2d_texture_cache_subregion(cache,
+                                         handle,
+                                         (SDL_Rect){ .x = 1365, .y = 1547, .w = 202, .h = 149 });
+
         /* Sort out our player */
         player = demo_add_player(scene, subhandle);
+
+        demo_add_baddy(scene, subhandle2);
 
         ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, player);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, player);
