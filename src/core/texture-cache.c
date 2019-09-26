@@ -54,6 +54,13 @@ Ls2DObjectTable texture_cache_vtable = {
         .obj_name = "Ls2DTextureCache",
 };
 
+__attribute__((always_inline)) static inline Ls2DTextureNode *lookup_node(void *cache,
+                                                                          Ls2DTextureHandle handle)
+{
+        Ls2DTextureNode *root = cache;
+        return &(root[handle]);
+}
+
 Ls2DTextureCache *ls2d_texture_cache_new()
 {
         Ls2DTextureCache *self = NULL;
@@ -145,7 +152,7 @@ static void clear_texture(Ls2DTextureNode *node)
 static void ls2d_texture_cache_destroy(Ls2DTextureCache *self)
 {
         for (uint16_t i = 0; i < self->cache->len; i++) {
-                clear_texture(&((Ls2DTextureNode *)self->cache->data)[i]);
+                clear_texture(lookup_node(self->cache->data, i));
         }
         ls_array_free(self->cache, NULL);
 }
@@ -158,7 +165,7 @@ Ls2DTextureHandle ls2d_texture_cache_load_file(Ls2DTextureCache *self, const cha
         /* Preallocate cached texture */
         ls_array_add(self->cache, NULL);
         index = (uint32_t)self->cache->len - 1;
-        node = &((Ls2DTextureNode *)self->cache->data)[index];
+        node = lookup_node(self->cache->data, (Ls2DTextureHandle)index);
 
         /* Sort out the cache */
         node->filename = strdup(filename);
@@ -182,13 +189,13 @@ Ls2DTextureHandle ls2d_texture_cache_subregion(Ls2DTextureCache *self, Ls2DTextu
                 return 0;
         }
 
-        parent_node = &((Ls2DTextureNode *)self->cache->data)[parent];
+        parent_node = lookup_node(self->cache->data, parent);
         assert(parent_node->subregion != true);
 
         /* Preallocate cached texture */
         ls_array_add(self->cache, NULL);
         index = (uint32_t)self->cache->len - 1;
-        node = &((Ls2DTextureNode *)self->cache->data)[index];
+        node = lookup_node(self->cache->data, (Ls2DTextureHandle)index);
 
         /* Sort out the cache */
         node->filename = NULL;
@@ -212,10 +219,12 @@ const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DFra
                 return NULL;
         }
 
-        node = &((Ls2DTextureNode *)self->cache->data)[handle];
+        node = lookup_node(self->cache->data, handle);
         if (!node->texture) {
                 if (node->parent && !node->parent->texture) {
                         node->parent->texture = load_texture(node->parent, frame);
+                        node->texture = node->parent->texture;
+                } else if (node->parent) {
                         node->texture = node->parent->texture;
                 } else {
                         node->texture = load_texture(node, frame);
