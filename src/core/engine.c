@@ -21,6 +21,8 @@
 
  */
 
+#define _GNU_SOURCE
+
 #include <SDL.h>
 #include <stdlib.h>
 
@@ -182,7 +184,6 @@ cleanup:
  */
 int ls2d_engine_run(Ls2DEngine *self)
 {
-        uint32_t tick_start = 0;
         Ls2DFrameInfo frame = { 0 };
 
         /* Make sure to show the window */
@@ -190,27 +191,30 @@ int ls2d_engine_run(Ls2DEngine *self)
 
         /* Get the ball rolling */
         self->running = true;
-        tick_start = SDL_GetTicks();
-        frame.prev_ticks = tick_start - 1;
+        ls2d_frame_info_init(&frame);
+
         frame.window = self->window;
         frame.renderer = self->render;
 
         /* Primary event loop */
         while (self->running) {
                 /* Update frameinfo */
-                frame.ticks = SDL_GetTicks() - tick_start;
+                ls2d_frame_info_tick(&frame);
 
                 ls2d_engine_process_events(self, &frame);
                 ls2d_engine_draw(self, &frame);
 
                 /* Stash ticks */
-                uint32_t tick_delay = frame.ticks - frame.prev_ticks;
-                frame.prev_ticks = frame.ticks;
+                ls2d_frame_info_stash(&frame);
 
-                /* If framerate cap is set, use it. */
-                if (self->fps_delay > 0 && tick_delay < 1000 / self->fps_delay) {
-                        SDL_Delay((1000 / self->fps_delay) - (tick_delay));
-                }
+                double fps = ls2d_frame_info_get_fps(&frame);
+                char *s = NULL;
+                asprintf(&s, "demo: %.1f/fps", fps);
+                SDL_SetWindowTitle(frame.window, s);
+                free(s);
+
+                /* If framerate cap is set, use it.
+                ls2d_frame_info_delay(&frame, self->fps_delay, fps);*/
         }
 
         return EXIT_SUCCESS;

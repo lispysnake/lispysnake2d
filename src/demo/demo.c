@@ -69,7 +69,6 @@ static bool mouse_motion_callback(SDL_MouseMotionEvent *event, Ls2DFrameInfo *fr
             (Ls2DPositionComponent *)ls2d_entity_get_component(ent, LS2D_COMP_ID_POSITION);
         ls2d_position_component_set_xy(pos, (SDL_Point){ .x = event->x, .y = event->y });
 
-        fprintf(stderr, "Mooooved\n");
         return false;
 }
 
@@ -91,7 +90,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         if (!engine) {
                 return EXIT_FAILURE;
         }
-        ls2d_engine_set_fps_cap(engine, 60);
+        ls2d_engine_set_fps_cap(engine, 1);
 
         imanager = ls2d_engine_get_input_manager(engine);
 
