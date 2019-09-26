@@ -23,17 +23,7 @@
 
 #pragma once
 
-#include "component.h"
-#include "frame.h"
-#include "libls.h"
-#include "object.h"
-#include "texture-cache.h"
-
-/**
- * An Ls2DEntity is the core drawable *type* within the engine.
- * It can have any number of components which add behaviours.
- */
-typedef struct Ls2DEntity Ls2DEntity;
+#include "ls2d.h"
 
 /**
  * Construct a new Ls2DEntity with the given name

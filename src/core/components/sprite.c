@@ -26,10 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "component.h"
-#include "libls.h"
-#include "object.h"
-#include "sprite.h"
+#include "ls2d.h"
 
 /**
  * Opaque Ls2DSpriteComponent implementation

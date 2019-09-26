@@ -21,7 +21,7 @@
 
  */
 
-#include "entity.h"
+#include "ls2d.h"
 
 static void ls2d_entity_destroy(Ls2DEntity *self);
 

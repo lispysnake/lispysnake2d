@@ -23,13 +23,7 @@
 
 #pragma once
 
-#include "entity.h"
-#include "frame.h"
-#include "libls.h"
-#include "object.h"
-#include "texture-cache.h"
-
-typedef struct Ls2DScene Ls2DScene;
+#include "ls2d.h"
 
 /**
  * Construct a new scene object. Every scene contains a list of renderables

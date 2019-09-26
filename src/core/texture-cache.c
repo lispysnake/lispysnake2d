@@ -28,8 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libls.h"
-#include "texture-cache.h"
+#include "ls2d.h"
 
 #define DEFAULT_CACHE_SIZE 200
 

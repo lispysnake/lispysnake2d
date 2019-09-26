@@ -25,8 +25,6 @@
 
 #include <stdatomic.h>
 
-typedef struct Ls2DObject Ls2DObject;
-
 /**
  * The destructor function for an object
  */

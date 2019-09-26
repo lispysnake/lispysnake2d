@@ -25,15 +25,7 @@
 
 #include <stdbool.h>
 
-#include "frame.h"
-#include "libls.h"
-#include "object.h"
-#include "scene.h"
-
-/**
- * The Ls2DEngine is responsible for core lifecycle management.
- */
-typedef struct Ls2DEngine Ls2DEngine;
+#include "ls2d.h"
 
 /**
  * Return a new Ls2DEngine object

@@ -32,12 +32,12 @@
  * The Ls2DFrameInfo object is passed to renderer and update cycles
  * to give them information about the current frame pass.
  */
-typedef struct Ls2DFrameInfo {
+struct Ls2DFrameInfo {
         uint32_t ticks;         /**<Current tick count */
         uint32_t prev_ticks;    /**<Previous tick count */
         SDL_Renderer *renderer; /**<Current renderer */
         SDL_Window *window;     /**<Displayed window */
-} Ls2DFrameInfo;
+};
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

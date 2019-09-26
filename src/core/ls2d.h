@@ -28,10 +28,28 @@
  * of including any component headers.
  */
 
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+typedef struct Ls2DEngine Ls2DEngine;
+typedef struct Ls2DComponent Ls2DComponent;
+typedef struct Ls2DEntity Ls2DEntity;
+typedef struct Ls2DFrameInfo Ls2DFrameInfo;
+typedef struct Ls2DObject Ls2DObject;
+typedef struct Ls2DScene Ls2DScene;
+
+typedef uint16_t Ls2DTextureHandle;
+typedef struct Ls2DTextureCache Ls2DTextureCache;
+typedef struct Ls2DTextureNode Ls2DTextureNode;
+
+#include "libls.h"
+#include "object.h"
+
 #include "component.h"
 #include "engine.h"
 #include "entity.h"
-#include "object.h"
+#include "frame.h"
 #include "scene.h"
 #include "texture-cache.h"
 

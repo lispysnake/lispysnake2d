@@ -27,8 +27,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "engine.h"
-#include "scene.h"
+#include "ls2d.h"
 
 /** Private API headers for the engine implementation */
 

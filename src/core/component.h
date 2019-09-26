@@ -23,16 +23,13 @@
 
 #pragma once
 
-#include "frame.h"
-#include "libls.h"
-#include "object.h"
-#include "texture-cache.h"
+#include "ls2d.h"
 
 /**
  * Ls2DComponent is a basic block of behaviour for any given entity,
  * and must be added to an Ls2DEntity.
  */
-typedef struct Ls2DComponent {
+struct Ls2DComponent {
         Ls2DObject object;
 
         /* Draw callback that all components should implemented */
@@ -43,7 +40,7 @@ typedef struct Ls2DComponent {
 
         /* The component needs to be constructed */
         void (*init)(struct Ls2DComponent *, Ls2DTextureCache *, Ls2DFrameInfo *);
-} Ls2DComponent;
+};
 
 void ls2d_component_init(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo *frame);
 

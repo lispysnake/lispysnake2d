@@ -21,8 +21,7 @@
 
  */
 
-#include "component.h"
-#include "libls.h"
+#include "ls2d.h"
 
 void ls2d_component_init(Ls2DComponent *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "object.h"
+#include "ls2d.h"
 
 void *ls2d_object_ref(void *v)
 {
