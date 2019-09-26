@@ -58,7 +58,11 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
 
 static bool mouse_button_callback(SDL_MouseButtonEvent *event, Ls2DFrameInfo *frame, void *userdata)
 {
-        fprintf(stderr, "Clicked!\n");
+        Ls2DEntity *ent = userdata;
+        Ls2DPositionComponent *pos =
+            (Ls2DPositionComponent *)ls2d_entity_get_component(ent, LS2D_COMP_ID_POSITION);
+        ls2d_position_component_set_xy(pos, (SDL_Point){ .x = event->x, .y = event->y });
+        fprintf(stderr, "Clicked at %d %d!\n", event->x, event->y);
         return false;
 }
 
@@ -89,7 +93,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_engine_set_fps_cap(engine, 60);
 
         imanager = ls2d_engine_get_input_manager(engine);
-        ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, NULL);
+        ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, player);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, NULL);
 
         /* Create root scene */
