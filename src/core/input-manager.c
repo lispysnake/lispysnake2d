@@ -129,7 +129,7 @@ void ls2d_input_manager_set_mouse_button_callback(Ls2DInputManager *self,
         if (ls_unlikely(!self)) {
                 return;
         }
-        if (ls_unlikely(!cb)) {
+        if (ls_likely(cb != NULL)) {
                 self->mouse_button.cb = cb;
                 self->mouse_button.userdata = userdata;
         } else {
@@ -144,7 +144,7 @@ void ls2d_input_manager_set_mouse_motion_callback(Ls2DInputManager *self,
         if (ls_unlikely(!self)) {
                 return;
         }
-        if (ls_unlikely(!cb)) {
+        if (ls_likely(cb != NULL)) {
                 self->mouse_motion.cb = cb;
                 self->mouse_motion.userdata = userdata;
         } else {
