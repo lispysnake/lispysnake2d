@@ -58,7 +58,7 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
 
 static int x_offset = 0;
 
-static void demo_add_baddy(Ls2DScene *scene, Ls2DTextureHandle handle)
+static void demo_add_baddy(LsPtrArray *baddies, Ls2DScene *scene, Ls2DTextureHandle handle)
 {
         autofree(Ls2DEntity) *entity = NULL;
         autofree(Ls2DComponent) *sprite = NULL;
@@ -66,15 +66,15 @@ static void demo_add_baddy(Ls2DScene *scene, Ls2DTextureHandle handle)
 
         entity = ls2d_entity_new("bad_guy");
         if (!entity) {
-                return NULL;
+                return;
         }
         sprite = ls2d_sprite_component_new();
         if (!sprite) {
-                return NULL;
+                return;
         }
         pos = ls2d_position_component_new();
         if (!pos) {
-                return NULL;
+                return;
         }
         ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
         ls2d_entity_add_component(entity, sprite);
@@ -83,10 +83,27 @@ static void demo_add_baddy(Ls2DScene *scene, Ls2DTextureHandle handle)
                                        (SDL_Point){ .x = x_offset, .y = 200 });
         x_offset += 210;
         ls2d_scene_add_entity(scene, entity);
+        ls_array_add(baddies, entity);
 }
 
 static bool mouse_button_callback(SDL_MouseButtonEvent *event, Ls2DFrameInfo *frame, void *userdata)
 {
+        LsPtrArray *baddies = userdata;
+
+        /*if (event->type != SDL_MOUSEBUTTONDOWN) {
+                return false;
+        }*/
+
+        for (int i = 0; i < baddies->len; i++) {
+                Ls2DEntity *ent = baddies->data[i];
+                Ls2DPositionComponent *pos =
+                    (Ls2DPositionComponent *)ls2d_entity_get_component(ent, LS2D_COMP_ID_POSITION);
+                SDL_Point xy = { 0, 0 };
+                ls2d_position_component_get_xy(pos, &xy);
+                xy.y += 10;
+                ls2d_position_component_set_xy(pos, xy);
+        }
+
         fprintf(stderr, "Clicked at %d %d!\n", event->x, event->y);
         return false;
 }
@@ -109,6 +126,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
         autofree(Ls2DEntity) *player = NULL;
+        LsPtrArray *baddies = NULL;
         Ls2DTextureCache *cache = NULL;
         Ls2DTextureHandle handle;
         Ls2DTextureHandle subhandle;
@@ -145,14 +163,16 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         /* Sort out our player */
         player = demo_add_player(scene, subhandle);
 
+        baddies = ls_ptr_array_new();
         for (int i = 0; i < 15; i++) {
-                demo_add_baddy(scene, subhandle2);
+                demo_add_baddy(baddies, scene, subhandle2);
         }
 
-        ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, player);
+        ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, baddies);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, player);
-
-        return ls2d_engine_run(engine);
+        int ret = ls2d_engine_run(engine);
+        ls_array_free(baddies, NULL);
+        return ret;
 }
 
 /*
