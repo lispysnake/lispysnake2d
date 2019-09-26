@@ -33,7 +33,6 @@
  */
 struct Ls2DSpriteComponent {
         Ls2DComponent parent; /*< Parent */
-        SDL_Rect area;
         Ls2DTextureHandle handle;
 };
 
@@ -41,8 +40,6 @@ static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DTextureCache *ca
                                        Ls2DFrameInfo *frame);
 static void ls2d_sprite_component_init(Ls2DComponent *self, Ls2DTextureCache *cache,
                                        Ls2DFrameInfo *frame);
-static int offset_x = 100;
-static int offset_y = 0;
 
 /**
  * We don't yet do anything fancy.
@@ -62,7 +59,6 @@ Ls2DComponent *ls2d_sprite_component_new()
 
         self = ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
 
-        self->parent.init = ls2d_sprite_component_init;
         self->parent.draw = ls2d_sprite_component_draw;
         self->parent.comp_id = LS2D_COMP_ID_SPRITE;
 
@@ -80,16 +76,6 @@ Ls2DSpriteComponent *ls2d_sprite_component_set_texture(Ls2DSpriteComponent *self
         self->handle = handle;
 }
 
-static void ls2d_sprite_component_init(Ls2DComponent *component, Ls2DTextureCache *cache,
-                                       Ls2DFrameInfo *frame)
-{
-        Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
-        offset_x += 240;
-        // offset_y += 0;
-
-        self->area = (SDL_Rect){ -150 + offset_x, 200 + offset_y, 100, 100 };
-}
-
 /**
  * Perform the actual sprite drawing. Long story short, we need to
  * draw to our X, Y coordinates if within clip using our set
@@ -99,12 +85,26 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
                                 Ls2DFrameInfo *frame)
 {
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
+        Ls2DComponent *pos = NULL;
+        SDL_Rect area = { 0, 0, 0, 0 };
+        SDL_Point xy = { 0, 0 };
+
+        /* Grab a texture */
         const Ls2DTextureNode *node = ls2d_texture_cache_lookup(cache, frame, self->handle);
         if (!node) {
                 return;
         }
+        area.w = node->area.w;
+        area.h = node->area.h;
 
-        SDL_Rect dst = { self->area.x, self->area.y, node->area.w, node->area.h };
+        /* Try setting up proper X, Y based on position component */
+        SDL_Rect dst = { area.x, area.y, node->area.w, node->area.h };
+        pos = ls2d_entity_get_component(component->parent_entity, LS2D_COMP_ID_POSITION);
+        if (ls2d_position_component_get_xy((Ls2DPositionComponent *)pos, &xy)) {
+                dst.x = xy.x;
+                dst.y = xy.y;
+        }
+
         if (node->subregion) {
                 SDL_RenderCopy(frame->renderer, node->texture, &node->area, &dst);
         } else {

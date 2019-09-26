@@ -27,10 +27,13 @@
 #include "libls.h"
 #include "ls2d.h"
 
+static int x_offset = 0;
+
 static void add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
 {
         autofree(Ls2DEntity) *entity = NULL;
         autofree(Ls2DComponent) *sprite = NULL;
+        autofree(Ls2DComponent) *pos = NULL;
 
         entity = ls2d_entity_new("player");
         if (!entity) {
@@ -40,9 +43,18 @@ static void add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
         if (!sprite) {
                 exit(1);
         }
+        pos = ls2d_position_component_new();
+        if (!pos) {
+                exit(1);
+        }
+
+        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
+                                       (SDL_Point){ .x = x_offset, .y = 20 });
+        x_offset += 240;
 
         ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
         ls2d_entity_add_component(entity, sprite);
+        ls2d_entity_add_component(entity, pos);
         ls2d_scene_add_entity(scene, entity);
 }
 

@@ -26,25 +26,42 @@
 #include "ls2d.h"
 
 /**
- * Ls2DSpriteComponent adds drawable behaviours to an Ls2DEntity.
+ * Ls2DPositionComponent adds drawable behaviours to an Ls2DEntity.
  */
-typedef struct Ls2DSpriteComponent Ls2DSpriteComponent;
+typedef struct Ls2DPositionComponent Ls2DPositionComponent;
 
 /**
  * Construct a new Sprite object.
  */
-Ls2DComponent *ls2d_sprite_component_new(void);
+Ls2DComponent *ls2d_position_component_new(void);
 
 /**
  * Unref an allocated Sprite. This will also deference any
  * attached resources.
  */
-Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self);
+Ls2DPositionComponent *ls2d_position_component_unref(Ls2DPositionComponent *self);
 
-Ls2DSpriteComponent *ls2d_sprite_component_set_texture(Ls2DSpriteComponent *self,
-                                                       Ls2DTextureHandle handle);
+/**
+ * Set X and Y coordinates
+ */
+void ls2d_position_component_set_xy(Ls2DPositionComponent *self, SDL_Point pos);
 
-DEF_AUTOFREE(Ls2DSpriteComponent, ls2d_sprite_component_unref)
+/**
+ * Set the Z position
+ */
+void ls2d_position_component_set_z(Ls2DPositionComponent *self, int z);
+
+/**
+ * Get the Z position
+ */
+bool ls2d_position_component_get_z(Ls2DPositionComponent *self, int *z);
+
+/**
+ * Get the X and Y coordinates into pos
+ */
+bool ls2d_position_component_get_xy(Ls2DPositionComponent *self, SDL_Point *pos);
+
+DEF_AUTOFREE(Ls2DPositionComponent, ls2d_position_component_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

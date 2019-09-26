@@ -54,6 +54,13 @@ typedef struct Ls2DTextureNode Ls2DTextureNode;
 #include "texture-cache.h"
 
 /* Our components */
+enum Ls2DComponentID {
+        LS2D_COMP_ID_INVALID = 0,
+        LS2D_COMP_ID_POSITION = 1,
+        LS2D_COMP_ID_SPRITE = 2,
+};
+
+#include "components/position.h"
 #include "components/sprite.h"
 
 /*
