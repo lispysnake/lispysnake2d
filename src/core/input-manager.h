@@ -25,8 +25,9 @@
 
 #include "ls2d.h"
 
-typedef bool (*ls2d_key_callback)(SDL_KeyboardEvent *, void *userdata);
-typedef bool (*ls2d_mouse_button_callback)(SDL_MouseButtonEvent *, void *userdata);
+typedef bool (*ls2d_key_callback)(SDL_KeyboardEvent *, void *);
+typedef bool (*ls2d_mouse_button_callback)(SDL_MouseButtonEvent *, void *);
+typedef bool (*ls2d_mouse_motion_callback)(SDL_MouseMotionEvent *, void *);
 
 /**
  * Construct a new InputManager
