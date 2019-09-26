@@ -81,7 +81,7 @@ static void demo_add_baddy(Ls2DScene *scene, Ls2DTextureHandle handle)
         ls2d_entity_add_component(entity, pos);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
                                        (SDL_Point){ .x = x_offset, .y = 200 });
-        x_offset += 20;
+        x_offset += 210;
         ls2d_scene_add_entity(scene, entity);
 }
 
@@ -145,7 +145,9 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         /* Sort out our player */
         player = demo_add_player(scene, subhandle);
 
-        demo_add_baddy(scene, subhandle2);
+        for (int i = 0; i < 15; i++) {
+                demo_add_baddy(scene, subhandle2);
+        }
 
         ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, player);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, player);
