@@ -31,6 +31,7 @@
  */
 struct Ls2DComponent {
         Ls2DObject object;
+        Ls2DEntity *parent_entity;
 
         /* Draw callback that all components should implemented */
         void (*draw)(struct Ls2DComponent *, Ls2DTextureCache *, Ls2DFrameInfo *);
@@ -53,6 +54,12 @@ void ls2d_component_draw(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo 
  * Inform the component it needs to update now.
  */
 void ls2d_component_update(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo *info);
+
+/**
+ * Set the parent entity for this component
+ * @TODO: Make this private API.
+ */
+void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DEntity *entity);
 
 Ls2DComponent *ls2d_component_unref(Ls2DComponent *self);
 

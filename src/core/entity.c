@@ -84,6 +84,7 @@ void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
                 SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEntity not correctly initialised");
                 return;
         }
+        ls2d_component_set_parent_entity(component, self);
         ls_array_add(self->components, ls2d_object_ref(component));
 }
 

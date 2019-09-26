@@ -52,6 +52,15 @@ Ls2DComponent *ls2d_component_unref(Ls2DComponent *self)
         return ls2d_object_unref(self);
 }
 
+void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DEntity *entity)
+
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->parent_entity = entity;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
