@@ -31,7 +31,16 @@ static void ls2d_input_manager_destroy(Ls2DInputManager *self);
 struct Ls2DInputManager {
         Ls2DObject object; /*< Parent */
         LsHashmap *key_callbacks;
-        LsHashmap *mouse_callbacks;
+
+        struct {
+                ls2d_mouse_button_callback cb;
+                void *userdata;
+        } mouse_button;
+
+        struct {
+                ls2d_mouse_motion_callback cb;
+                void *userdata;
+        } mouse_motion;
 };
 
 /**
@@ -57,12 +66,6 @@ Ls2DInputManager *ls2d_input_manager_new()
                 return NULL;
         }
 
-        self->mouse_callbacks = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
-        if (ls_unlikely(!self->mouse_callbacks)) {
-                ls2d_input_manager_destroy(self);
-                return NULL;
-        }
-
         return ls2d_object_init((Ls2DObject *)self, &input_manager_vtable);
 }
 
@@ -76,13 +79,78 @@ static void ls2d_input_manager_destroy(Ls2DInputManager *self)
         if (ls_likely(self->key_callbacks != NULL)) {
                 ls_hashmap_free(self->key_callbacks);
         }
-        if (ls_likely(self->mouse_callbacks != NULL)) {
-                ls_hashmap_free(self->mouse_callbacks);
+}
+
+static inline bool ls2d_input_manager_process_key(Ls2DInputManager *self, SDL_KeyboardEvent *event,
+                                                  Ls2DFrameInfo *frame)
+{
+        return false;
+}
+
+static inline bool ls2d_input_manager_process_mouse_button(Ls2DInputManager *self,
+                                                           SDL_MouseButtonEvent *event,
+                                                           Ls2DFrameInfo *frame)
+{
+        if (ls_unlikely(!self->mouse_button.cb)) {
+                return false;
+        }
+        return self->mouse_button.cb(event, frame, self->mouse_button.userdata);
+}
+
+static inline bool ls2d_input_manager_process_mouse_motion(Ls2DInputManager *self,
+                                                           SDL_MouseMotionEvent *event,
+                                                           Ls2DFrameInfo *frame)
+{
+        if (ls_unlikely(!self->mouse_motion.cb)) {
+                return false;
+        }
+        return self->mouse_motion.cb(event, frame, self->mouse_motion.userdata);
+}
+
+bool ls2d_input_manager_process(Ls2DInputManager *self, SDL_Event *event, Ls2DFrameInfo *frame)
+{
+        switch (event->type) {
+        case SDL_KEYUP:
+        case SDL_KEYDOWN:
+                return ls2d_input_manager_process_key(self, &event->key, frame);
+        case SDL_MOUSEMOTION:
+                return ls2d_input_manager_process_mouse_motion(self, &event->motion, frame);
+        case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEBUTTONDOWN:
+                return ls2d_input_manager_process_mouse_button(self, &event->button, frame);
+        default:
+                return false;
         }
 }
 
-void ls2d_input_manager_process(Ls2DInputManager *self, Ls2DFrameInfo *frame)
+void ls2d_input_manager_set_mouse_button_callback(Ls2DInputManager *self,
+                                                  ls2d_mouse_button_callback cb, void *userdata)
 {
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        if (ls_unlikely(!cb)) {
+                self->mouse_button.cb = cb;
+                self->mouse_button.userdata = userdata;
+        } else {
+                self->mouse_button.cb = NULL;
+                self->mouse_button.userdata = userdata;
+        }
+}
+
+void ls2d_input_manager_set_mouse_motion_callback(Ls2DInputManager *self,
+                                                  ls2d_mouse_motion_callback cb, void *userdata)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        if (ls_unlikely(!cb)) {
+                self->mouse_motion.cb = cb;
+                self->mouse_motion.userdata = userdata;
+        } else {
+                self->mouse_motion.cb = NULL;
+                self->mouse_motion.userdata = userdata;
+        }
 }
 
 /*

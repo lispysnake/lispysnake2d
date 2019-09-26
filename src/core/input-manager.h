@@ -25,9 +25,9 @@
 
 #include "ls2d.h"
 
-typedef bool (*ls2d_key_callback)(SDL_KeyboardEvent *, void *);
-typedef bool (*ls2d_mouse_button_callback)(SDL_MouseButtonEvent *, void *);
-typedef bool (*ls2d_mouse_motion_callback)(SDL_MouseMotionEvent *, void *);
+typedef bool (*ls2d_key_callback)(SDL_KeyboardEvent *, Ls2DFrameInfo *, void *);
+typedef bool (*ls2d_mouse_button_callback)(SDL_MouseButtonEvent *, Ls2DFrameInfo *, void *);
+typedef bool (*ls2d_mouse_motion_callback)(SDL_MouseMotionEvent *, Ls2DFrameInfo *, void *);
 
 /**
  * Construct a new InputManager
@@ -42,7 +42,12 @@ Ls2DInputManager *ls2d_input_manager_unref(Ls2DInputManager *self);
 /**
  * Ensure batching of events occurs
  */
-void ls2d_input_manager_process(Ls2DInputManager *self, Ls2DFrameInfo *frame);
+bool ls2d_input_manager_process(Ls2DInputManager *self, SDL_Event *event, Ls2DFrameInfo *frame);
+
+void ls2d_input_manager_set_mouse_button_callback(Ls2DInputManager *self,
+                                                  ls2d_mouse_button_callback cb, void *userdata);
+void ls2d_input_manager_set_mouse_motion_callback(Ls2DInputManager *self,
+                                                  ls2d_mouse_motion_callback cb, void *userdata);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
