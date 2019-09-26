@@ -61,6 +61,11 @@ void ls2d_component_update(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInf
  */
 void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DEntity *entity);
 
+/**
+ * Grab the parent entity
+ */
+Ls2DEntity *ls2d_component_get_parent_entity(Ls2DComponent *self);
+
 Ls2DComponent *ls2d_component_unref(Ls2DComponent *self);
 
 DEF_AUTOFREE(Ls2DComponent, ls2d_component_unref)

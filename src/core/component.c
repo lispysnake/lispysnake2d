@@ -61,6 +61,14 @@ void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DEntity *entity)
         self->parent_entity = entity;
 }
 
+Ls2DEntity *ls2d_component_get_parent_entity(Ls2DComponent *self)
+{
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+        return self->parent_entity;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
