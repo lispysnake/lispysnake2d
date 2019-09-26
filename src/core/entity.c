@@ -117,6 +117,22 @@ void ls2d_entity_update(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo
         }
 }
 
+Ls2DComponent *ls2d_entity_get_component(Ls2DEntity *self, int component_id)
+{
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+
+        /* Easier to have a map in future. */
+        for (uint16_t i = 0; i < self->components->len; i++) {
+                Ls2DComponent *comp = self->components->data[i];
+                if (comp->comp_id == component_id) {
+                        return comp;
+                }
+        }
+        return NULL;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

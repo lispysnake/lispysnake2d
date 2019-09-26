@@ -45,6 +45,11 @@ void ls2d_entity_update(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo
 void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component);
 
 /**
+ * Retrieve a component by ID
+ */
+Ls2DComponent *ls2d_entity_get_component(Ls2DEntity *self, int component_id);
+
+/**
  * Unref the allocated Ls2DEntity
  */
 Ls2DEntity *ls2d_entity_unref(Ls2DEntity *self);
