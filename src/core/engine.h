@@ -64,6 +64,11 @@ void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps);
  */
 void ls2d_engine_add_scene(Ls2DEngine *self, Ls2DScene *scene);
 
+/**
+ * Return the global input manager
+ */
+Ls2DInputManager *ld2d_engine_get_input_manager(Ls2DEngine *self);
+
 DEF_AUTOFREE(Ls2DEngine, ls2d_engine_unref)
 
 /*

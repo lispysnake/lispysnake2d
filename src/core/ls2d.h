@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+typedef struct Ls2DInputManager Ls2DInputManager;
 typedef struct Ls2DEngine Ls2DEngine;
 typedef struct Ls2DComponent Ls2DComponent;
 typedef struct Ls2DEntity Ls2DEntity;
@@ -50,6 +51,7 @@ typedef struct Ls2DTextureNode Ls2DTextureNode;
 #include "engine.h"
 #include "entity.h"
 #include "frame.h"
+#include "input-manager.h"
 #include "scene.h"
 #include "texture-cache.h"
 

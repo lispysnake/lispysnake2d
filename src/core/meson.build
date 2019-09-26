@@ -6,6 +6,7 @@ core_sources = [
      'engine.c',
      'engine-draw.c',
      'engine-update.c',
+     'input-manager.c',
      'object.c',
      'scene.c',
      'texture-cache.c',

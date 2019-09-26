@@ -111,6 +111,13 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                 return NULL;
         }
 
+        engine->input_manager = ls2d_input_manager_new();
+        if (!engine->input_manager) {
+                SDL_LogCritical(SDL_LOG_CATEGORY_INPUT, "Couldn't create InputManager");
+                ls2d_engine_destroy(engine);
+                return NULL;
+        }
+
         return ls2d_object_init((Ls2DObject *)engine, &engine_vtable);
 }
 
@@ -159,6 +166,9 @@ static void ls2d_engine_destroy(Ls2DEngine *self)
         }
         if (ls_likely(self->scenes != NULL)) {
                 ls_list_free_full(self->scenes, free_scene);
+        }
+        if (ls_likely(self->input_manager != NULL)) {
+                ls2d_input_manager_unref(self->input_manager);
         }
         free(self);
 
@@ -234,6 +244,14 @@ void ls2d_engine_add_scene(Ls2DEngine *self, Ls2DScene *scene)
         if (!self->active_scene) {
                 self->active_scene = scene;
         }
+}
+
+Ls2DInputManager *ls2d_engine_get_input_manager(Ls2DEngine *self)
+{
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+        return self->input_manager;
 }
 
 /**

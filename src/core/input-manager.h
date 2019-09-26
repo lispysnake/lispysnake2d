@@ -23,43 +23,17 @@
 
 #pragma once
 
-#include <SDL.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
 #include "ls2d.h"
 
-/** Private API headers for the engine implementation */
+/**
+ * Construct a new InputManager
+ */
+Ls2DInputManager *ls2d_input_manager_new(void);
 
 /**
- * Ls2DEngine is responsible for managing the primary output, setting up
- * the event dispatch system, etc.
+ * Unref a previously allocated InputManager
  */
-struct Ls2DEngine {
-        Ls2DObject object; /*< Parent */
-        int width;
-        int height;
-        uint32_t fps_delay;
-        SDL_Window *window;
-        SDL_Renderer *render;
-        bool running;
-        bool fullscreen;
-
-        /* List of scenes. */
-        LsList *scenes;
-        Ls2DScene *active_scene;
-        Ls2DInputManager *input_manager;
-};
-
-/**
- * Process all incoming events to the engine (input/updates)
- */
-void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame);
-
-/**
- * Pump any and all drawing events
- */
-void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame);
+Ls2DInputManager *ls2d_input_manager_unref(Ls2DInputManager *self);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

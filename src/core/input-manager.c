@@ -21,45 +21,45 @@
 
  */
 
-#pragma once
-
-#include <SDL.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
 #include "ls2d.h"
 
-/** Private API headers for the engine implementation */
+static void ls2d_input_manager_destroy(Ls2DInputManager *self);
 
 /**
- * Ls2DEngine is responsible for managing the primary output, setting up
- * the event dispatch system, etc.
+ * Opaque Ls2DInputManager implementation
  */
-struct Ls2DEngine {
+struct Ls2DInputManager {
         Ls2DObject object; /*< Parent */
-        int width;
-        int height;
-        uint32_t fps_delay;
-        SDL_Window *window;
-        SDL_Renderer *render;
-        bool running;
-        bool fullscreen;
-
-        /* List of scenes. */
-        LsList *scenes;
-        Ls2DScene *active_scene;
-        Ls2DInputManager *input_manager;
 };
 
 /**
- * Process all incoming events to the engine (input/updates)
+ * We don't yet do anything fancy.
  */
-void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame);
+Ls2DObjectTable input_manager_vtable = {
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_input_manager_destroy,
+        .obj_name = "Ls2DInputManager",
+};
 
-/**
- * Pump any and all drawing events
- */
-void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame);
+Ls2DInputManager *ls2d_input_manager_new()
+{
+        Ls2DInputManager *self = NULL;
+
+        self = calloc(1, sizeof(struct Ls2DInputManager));
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+
+        return ls2d_object_init((Ls2DObject *)self, &input_manager_vtable);
+}
+
+Ls2DInputManager *ls2d_input_manager_unref(Ls2DInputManager *self)
+{
+        return ls2d_object_unref(self);
+}
+
+static void ls2d_input_manager_destroy(__ls_unused__ Ls2DInputManager *self)
+{
+}
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
