@@ -93,8 +93,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_engine_set_fps_cap(engine, 60);
 
         imanager = ls2d_engine_get_input_manager(engine);
-        ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, player);
-        ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, NULL);
 
         /* Create root scene */
         scene = ls2d_scene_new("game_screen");
@@ -111,6 +109,9 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         /* Sort out our player */
         player = demo_add_player(scene, subhandle);
+
+        ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, player);
+        ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, NULL);
 
         return ls2d_engine_run(engine);
 }
