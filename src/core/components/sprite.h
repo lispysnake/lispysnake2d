@@ -30,6 +30,11 @@
 #include "texture-cache.h"
 
 /**
+ * Component ID for Sprite
+ */
+#define LS2D_COMP_ID_SPRITE 1
+
+/**
  * Ls2DSpriteComponent adds drawable behaviours to an Ls2DEntity.
  */
 typedef struct Ls2DSpriteComponent Ls2DSpriteComponent;

@@ -64,6 +64,7 @@ Ls2DComponent *ls2d_sprite_component_new()
 
         self->parent.init = ls2d_sprite_component_init;
         self->parent.draw = ls2d_sprite_component_draw;
+        self->parent.comp_id = LS2D_COMP_ID_SPRITE;
 
         return (Ls2DComponent *)self;
 }

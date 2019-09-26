@@ -69,6 +69,14 @@ Ls2DEntity *ls2d_component_get_parent_entity(Ls2DComponent *self)
         return self->parent_entity;
 }
 
+int ls2d_component_get_id(Ls2DComponent *self)
+{
+        if (ls_unlikely(!self)) {
+                return 0;
+        }
+        return self->comp_id;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

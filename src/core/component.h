@@ -32,6 +32,7 @@
 struct Ls2DComponent {
         Ls2DObject object;
         Ls2DEntity *parent_entity;
+        int comp_id; /**<Public component ID */
 
         /* Draw callback that all components should implemented */
         void (*draw)(struct Ls2DComponent *, Ls2DTextureCache *, Ls2DFrameInfo *);
@@ -54,6 +55,11 @@ void ls2d_component_draw(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo 
  * Inform the component it needs to update now.
  */
 void ls2d_component_update(Ls2DComponent *self, Ls2DTextureCache *, Ls2DFrameInfo *info);
+
+/**
+ * Return component ID
+ */
+int ls2d_component_get_id(Ls2DComponent *self);
 
 /**
  * Set the parent entity for this component
