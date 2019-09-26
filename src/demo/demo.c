@@ -27,35 +27,33 @@
 #include "libls.h"
 #include "ls2d.h"
 
-static int x_offset = 0;
-
-static void add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
+/**
+ * Return an entity that will become the main player.
+ */
+static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
 {
-        autofree(Ls2DEntity) *entity = NULL;
+        Ls2DEntity *entity = NULL;
         autofree(Ls2DComponent) *sprite = NULL;
         autofree(Ls2DComponent) *pos = NULL;
 
         entity = ls2d_entity_new("player");
         if (!entity) {
-                exit(1);
+                return NULL;
         }
         sprite = ls2d_sprite_component_new();
         if (!sprite) {
-                exit(1);
+                return NULL;
         }
         pos = ls2d_position_component_new();
         if (!pos) {
-                exit(1);
+                return NULL;
         }
-
-        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
-                                       (SDL_Point){ .x = x_offset, .y = 20 });
-        x_offset += 240;
-
         ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
         ls2d_entity_add_component(entity, sprite);
         ls2d_entity_add_component(entity, pos);
         ls2d_scene_add_entity(scene, entity);
+
+        return entity;
 }
 
 /**
@@ -65,10 +63,9 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
+        autofree(Ls2DEntity) *player = NULL;
         Ls2DTextureCache *cache = NULL;
         Ls2DTextureHandle handle;
-        Ls2DTextureHandle handle2;
-        Ls2DTextureHandle handle3;
 
         /* Construct new engine */
         engine = ls2d_engine_new_current_display();
@@ -84,23 +81,9 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         cache = ls2d_scene_get_texture_cache(scene);
         handle = ls2d_texture_cache_load_file(cache,
                                               "demo_data/PNG/Sprites X2/Ships/spaceShips_006.png");
-        handle2 = ls2d_texture_cache_load_file(cache,
-                                               "demo_data/PNG/Sprites X2/Ships/spaceShips_004.png");
 
-        handle3 = ls2d_texture_cache_load_file(cache,
-                                               "demo_data/PNG/Sprites X2/Ships/spaceShips_007.png");
-
-        for (int i = 0; i < 5; i++) {
-                add_player(scene, handle);
-        }
-
-        for (int i = 0; i < 5; i++) {
-                add_player(scene, handle2);
-        }
-
-        for (int i = 0; i < 5; i++) {
-                add_player(scene, handle3);
-        }
+        /* Sort out our player */
+        player = demo_add_player(scene, handle);
 
         return ls2d_engine_run(engine);
 }

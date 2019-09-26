@@ -38,8 +38,6 @@ struct Ls2DSpriteComponent {
 
 static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DTextureCache *cache,
                                        Ls2DFrameInfo *frame);
-static void ls2d_sprite_component_init(Ls2DComponent *self, Ls2DTextureCache *cache,
-                                       Ls2DFrameInfo *frame);
 
 /**
  * We don't yet do anything fancy.
@@ -70,8 +68,7 @@ Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self)
         return ls2d_object_unref(self);
 }
 
-Ls2DSpriteComponent *ls2d_sprite_component_set_texture(Ls2DSpriteComponent *self,
-                                                       Ls2DTextureHandle handle)
+void ls2d_sprite_component_set_texture(Ls2DSpriteComponent *self, Ls2DTextureHandle handle)
 {
         self->handle = handle;
 }
