@@ -92,7 +92,7 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                                           SDL_WINDOWPOS_UNDEFINED,
                                           width,
                                           height,
-                                          SDL_WINDOW_HIDDEN);
+                                          SDL_WINDOW_HIDDEN | SDL_WINDOW_ALLOW_HIGHDPI);
         if (!engine->window) {
                 SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
                                 "Couldn't create window: %s",
