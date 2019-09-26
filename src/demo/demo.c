@@ -106,7 +106,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         subhandle =
             ls2d_texture_cache_subregion(cache,
                                          handle,
-                                         (SDL_Rect){ .x = 440, .y = 800, .w = 342, .h = 301 });
+                                         (SDL_Rect){ .x = 896, .y = 305, .w = 228, .h = 163 });
 
         /* Sort out our player */
         player = demo_add_player(scene, subhandle);
