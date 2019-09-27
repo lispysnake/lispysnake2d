@@ -57,6 +57,7 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
 }
 
 static int x_offset = 0;
+static int y_offset = 0;
 
 static void demo_add_baddy(LsPtrArray *baddies, Ls2DScene *scene, Ls2DTextureHandle handle)
 {
@@ -80,8 +81,12 @@ static void demo_add_baddy(LsPtrArray *baddies, Ls2DScene *scene, Ls2DTextureHan
         ls2d_entity_add_component(entity, sprite);
         ls2d_entity_add_component(entity, pos);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
-                                       (SDL_Point){ .x = x_offset, .y = 200 });
-        x_offset += 210;
+                                       (SDL_Point){ .x = x_offset, .y = y_offset });
+        x_offset += 120;
+        if (x_offset >= 3800) {
+                x_offset = 0;
+                y_offset += 180;
+        }
         ls2d_scene_add_entity(scene, entity);
         ls_array_add(baddies, entity);
 }
@@ -150,23 +155,25 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         handle =
             ls2d_texture_cache_load_file(cache,
                                          "demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png");
+        // subhandle =
+        //    ls2d_texture_cache_subregion(cache,
+        //                                 handle,
+        //                                 (SDL_Rect){ .x = 896, .y = 305, .w = 228, .h = 163 });
+
         subhandle =
             ls2d_texture_cache_subregion(cache,
                                          handle,
-                                         (SDL_Rect){ .x = 896, .y = 305, .w = 228, .h = 163 });
-
-        subhandle2 =
-            ls2d_texture_cache_subregion(cache,
-                                         handle,
                                          (SDL_Rect){ .x = 1365, .y = 1547, .w = 202, .h = 149 });
+        subhandle2 =
+            ls2d_texture_cache_load_file(cache, "demo_data/PNG/Sprites/Ships/spaceShips_006.png");
+
+        baddies = ls_ptr_array_new();
+        for (int i = 0; i < 10000; i++) {
+                demo_add_baddy(baddies, scene, subhandle2);
+        }
 
         /* Sort out our player */
         player = demo_add_player(scene, subhandle);
-
-        baddies = ls_ptr_array_new();
-        for (int i = 0; i < 15; i++) {
-                demo_add_baddy(baddies, scene, subhandle2);
-        }
 
         ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, baddies);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, player);
