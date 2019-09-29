@@ -152,9 +152,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         scene = ls2d_scene_new("game_screen");
         ls2d_engine_add_scene(engine, scene);
 
+        /* Grab our textures */
         cache = ls2d_scene_get_texture_cache(scene);
-
-        /* New way of working */
         sheet = ls2d_tile_sheet_new_from_xml(cache,
                                              "demo_data/Spritesheet/spaceShooter2_spritesheet.xml");
         subhandle = ls2d_tile_sheet_lookup(sheet, "spaceShips_009.png");
