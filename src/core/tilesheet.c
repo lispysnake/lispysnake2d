@@ -23,6 +23,8 @@
 
 #include "ls2d.h"
 
+#include "tilesheet-private.h"
+
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self);
 
 /**
@@ -43,7 +45,10 @@ Ls2DObjectTable tile_sheet_vtable = {
         .obj_name = "Ls2DTileSheet",
 };
 
-Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char *xml_path)
+/**
+ * Convenience wrapped
+ */
+static Ls2DTileSheet *ls2d_tile_sheet_new(Ls2DTextureCache *cache)
 {
         Ls2DTileSheet *self = NULL;
 
@@ -51,8 +56,10 @@ Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char 
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+
         self->textures =
             ls_hashmap_new_full(ls_hashmap_string_hash, ls_hashmap_string_equal, free, NULL);
+
         if (ls_unlikely(!self->textures)) {
                 free(self);
                 return NULL;
@@ -60,6 +67,23 @@ Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char 
         self->cache = cache;
 
         return ls2d_object_init((Ls2DObject *)self, &tile_sheet_vtable);
+}
+
+Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char *xml_path)
+{
+        Ls2DTileSheet *self = NULL;
+
+        self = ls2d_tile_sheet_new(cache);
+        if (!self) {
+                return NULL;
+        }
+
+        if (!ls2d_tile_sheet_parse_xml(self, xml_path)) {
+                ls2d_tile_sheet_unref(self);
+                return NULL;
+        }
+
+        return self;
 }
 
 Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self)
