@@ -72,6 +72,16 @@ static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self)
         ls_hashmap_free(self->textures);
 }
 
+Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, const char *id)
+{
+        if (ls_unlikely(!self)) {
+                return 0;
+        }
+
+        /* TODO: Return actual texture handle! */
+        return 0;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

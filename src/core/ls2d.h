@@ -56,6 +56,7 @@ typedef struct Ls2DTileSheet Ls2DTileSheet;
 #include "input-manager.h"
 #include "scene.h"
 #include "texture-cache.h"
+#include "tilesheet.h"
 
 /* Our components */
 enum Ls2DComponentID {

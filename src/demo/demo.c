@@ -131,6 +131,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
         autofree(Ls2DEntity) *player = NULL;
+        autofree(Ls2DTileSheet) *sheet = NULL;
+
         LsPtrArray *baddies = NULL;
         Ls2DTextureCache *cache = NULL;
         Ls2DTextureHandle handle;
@@ -152,20 +154,22 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_engine_add_scene(engine, scene);
 
         cache = ls2d_scene_get_texture_cache(scene);
+
+        /* Old way of working */
         handle =
             ls2d_texture_cache_load_file(cache,
                                          "demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png");
-        // subhandle =
-        //    ls2d_texture_cache_subregion(cache,
-        //                                 handle,
-        //                                 (SDL_Rect){ .x = 896, .y = 305, .w = 228, .h = 163 });
-
         subhandle =
             ls2d_texture_cache_subregion(cache,
                                          handle,
                                          (SDL_Rect){ .x = 1365, .y = 1547, .w = 202, .h = 149 });
         subhandle2 =
             ls2d_texture_cache_load_file(cache, "demo_data/PNG/Sprites/Ships/spaceShips_006.png");
+
+        /* New way of working */
+        sheet = ls2d_tile_sheet_new_from_xml(cache,
+                                             "demo_data/Spritesheet/spaceShooter2_spritesheet.xml");
+        subhandle = ls2d_tile_sheet_lookup(sheet, "spaceShips_009.png");
 
         baddies = ls_ptr_array_new();
         for (int i = 0; i < 10000; i++) {
