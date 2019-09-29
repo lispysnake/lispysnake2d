@@ -23,49 +23,19 @@
 
 #pragma once
 
+#include "ls2d.h"
+
 /**
- * This is the main inclusion header for lispysnake2d and will take care
- * of including any component headers.
+ * Construct a new Ls2DTileSheet Object
  */
+Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char *xml_path);
 
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
+/**
+ * Unref an allocated Ls2DTileSheet
+ */
+Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self);
 
-typedef struct Ls2DInputManager Ls2DInputManager;
-typedef struct Ls2DEngine Ls2DEngine;
-typedef struct Ls2DComponent Ls2DComponent;
-typedef struct Ls2DEntity Ls2DEntity;
-typedef struct Ls2DFrameInfo Ls2DFrameInfo;
-typedef struct Ls2DObject Ls2DObject;
-typedef struct Ls2DScene Ls2DScene;
-
-typedef uint16_t Ls2DTextureHandle;
-typedef struct Ls2DTextureCache Ls2DTextureCache;
-typedef struct Ls2DTextureNode Ls2DTextureNode;
-
-typedef struct Ls2DTileSheet Ls2DTileSheet;
-
-#include "libls.h"
-#include "object.h"
-
-#include "component.h"
-#include "engine.h"
-#include "entity.h"
-#include "frame.h"
-#include "input-manager.h"
-#include "scene.h"
-#include "texture-cache.h"
-
-/* Our components */
-enum Ls2DComponentID {
-        LS2D_COMP_ID_INVALID = 0,
-        LS2D_COMP_ID_POSITION = 1,
-        LS2D_COMP_ID_SPRITE = 2,
-};
-
-#include "components/position.h"
-#include "components/sprite.h"
+DEF_AUTOFREE(Ls2DTileSheet, ls2d_tile_sheet_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

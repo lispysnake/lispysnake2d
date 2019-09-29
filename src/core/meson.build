@@ -10,6 +10,7 @@ core_sources = [
      'object.c',
      'scene.c',
      'texture-cache.c',
+     'tilesheet.c',
      'components/position.c',
      'components/sprite.c',
 ]
