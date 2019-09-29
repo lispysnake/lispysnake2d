@@ -82,10 +82,10 @@ static void demo_add_baddy(LsPtrArray *baddies, Ls2DScene *scene, Ls2DTextureHan
         ls2d_entity_add_component(entity, pos);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
                                        (SDL_Point){ .x = x_offset, .y = y_offset });
-        x_offset += 120;
+        x_offset += 280;
         if (x_offset >= 3800) {
                 x_offset = 0;
-                y_offset += 120;
+                y_offset += 280;
         }
         ls2d_scene_add_entity(scene, entity);
         ls_array_add(baddies, entity);
@@ -137,6 +137,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         Ls2DTextureCache *cache = NULL;
         Ls2DTextureHandle subhandle;
         Ls2DTextureHandle subhandle2;
+        Ls2DTextureHandle subhandle3;
         Ls2DInputManager *imanager = NULL;
 
         /* Construct new engine */
@@ -154,14 +155,16 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         /* Grab our textures */
         cache = ls2d_scene_get_texture_cache(scene);
-        sheet = ls2d_tile_sheet_new_from_xml(cache,
-                                             "demo_data/Spritesheet/spaceShooter2_spritesheet.xml");
+        sheet =
+            ls2d_tile_sheet_new_from_xml(cache,
+                                         "demo_data/Spritesheet/spaceShooter2_spritesheet_2X.xml");
         subhandle = ls2d_tile_sheet_lookup(sheet, "spaceShips_009.png");
         subhandle2 = ls2d_tile_sheet_lookup(sheet, "spaceShips_003.png");
+        subhandle3 = ls2d_tile_sheet_lookup(sheet, "spaceShips_006.png");
 
         baddies = ls_ptr_array_new();
         for (int i = 0; i < 10000; i++) {
-                demo_add_baddy(baddies, scene, subhandle2);
+                demo_add_baddy(baddies, scene, (i % 2 == 0) ? subhandle2 : subhandle3);
         }
 
         /* Sort out our player */
