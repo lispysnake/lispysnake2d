@@ -24,13 +24,18 @@
 #define _GNU_SOURCE
 
 #include <SDL.h>
+#include <libxml/parser.h>
+#include <libxml/xmlversion.h>
 #include <stdlib.h>
 
 #include "engine-private.h"
 
+static bool did_init_xml = false;
 static bool did_init_sdl = false;
 static bool sdl_init(void);
 static void sdl_deinit(void);
+static bool xml_init(void);
+static void xml_deinit(void);
 static void ls2d_engine_destroy(Ls2DEngine *self);
 
 /**
@@ -70,6 +75,9 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
         Ls2DEngine *engine = NULL;
 
         if (!sdl_init()) {
+                return NULL;
+        }
+        if (!xml_init()) {
                 return NULL;
         }
 
@@ -131,6 +139,9 @@ Ls2DEngine *ls2d_engine_new_current_display()
         if (!sdl_init()) {
                 return NULL;
         }
+        if (!xml_init()) {
+                return NULL;
+        }
 
         /* Fetch current resolution, or fallback to busted default. */
         if (SDL_GetCurrentDisplayMode(0, &mode) == 0) {
@@ -176,6 +187,7 @@ static void ls2d_engine_destroy(Ls2DEngine *self)
 
 cleanup:
         sdl_deinit();
+        xml_deinit();
 }
 
 /**
@@ -286,8 +298,29 @@ static bool sdl_init()
 static void sdl_deinit()
 {
         SDL_Quit();
+        did_init_sdl = false;
 }
 
+static bool xml_init()
+{
+        if (did_init_xml) {
+                return true;
+        }
+        did_init_xml = true;
+
+        LIBXML_TEST_VERSION
+
+        return true;
+}
+
+static void xml_deinit()
+{
+        if (!did_init_xml) {
+                return;
+        }
+        xmlCleanupParser();
+        did_init_xml = false;
+}
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

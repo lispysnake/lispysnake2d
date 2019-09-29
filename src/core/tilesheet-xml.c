@@ -21,7 +21,11 @@
 
  */
 
+#include <libxml/xmlreader.h>
+
 #include "tilesheet-private.h"
+
+DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)
 
 /**
  * Attempt to load XML file.
