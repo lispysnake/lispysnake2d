@@ -85,7 +85,7 @@ static void demo_add_baddy(LsPtrArray *baddies, Ls2DScene *scene, Ls2DTextureHan
         x_offset += 120;
         if (x_offset >= 3800) {
                 x_offset = 0;
-                y_offset += 180;
+                y_offset += 120;
         }
         ls2d_scene_add_entity(scene, entity);
         ls_array_add(baddies, entity);
@@ -105,7 +105,7 @@ static bool mouse_button_callback(SDL_MouseButtonEvent *event, Ls2DFrameInfo *fr
                     (Ls2DPositionComponent *)ls2d_entity_get_component(ent, LS2D_COMP_ID_POSITION);
                 SDL_Point xy = { 0, 0 };
                 ls2d_position_component_get_xy(pos, &xy);
-                xy.y += 10;
+                xy.y += 5;
                 ls2d_position_component_set_xy(pos, xy);
         }
 
@@ -135,7 +135,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         LsPtrArray *baddies = NULL;
         Ls2DTextureCache *cache = NULL;
-        Ls2DTextureHandle handle;
         Ls2DTextureHandle subhandle;
         Ls2DTextureHandle subhandle2;
         Ls2DInputManager *imanager = NULL;
@@ -155,21 +154,11 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         cache = ls2d_scene_get_texture_cache(scene);
 
-        /* Old way of working */
-        handle =
-            ls2d_texture_cache_load_file(cache,
-                                         "demo_data/Spritesheet/spaceShooter2_spritesheet_2X.png");
-        subhandle =
-            ls2d_texture_cache_subregion(cache,
-                                         handle,
-                                         (SDL_Rect){ .x = 1365, .y = 1547, .w = 202, .h = 149 });
-        subhandle2 =
-            ls2d_texture_cache_load_file(cache, "demo_data/PNG/Sprites/Ships/spaceShips_006.png");
-
         /* New way of working */
         sheet = ls2d_tile_sheet_new_from_xml(cache,
                                              "demo_data/Spritesheet/spaceShooter2_spritesheet.xml");
         subhandle = ls2d_tile_sheet_lookup(sheet, "spaceShips_009.png");
+        subhandle2 = ls2d_tile_sheet_lookup(sheet, "spaceShips_003.png");
 
         baddies = ls_ptr_array_new();
         for (int i = 0; i < 10000; i++) {
