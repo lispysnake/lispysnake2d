@@ -27,9 +27,11 @@
 #include <libxml/xmlreader.h>
 #include <unistd.h>
 
+#include "ls2d.h"
 #include "tilesheet-private.h"
 
 DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)
+DEF_AUTOFREE(xmlChar, xmlFree)
 
 static void ls2d_tile_sheet_walk(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
                                  xmlTextReader *reader);
@@ -71,12 +73,74 @@ fail:
         return ret;
 }
 
+static void ls2d_tile_sheet_get_int_attr(xmlTextReader *reader, int *storage, const char *id)
+{
+        autofree(xmlChar) *attr = NULL;
+
+        /* TODO: Proper error checking of atoi, etc. */
+        attr = xmlTextReaderGetAttribute(reader, BAD_CAST id);
+        if (!attr) {
+                *storage = 0;
+                return;
+        }
+        *storage = atoi((const char *)attr);
+}
+
 /**
  * Walk each node and then process it.
  */
 static void ls2d_tile_sheet_walk(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
                                  xmlTextReader *reader)
 {
+        const xmlChar *name = NULL;
+
+        name = xmlTextReaderConstName(reader);
+        if (!name) {
+                return;
+        }
+
+        /* Are we in the texture atlas..? */
+        if (xmlStrEqual(name, BAD_CAST "TextureAtlas")) {
+                autofree(xmlChar) *image_path = NULL;
+
+                parser->in_atlas = !parser->in_atlas;
+                if (!parser->in_atlas) {
+                        return;
+                }
+                /* We grabbed the texture filename */
+                image_path = xmlTextReaderGetAttribute(reader, BAD_CAST "imagePath");
+                parser->texture.handle =
+                    ls2d_texture_cache_load_file(self->cache, (char *)image_path);
+                /* TODO: Check handle validity??? */
+        }
+
+        if (parser->in_atlas && xmlStrEqual(name, BAD_CAST "SubTexture")) {
+                autofree(xmlChar) *filepath = NULL;
+                Ls2DTextureHandle subhandle = 0;
+
+                parser->in_subtexture = !parser->in_subtexture;
+                ls2d_tile_sheet_get_int_attr(reader, &parser->subtexture.x, "x");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->subtexture.y, "y");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->subtexture.width, "width");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->subtexture.height, "height");
+
+                filepath = xmlTextReaderGetAttribute(reader, BAD_CAST "name");
+                if (!filepath) {
+                        fprintf(stderr, "Missing filepath for SubTexture. Dropping.\n");
+                        return;
+                }
+                subhandle = ls2d_texture_cache_subregion(self->cache,
+                                                         parser->texture.handle,
+                                                         (SDL_Rect){
+                                                             .x = parser->subtexture.x,
+                                                             .y = parser->subtexture.y,
+                                                             .w = parser->subtexture.width,
+                                                             .h = parser->subtexture.height,
+                                                         });
+                ls_hashmap_put(self->textures,
+                               strdup((const char *)filepath),
+                               LS_INT_TO_PTR(subhandle));
+        }
 }
 
 /*

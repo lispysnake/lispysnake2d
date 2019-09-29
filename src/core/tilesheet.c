@@ -26,17 +26,6 @@
 #include "tilesheet-private.h"
 
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self);
-
-/**
- * Opaque Ls2DTileSheet implementation
- */
-struct Ls2DTileSheet {
-        Ls2DObject object; /*< Parent */
-
-        LsHashmap *textures; /*< Cache of textures in a hashmap */
-        Ls2DTextureCache *cache;
-};
-
 /**
  * We don't yet do anything fancy.
  */
@@ -98,12 +87,17 @@ static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self)
 
 Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, const char *id)
 {
+        void *ret = NULL;
+
         if (ls_unlikely(!self)) {
                 return 0;
         }
 
-        /* TODO: Return actual texture handle! */
-        return 0;
+        ret = ls_hashmap_get(self->textures, (char *)id);
+        if (!ret) {
+                return 0;
+        }
+        return (Ls2DTextureHandle)LS_PTR_TO_INT(ret);
 }
 
 /*

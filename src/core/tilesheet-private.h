@@ -26,6 +26,16 @@
 #include "ls2d.h"
 
 /**
+ * Opaque Ls2DTileSheet implementation
+ */
+struct Ls2DTileSheet {
+        Ls2DObject object; /*< Parent */
+
+        LsHashmap *textures; /*< Cache of textures in a hashmap */
+        Ls2DTextureCache *cache;
+};
+
+/**
  * Private API headers for the Ls2DTileSheet implementation
  */
 
@@ -33,7 +43,7 @@ typedef struct Ls2DTileSheetXML {
         bool in_atlas;
         bool in_subtexture;
         struct {
-                char *filename;
+                Ls2DTextureHandle handle;
         } texture;
         struct {
                 int width;
