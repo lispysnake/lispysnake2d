@@ -21,18 +21,62 @@
 
  */
 
+#define _GNU_SOURCE
+
+#include <fcntl.h>
 #include <libxml/xmlreader.h>
+#include <unistd.h>
 
 #include "tilesheet-private.h"
 
 DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)
+
+static void ls2d_tile_sheet_walk(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
+                                 xmlTextReader *reader);
 
 /**
  * Attempt to load XML file.
  */
 bool ls2d_tile_sheet_parse_xml(Ls2DTileSheet *self, const char *filename)
 {
-        return false;
+        int fd = 0;
+        autofree(xmlTextReader) *reader = NULL;
+        bool ret = false;
+        int r = 0;
+        Ls2DTileSheetXML parser = { 0 };
+
+        fd = open(filename, O_RDONLY);
+        if (fd < 0) {
+                goto fail;
+        }
+
+        /* Not portable. Improve for Windows. */
+        (void)posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
+
+        reader = xmlReaderForFd(fd, filename, NULL, 0);
+        if (!reader) {
+                goto fail;
+        }
+
+        while ((r = xmlTextReaderRead(reader)) > 0) {
+                ls2d_tile_sheet_walk(self, &parser, reader);
+        }
+        ret = true;
+
+fail:
+        if (fd >= 0) {
+                close(fd);
+        }
+
+        return ret;
+}
+
+/**
+ * Walk each node and then process it.
+ */
+static void ls2d_tile_sheet_walk(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
+                                 xmlTextReader *reader)
+{
 }
 
 /*
