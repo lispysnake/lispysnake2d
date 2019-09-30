@@ -41,6 +41,23 @@ Ls2DComponent *ls2d_animation_component_new(void);
  */
 Ls2DAnimationComponent *ls2d_animation_component_unref(Ls2DAnimationComponent *self);
 
+/**
+ * Insert an animation into this component by a string ID.
+ * We can then activate animations by their name.
+ */
+bool ls2d_animation_component_add_animation(Ls2DAnimationComponent *self, const char *id,
+                                            Ls2DAnimation *animation);
+
+/**
+ * Set the current animation
+ */
+bool ls2d_animation_component_set_animation(Ls2DAnimationComponent *self, const char *id);
+
+/**
+ * Return the currently renderable animation frame
+ */
+Ls2DTextureHandle ls2d_animation_component_get_texture(Ls2DAnimationComponent *self);
+
 DEF_AUTOFREE(Ls2DAnimationComponent, ls2d_animation_component_unref)
 
 /*

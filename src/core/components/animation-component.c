@@ -21,13 +21,23 @@
 
  */
 
+#define _GNU_SOURCE
+
+#include <string.h>
+
 #include "ls2d.h"
+
+static void ls2d_animation_component_destroy(Ls2DAnimationComponent *self);
+static void ls2d_animation_component_update(Ls2DComponent *component, Ls2DTextureCache *cache,
+                                            Ls2DFrameInfo *frame);
 
 /**
  * Opaque Ls2DAnimationComponent implementation
  */
 struct Ls2DAnimationComponent {
         Ls2DComponent parent; /*< Parent */
+        LsHashmap *anims;
+        Ls2DAnimation *cur_anim;
 };
 
 /**
@@ -35,6 +45,7 @@ struct Ls2DAnimationComponent {
  */
 Ls2DObjectTable animation_component_vtable = {
         .obj_name = "Ls2DAnimationComponent",
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_animation_component_destroy,
 };
 
 Ls2DComponent *ls2d_animation_component_new()
@@ -45,9 +56,19 @@ Ls2DComponent *ls2d_animation_component_new()
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+        self->anims = ls_hashmap_new_full(ls_hashmap_string_hash,
+                                          ls_hashmap_string_equal,
+                                          free,
+                                          (ls_hashmap_free_func)ls2d_object_unref);
+        if (ls_unlikely(!self->anims)) {
+                ls2d_animation_component_destroy(self);
+                free(self);
+                return NULL;
+        }
 
         self = ls2d_object_init((Ls2DObject *)self, &animation_component_vtable);
         self->parent.comp_id = LS2D_COMP_ID_ANIMATION;
+        self->parent.update = ls2d_animation_component_update;
 
         return (Ls2DComponent *)self;
 }
@@ -55,6 +76,81 @@ Ls2DComponent *ls2d_animation_component_new()
 Ls2DAnimationComponent *ls2d_animation_component_unref(Ls2DAnimationComponent *self)
 {
         return ls2d_object_unref(self);
+}
+
+bool ls2d_animation_component_add_animation(Ls2DAnimationComponent *self, const char *id,
+                                            Ls2DAnimation *animation)
+{
+        char *id_c = NULL;
+
+        if (ls_unlikely(!self) || ls_unlikely(!animation)) {
+                return false;
+        }
+
+        id_c = strdup(id);
+        if (!id_c) {
+                return false;
+        }
+
+        if (ls_unlikely(!ls_hashmap_put(self->anims, id_c, ls2d_object_ref(animation)))) {
+                ls2d_object_unref(animation);
+                return false;
+        }
+
+        if (ls_unlikely(!self->cur_anim)) {
+                ls2d_animation_reset(self->cur_anim);
+                self->cur_anim = animation;
+        }
+
+        return true;
+}
+
+bool ls2d_animation_component_set_animation(Ls2DAnimationComponent *self, const char *id)
+{
+        Ls2DAnimation *anim = NULL;
+
+        if (ls_unlikely(!self)) {
+                return false;
+        }
+        anim = ls_hashmap_get(self->anims, (char *)id);
+        if (ls_unlikely(!anim)) {
+                return false;
+        }
+        self->cur_anim = anim;
+        ls2d_animation_reset(self->cur_anim);
+        return true;
+}
+
+static void ls2d_animation_component_destroy(Ls2DAnimationComponent *self)
+{
+        if (ls_likely(self->anims != NULL)) {
+                ls_hashmap_free(self->anims);
+        }
+}
+
+static void ls2d_animation_component_update(Ls2DComponent *component,
+                                            __ls_unused__ Ls2DTextureCache *cache,
+                                            Ls2DFrameInfo *frame)
+{
+        Ls2DAnimationComponent *self = NULL;
+
+        if (ls_unlikely(!component)) {
+                return;
+        }
+
+        self = (Ls2DAnimationComponent *)component;
+        if (ls_unlikely(!self->cur_anim)) {
+                return;
+        }
+        ls2d_animation_update(self->cur_anim, frame);
+}
+
+Ls2DTextureHandle ls2d_animation_component_get_texture(Ls2DAnimationComponent *self)
+{
+        if (ls_unlikely(!self)) {
+                return 0;
+        }
+        return ls2d_animation_get_texture(self->cur_anim);
 }
 
 /*

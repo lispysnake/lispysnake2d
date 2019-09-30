@@ -164,6 +164,26 @@ void ls2d_animation_set_looping(Ls2DAnimation *self, bool looping)
         self->looping = looping;
 }
 
+void ls2d_animation_reset(Ls2DAnimation *self)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->cur_frame = 0;
+        if (ls_unlikely(self->frames->len) < 1) {
+                return;
+        }
+        self->handle = lookup_frame(self->frames, 0)->handle;
+}
+
+Ls2DTextureHandle ls2d_animation_get_texture(Ls2DAnimation *self)
+{
+        if (ls_unlikely(!self)) {
+                return 0;
+        }
+        return self->handle;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

@@ -52,6 +52,13 @@ void ls2d_animation_update(Ls2DAnimation *self, Ls2DFrameInfo *frame);
 void ls2d_animation_set_looping(Ls2DAnimation *self, bool looping);
 
 /**
+ * Reset to first frame
+ */
+void ls2d_animation_reset(Ls2DAnimation *self);
+
+Ls2DTextureHandle ls2d_animation_get_texture(Ls2DAnimation *self);
+
+/**
  * Stop the animation.
  */
 void ls2d_animation_stop(Ls2DAnimation *self);
