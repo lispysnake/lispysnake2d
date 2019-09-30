@@ -28,152 +28,25 @@
 #include "ls2d.h"
 
 /**
- * Return an entity that will become the main player.
- */
-static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
-{
-        Ls2DEntity *entity = NULL;
-        autofree(Ls2DComponent) *sprite = NULL;
-        autofree(Ls2DComponent) *pos = NULL;
-
-        entity = ls2d_entity_new("player");
-        if (!entity) {
-                return NULL;
-        }
-        sprite = ls2d_sprite_component_new();
-        if (!sprite) {
-                return NULL;
-        }
-        pos = ls2d_position_component_new();
-        if (!pos) {
-                return NULL;
-        }
-        ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
-        ls2d_entity_add_component(entity, sprite);
-        ls2d_entity_add_component(entity, pos);
-        ls2d_scene_add_entity(scene, entity);
-
-        return entity;
-}
-
-static int x_offset = 0;
-static int y_offset = 0;
-
-static void demo_add_baddy(LsPtrArray *baddies, Ls2DScene *scene, Ls2DTextureHandle handle)
-{
-        autofree(Ls2DEntity) *entity = NULL;
-        autofree(Ls2DComponent) *sprite = NULL;
-        autofree(Ls2DComponent) *pos = NULL;
-
-        entity = ls2d_entity_new("bad_guy");
-        if (!entity) {
-                return;
-        }
-        sprite = ls2d_sprite_component_new();
-        if (!sprite) {
-                return;
-        }
-        pos = ls2d_position_component_new();
-        if (!pos) {
-                return;
-        }
-        ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
-        ls2d_entity_add_component(entity, sprite);
-        ls2d_entity_add_component(entity, pos);
-        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
-                                       (SDL_Point){ .x = x_offset, .y = y_offset });
-        x_offset += 280;
-        if (x_offset >= 3800) {
-                x_offset = 0;
-                y_offset += 280;
-        }
-        ls2d_scene_add_entity(scene, entity);
-        ls_array_add(baddies, entity);
-}
-
-static bool mouse_button_callback(SDL_MouseButtonEvent *event, Ls2DFrameInfo *frame, void *userdata)
-{
-        LsPtrArray *baddies = userdata;
-
-        /*if (event->type != SDL_MOUSEBUTTONDOWN) {
-                return false;
-        }*/
-
-        for (int i = 0; i < baddies->len; i++) {
-                Ls2DEntity *ent = baddies->data[i];
-                Ls2DPositionComponent *pos =
-                    (Ls2DPositionComponent *)ls2d_entity_get_component(ent, LS2D_COMP_ID_POSITION);
-                SDL_Point xy = { 0, 0 };
-                ls2d_position_component_get_xy(pos, &xy);
-                xy.y += 5;
-                ls2d_position_component_set_xy(pos, xy);
-        }
-
-        fprintf(stderr, "Clicked at %d %d!\n", event->x, event->y);
-        return false;
-}
-
-static bool mouse_motion_callback(SDL_MouseMotionEvent *event, Ls2DFrameInfo *frame, void *userdata)
-{
-        Ls2DEntity *ent = userdata;
-        Ls2DPositionComponent *pos =
-            (Ls2DPositionComponent *)ls2d_entity_get_component(ent, LS2D_COMP_ID_POSITION);
-        ls2d_position_component_set_xy(pos, (SDL_Point){ .x = event->x, .y = event->y });
-
-        return false;
-}
-
-/**
  * Main entry point to the demo.
  */
 int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
-        autofree(Ls2DEntity) *player = NULL;
-        autofree(Ls2DTileSheet) *sheet = NULL;
-
-        LsPtrArray *baddies = NULL;
-        Ls2DTextureCache *cache = NULL;
-        Ls2DTextureHandle subhandle;
-        Ls2DTextureHandle subhandle2;
-        Ls2DTextureHandle subhandle3;
-        Ls2DInputManager *imanager = NULL;
 
         /* Construct new engine */
         engine = ls2d_engine_new_current_display();
         if (!engine) {
                 return EXIT_FAILURE;
         }
-        ls2d_engine_set_fps_cap(engine, 1);
-
-        imanager = ls2d_engine_get_input_manager(engine);
+        ls2d_engine_set_fps_cap(engine, 60);
 
         /* Create root scene */
         scene = ls2d_scene_new("game_screen");
         ls2d_engine_add_scene(engine, scene);
 
-        /* Grab our textures */
-        cache = ls2d_scene_get_texture_cache(scene);
-        sheet =
-            ls2d_tile_sheet_new_from_xml(cache,
-                                         "demo_data/space/Spritesheet/spaceShooter2_spritesheet_2X.xml");
-        subhandle = ls2d_tile_sheet_lookup(sheet, "spaceShips_009.png");
-        subhandle2 = ls2d_tile_sheet_lookup(sheet, "spaceShips_003.png");
-        subhandle3 = ls2d_tile_sheet_lookup(sheet, "spaceShips_006.png");
-
-        baddies = ls_ptr_array_new();
-        for (int i = 0; i < 10000; i++) {
-                demo_add_baddy(baddies, scene, (i % 2 == 0) ? subhandle2 : subhandle3);
-        }
-
-        /* Sort out our player */
-        player = demo_add_player(scene, subhandle);
-
-        ls2d_input_manager_set_mouse_button_callback(imanager, mouse_button_callback, baddies);
-        ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_motion_callback, player);
         int ret = ls2d_engine_run(engine);
-        ls_array_free(baddies, NULL);
         return ret;
 }
 
