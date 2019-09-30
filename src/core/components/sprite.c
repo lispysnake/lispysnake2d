@@ -102,16 +102,7 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
                 dst.y = xy.y;
         }
 
-        if (node->subregion) {
-                SDL_RenderCopy(frame->renderer, node->texture, &node->area, &dst);
-        } else {
-                SDL_RenderCopy(frame->renderer, node->texture, NULL, &dst);
-        }
-
-        // 	<SubTexture name="spaceShips_005.png" x="344" y="1050" width="136" height="84"/>
-        // 	<SubTexture name="spaceShips_005.png" x="440" y="800" width="342" height="301"/>
-        // TODO: Use a blit approach and single SDL_RenderCopy which will be far more efficient.
-        // SDL_RenderCopy(frame->renderer, self->texture, &src, &dst);
+        SDL_RenderCopy(frame->renderer, node->texture, node->subregion ? &node->area : NULL, &dst);
 }
 
 /*
