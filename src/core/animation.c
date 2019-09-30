@@ -156,6 +156,14 @@ void ls2d_animation_stop(Ls2DAnimation *self)
         self->playing = false;
 }
 
+void ls2d_animation_set_looping(Ls2DAnimation *self, bool looping)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->looping = looping;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

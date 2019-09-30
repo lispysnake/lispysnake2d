@@ -27,10 +27,6 @@
 #include "libls.h"
 #include "ls2d.h"
 
-static Ls2DTextureHandle handles[11];
-static int animation_frame = 0;
-static int n_frames = LS_ARRAY_SIZE(handles);
-
 /**
  * Return an entity that will become the main player.
  */
@@ -62,16 +58,6 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
         return entity;
 }
 
-static bool my_callback(SDL_MouseButtonEvent *event, Ls2DFrameInfo *frame, void *userdata)
-{
-        Ls2DEntity *player = userdata;
-        Ls2DComponent *sprite = ls2d_entity_get_component(player, LS2D_COMP_ID_SPRITE);
-        ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite,
-                                          handles[animation_frame % n_frames]);
-        animation_frame++;
-        return true;
-}
-
 /**
  * Main entry point to the demo.
  */
@@ -81,8 +67,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DScene) *scene = NULL;
         autofree(Ls2DEntity) *player = NULL;
         autofree(Ls2DTileSheet) *sheet = NULL;
-        Ls2DInputManager *imanager = NULL;
-
+        autofree(Ls2DAnimation) *walking = NULL;
         Ls2DTextureCache *cache = NULL;
 
         /* Construct new engine */
@@ -100,23 +85,23 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         cache = ls2d_scene_get_texture_cache(scene);
         sheet = ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player1.xml");
 
-        handles[0] = ls2d_tile_sheet_lookup(sheet, "p1_walk01.png");
-        handles[1] = ls2d_tile_sheet_lookup(sheet, "p1_walk02.png");
-        handles[2] = ls2d_tile_sheet_lookup(sheet, "p1_walk03.png");
-        handles[3] = ls2d_tile_sheet_lookup(sheet, "p1_walk04.png");
-        handles[4] = ls2d_tile_sheet_lookup(sheet, "p1_walk05.png");
-        handles[5] = ls2d_tile_sheet_lookup(sheet, "p1_walk06.png");
-        handles[6] = ls2d_tile_sheet_lookup(sheet, "p1_walk07.png");
-        handles[7] = ls2d_tile_sheet_lookup(sheet, "p1_walk08.png");
-        handles[8] = ls2d_tile_sheet_lookup(sheet, "p1_walk09.png");
-        handles[9] = ls2d_tile_sheet_lookup(sheet, "p1_walk10.png");
-        handles[10] = ls2d_tile_sheet_lookup(sheet, "p1_walk11.png");
+        walking = ls2d_animation_new();
+        ls2d_animation_set_looping(walking, true);
+        const uint32_t duration = 1000 / 20;
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk01.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk02.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk03.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk04.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk05.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk06.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk07.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk08.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk09.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk10.png"), duration);
+        ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk11.png"), duration);
 
         /* Sort out our player */
-        player = demo_add_player(scene, handles[0]);
-
-        imanager = ls2d_engine_get_input_manager(engine);
-        ls2d_input_manager_set_mouse_button_callback(imanager, my_callback, player);
+        player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"));
 
         int ret = ls2d_engine_run(engine);
         return ret;
