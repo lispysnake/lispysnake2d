@@ -69,6 +69,47 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
 }
 
 /**
+ * Return an entity that will become an NPC
+ */
+static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
+                                Ls2DAnimation *animation)
+{
+        Ls2DEntity *entity = NULL;
+        autofree(Ls2DComponent) *sprite = NULL;
+        autofree(Ls2DComponent) *pos = NULL;
+        autofree(Ls2DComponent) *anim = NULL;
+
+        entity = ls2d_entity_new("npc");
+        if (!entity) {
+                return NULL;
+        }
+        sprite = ls2d_sprite_component_new();
+        if (!sprite) {
+                return NULL;
+        }
+        pos = ls2d_position_component_new();
+        if (!pos) {
+                return NULL;
+        }
+        anim = ls2d_animation_component_new();
+        if (!anim) {
+                return NULL;
+        }
+        ls2d_animation_component_add_animation((Ls2DAnimationComponent *)anim,
+                                               "walking",
+                                               animation);
+        ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
+        ls2d_entity_add_component(entity, sprite);
+        ls2d_entity_add_component(entity, pos);
+        ls2d_entity_add_component(entity, anim);
+        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
+                                       (SDL_Point){ .x = 500, .y = 300 });
+        ls2d_scene_add_entity(scene, entity);
+
+        return entity;
+}
+
+/**
  * Main entry point to the demo.
  */
 int main(__ls_unused__ int argc, __ls_unused__ char **argv)
@@ -76,8 +117,11 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
         autofree(Ls2DEntity) *player = NULL;
+        autofree(Ls2DEntity) *npc = NULL;
         autofree(Ls2DTileSheet) *sheet = NULL;
+        autofree(Ls2DTileSheet) *sheet_npc = NULL;
         autofree(Ls2DAnimation) *walking = NULL;
+        autofree(Ls2DAnimation) *walking_npc = NULL;
         Ls2DTextureCache *cache = NULL;
 
         /* Construct new engine */
@@ -94,10 +138,12 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         /* Grab our textures */
         cache = ls2d_scene_get_texture_cache(scene);
         sheet = ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player1.xml");
+        sheet_npc =
+            ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player3.xml");
 
         walking = ls2d_animation_new();
         ls2d_animation_set_looping(walking, true);
-        const uint32_t duration = 1000 / 20;
+        uint32_t duration = 1000 / 20;
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk01.png"), duration);
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk02.png"), duration);
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk03.png"), duration);
@@ -112,6 +158,45 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         /* Sort out our player */
         player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"), walking);
+
+        walking_npc = ls2d_animation_new();
+        duration = 1000 / 25;
+        ls2d_animation_set_looping(walking_npc, true);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk01.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk02.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk03.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk04.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk05.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk06.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk07.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk08.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk09.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk10.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking_npc,
+                                 ls2d_tile_sheet_lookup(sheet_npc, "p3_walk11.png"),
+                                 duration);
+
+        npc = demo_add_npc(scene, ls2d_tile_sheet_lookup(sheet_npc, "p3_stand.png"), walking_npc);
 
         int ret = ls2d_engine_run(engine);
         return ret;
