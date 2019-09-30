@@ -21,56 +21,41 @@
 
  */
 
-#pragma once
+#include "ls2d.h"
 
 /**
- * This is the main inclusion header for lispysnake2d and will take care
- * of including any component headers.
+ * Opaque Ls2DAnimationComponent implementation
  */
-
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-typedef struct Ls2DInputManager Ls2DInputManager;
-typedef struct Ls2DEngine Ls2DEngine;
-typedef struct Ls2DComponent Ls2DComponent;
-typedef struct Ls2DEntity Ls2DEntity;
-typedef struct Ls2DFrameInfo Ls2DFrameInfo;
-typedef struct Ls2DObject Ls2DObject;
-typedef struct Ls2DScene Ls2DScene;
-
-typedef uint16_t Ls2DTextureHandle;
-typedef struct Ls2DTextureCache Ls2DTextureCache;
-typedef struct Ls2DTextureNode Ls2DTextureNode;
-
-typedef struct Ls2DTileSheet Ls2DTileSheet;
-typedef struct Ls2DAnimation Ls2DAnimation;
-
-#include "libls.h"
-#include "object.h"
-
-#include "animation.h"
-#include "component.h"
-#include "engine.h"
-#include "entity.h"
-#include "frame.h"
-#include "input-manager.h"
-#include "scene.h"
-#include "texture-cache.h"
-#include "tilesheet.h"
-
-/* Our components */
-enum Ls2DComponentID {
-        LS2D_COMP_ID_INVALID = 0,
-        LS2D_COMP_ID_POSITION,
-        LS2D_COMP_ID_SPRITE,
-        LS2D_COMP_ID_ANIMATION,
+struct Ls2DAnimationComponent {
+        Ls2DComponent parent; /*< Parent */
 };
 
-#include "components/animation-component.h"
-#include "components/position.h"
-#include "components/sprite.h"
+/**
+ * We don't yet do anything fancy.
+ */
+Ls2DObjectTable animation_component_vtable = {
+        .obj_name = "Ls2DAnimationComponent",
+};
+
+Ls2DComponent *ls2d_animation_component_new()
+{
+        Ls2DAnimationComponent *self = NULL;
+
+        self = calloc(1, sizeof(struct Ls2DAnimationComponent));
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+
+        self = ls2d_object_init((Ls2DObject *)self, &animation_component_vtable);
+        self->parent.comp_id = LS2D_COMP_ID_ANIMATION;
+
+        return (Ls2DComponent *)self;
+}
+
+Ls2DAnimationComponent *ls2d_animation_component_unref(Ls2DAnimationComponent *self)
+{
+        return ls2d_object_unref(self);
+}
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
