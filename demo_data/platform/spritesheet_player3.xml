@@ -1,0 +1,18 @@
+<TextureAtlas imagePath="demo_data/platform/Player/p3_spritesheet.png">
+	<SubTexture name="p3_duck.png" x="365" y="98" width="69" height="71"/>
+	<SubTexture name="p3_front.png" x="0" y="196" width="66" height="92"/>
+	<SubTexture name="p3_hurt.png" x="438" y="0" width="69" height="92"/>
+	<SubTexture name="p3_jump.png" x="438" y="93" width="67" height="94"/>
+	<SubTexture name="p3_stand.png" x="67" y="196" width="66" height="92"/>
+	<SubTexture name="p3_walk01.png" x="0" y="0" width="72" height="97"/>
+	<SubTexture name="p3_walk02.png" x="73" y="0" width="72" height="97"/>
+	<SubTexture name="p3_walk03.png" x="146" y="0" width="72" height="97"/>
+	<SubTexture name="p3_walk04.png" x="0" y="98" width="72" height="97"/>
+	<SubTexture name="p3_walk05.png" x="73" y="98" width="72" height="97"/>
+	<SubTexture name="p3_walk06.png" x="146" y="98" width="72" height="97"/>
+	<SubTexture name="p3_walk07.png" x="219" y="0" width="72" height="97"/>
+	<SubTexture name="p3_walk08.png" x="292" y="0" width="72" height="97"/>
+	<SubTexture name="p3_walk09.png" x="219" y="98" width="72" height="97"/>
+	<SubTexture name="p3_walk10.png" x="365" y="0" width="72" height="97"/>
+	<SubTexture name="p3_walk11.png" x="292" y="98" width="72" height="97"/>
+</TextureAtlas>
