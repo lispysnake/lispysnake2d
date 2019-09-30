@@ -1,6 +1,7 @@
 # Build the core library portion
 
 core_sources = [
+     'animation.c',
      'component.c',
      'entity.c',
      'engine.c',
