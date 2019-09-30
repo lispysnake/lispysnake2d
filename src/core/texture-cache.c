@@ -54,13 +54,6 @@ Ls2DObjectTable texture_cache_vtable = {
         .obj_name = "Ls2DTextureCache",
 };
 
-__attribute__((always_inline)) static inline Ls2DTextureNode *lookup_node(void *cache,
-                                                                          Ls2DTextureHandle handle)
-{
-        Ls2DTextureNode *root = cache;
-        return &(root[handle]);
-}
-
 Ls2DTextureCache *ls2d_texture_cache_new()
 {
         Ls2DTextureCache *self = NULL;
@@ -147,6 +140,13 @@ static void clear_texture(Ls2DTextureNode *node)
         if (node->filename) {
                 free(node->filename);
         }
+}
+
+__attribute__((always_inline)) static inline Ls2DTextureNode *lookup_node(void *cache,
+                                                                          Ls2DTextureHandle handle)
+{
+        Ls2DTextureNode *root = cache;
+        return &(root[handle]);
 }
 
 static void ls2d_texture_cache_destroy(Ls2DTextureCache *self)
