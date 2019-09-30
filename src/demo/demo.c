@@ -28,15 +28,51 @@
 #include "ls2d.h"
 
 /**
+ * Return an entity that will become the main player.
+ */
+static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
+{
+        Ls2DEntity *entity = NULL;
+        autofree(Ls2DComponent) *sprite = NULL;
+        autofree(Ls2DComponent) *pos = NULL;
+
+        entity = ls2d_entity_new("player");
+        if (!entity) {
+                return NULL;
+        }
+        sprite = ls2d_sprite_component_new();
+        if (!sprite) {
+                return NULL;
+        }
+        pos = ls2d_position_component_new();
+        if (!pos) {
+                return NULL;
+        }
+        ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
+        ls2d_entity_add_component(entity, sprite);
+        ls2d_entity_add_component(entity, pos);
+        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
+                                       (SDL_Point){ .x = 300, .y = 300 });
+        ls2d_scene_add_entity(scene, entity);
+
+        return entity;
+}
+
+/**
  * Main entry point to the demo.
  */
 int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
+        autofree(Ls2DEntity) *player = NULL;
+        autofree(Ls2DTileSheet) *sheet = NULL;
+
+        Ls2DTextureCache *cache = NULL;
+        Ls2DTextureHandle subhandle;
 
         /* Construct new engine */
-        engine = ls2d_engine_new_current_display();
+        engine = ls2d_engine_new(800, 600);
         if (!engine) {
                 return EXIT_FAILURE;
         }
@@ -45,6 +81,14 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         /* Create root scene */
         scene = ls2d_scene_new("game_screen");
         ls2d_engine_add_scene(engine, scene);
+
+        /* Grab our textures */
+        cache = ls2d_scene_get_texture_cache(scene);
+        sheet = ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player1.xml");
+        subhandle = ls2d_tile_sheet_lookup(sheet, "p1_walk02.png");
+
+        /* Sort out our player */
+        player = demo_add_player(scene, subhandle);
 
         int ret = ls2d_engine_run(engine);
         return ret;
