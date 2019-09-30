@@ -35,6 +35,27 @@ Ls2DAnimation *ls2d_animation_new(void);
  */
 Ls2DAnimation *ls2d_animation_unref(Ls2DAnimation *self);
 
+/**
+ * Add a frame to the animation. Duration is given in ms.
+ */
+bool ls2d_animation_add_frame(Ls2DAnimation *self, Ls2DTextureHandle handle, uint32_t duration);
+
+/**
+ * Update the animation. This should only be called by the owning objects.
+ */
+void ls2d_animation_update(Ls2DAnimation *self, Ls2DFrameInfo *frame);
+
+/**
+ * Set the animation to loop.
+ * Typically we loop by default.
+ */
+void ls2d_animation_set_looping(Ls2DAnimation *self, bool looping);
+
+/**
+ * Stop the animation.
+ */
+void ls2d_animation_stop(Ls2DAnimation *self);
+
 DEF_AUTOFREE(Ls2DAnimation, ls2d_animation_unref)
 
 /*

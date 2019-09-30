@@ -30,6 +30,10 @@ struct Ls2DAnimation {
 
         /* Dynamic storage of frames */
         LsArray *frames;
+        uint16_t cur_frame;
+        Ls2DTextureHandle handle;
+        bool looping;
+        bool playing;
 };
 
 /**
@@ -38,7 +42,7 @@ struct Ls2DAnimation {
  */
 typedef struct Ls2DAnimationFrame {
         uint32_t duration;
-        Ls2DTextureHandle texture;
+        Ls2DTextureHandle handle;
 } Ls2DAnimationFrame;
 
 /**
@@ -57,6 +61,9 @@ Ls2DAnimation *ls2d_animation_new()
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+        self->cur_frame = 0;
+        self->looping = true;
+        self->playing = true;
         self->frames = ls_array_new_size(sizeof(struct Ls2DAnimationFrame), 3);
         if (ls_unlikely(!self->frames)) {
                 free(self);
@@ -74,6 +81,79 @@ Ls2DAnimation *ls2d_animation_unref(Ls2DAnimation *self)
 static void ls2d_animation_destroy(Ls2DAnimation *self)
 {
         ls_array_free(self->frames, NULL);
+}
+
+__attribute__((always_inline)) static inline Ls2DAnimationFrame *lookup_frame(void *cache,
+                                                                              uint16_t index)
+{
+        Ls2DAnimationFrame *root = cache;
+        return &(root[index]);
+}
+
+bool ls2d_animation_add_frame(Ls2DAnimation *self, Ls2DTextureHandle handle, uint32_t duration)
+{
+        Ls2DAnimationFrame *frame = NULL;
+        uint16_t index = 0;
+
+        if (ls_unlikely(!self)) {
+                return false;
+        }
+        if (ls_unlikely(!ls_array_add(self->frames, NULL))) {
+                return false;
+        }
+
+        index = (uint16_t)(self->frames->len - 1);
+        frame = lookup_frame(self->frames->data, index);
+        if (ls_unlikely(!frame)) {
+                return false;
+        }
+        frame->handle = handle;
+        frame->duration = duration;
+        return true;
+}
+
+void ls2d_animation_update(Ls2DAnimation *self, Ls2DFrameInfo *frame)
+{
+        Ls2DAnimationFrame *cur_frame = NULL;
+
+        if (ls_unlikely(!self)) {
+                return;
+        }
+
+        if (ls_unlikely(!self->playing)) {
+                return;
+        }
+
+        if (ls_unlikely(self->frames->len < 1)) {
+                return;
+        }
+
+        cur_frame = lookup_frame(self->frames, self->cur_frame);
+        self->handle = cur_frame->handle;
+
+        /* If we don't need to update... don't */
+        if (frame->ticks < cur_frame->duration) {
+                return;
+        }
+
+        if (self->cur_frame > self->frames->len - 1) {
+                if (self->looping) {
+                        ls2d_animation_stop(self);
+                        return;
+                }
+                self->cur_frame = 0;
+        }
+
+        cur_frame = lookup_frame(self->frames, self->cur_frame);
+        self->handle = cur_frame->handle;
+}
+
+void ls2d_animation_stop(Ls2DAnimation *self)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->playing = false;
 }
 
 /*
