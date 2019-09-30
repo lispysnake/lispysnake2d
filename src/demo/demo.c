@@ -157,7 +157,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         cache = ls2d_scene_get_texture_cache(scene);
         sheet =
             ls2d_tile_sheet_new_from_xml(cache,
-                                         "demo_data/Spritesheet/spaceShooter2_spritesheet_2X.xml");
+                                         "demo_data/space/Spritesheet/spaceShooter2_spritesheet_2X.xml");
         subhandle = ls2d_tile_sheet_lookup(sheet, "spaceShips_009.png");
         subhandle2 = ls2d_tile_sheet_lookup(sheet, "spaceShips_003.png");
         subhandle3 = ls2d_tile_sheet_lookup(sheet, "spaceShips_006.png");

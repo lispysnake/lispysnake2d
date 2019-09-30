@@ -5,5 +5,5 @@ of developing the demos.
 
 Copyright:
 
-Demos are available under the terms of the CC0 license, and currently we only use demos from
+Assets are available under the terms of the CC0 license, and currently we only use assets from
 the wonderful [Kenney](https://opengameart.org/users/kenney)
