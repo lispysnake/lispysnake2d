@@ -98,8 +98,8 @@ bool ls2d_animation_component_add_animation(Ls2DAnimationComponent *self, const 
         }
 
         if (ls_unlikely(!self->cur_anim)) {
-                ls2d_animation_reset(self->cur_anim);
                 self->cur_anim = animation;
+                ls2d_animation_reset(self->cur_anim);
         }
 
         return true;

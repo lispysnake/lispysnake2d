@@ -34,11 +34,12 @@
  * to give them information about the current frame pass.
  */
 struct Ls2DFrameInfo {
-        uint32_t tick_start;    /**<First tick */
-        uint32_t ticks;         /**<Current tick count */
-        uint32_t prev_ticks;    /**<Previous tick count */
-        SDL_Renderer *renderer; /**<Current renderer */
-        SDL_Window *window;     /**<Displayed window */
+        uint32_t tick_start;     /**<First tick */
+        uint32_t ticks;          /**<Current tick count */
+        uint32_t prev_ticks;     /**<Previous tick count */
+        uint32_t tick_increment; /**<Tick increment from last */
+        SDL_Renderer *renderer;  /**<Current renderer */
+        SDL_Window *window;      /**<Displayed window */
         uint32_t frames[5];
         uint32_t i_frame;
         uint32_t tick_delay;
@@ -53,6 +54,7 @@ __attribute__((always_inline)) inline void ls2d_frame_info_init(Ls2DFrameInfo *f
 __attribute__((always_inline)) inline void ls2d_frame_info_tick(Ls2DFrameInfo *frame)
 {
         frame->ticks = SDL_GetTicks() - frame->tick_start;
+        frame->tick_increment = frame->ticks - frame->prev_ticks;
         frame->frames[frame->i_frame % 5] = frame->ticks - frame->prev_ticks;
         frame->i_frame++;
 }

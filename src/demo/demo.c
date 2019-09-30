@@ -30,11 +30,13 @@
 /**
  * Return an entity that will become the main player.
  */
-static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
+static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
+                                   Ls2DAnimation *animation)
 {
         Ls2DEntity *entity = NULL;
         autofree(Ls2DComponent) *sprite = NULL;
         autofree(Ls2DComponent) *pos = NULL;
+        autofree(Ls2DComponent) *anim = NULL;
 
         entity = ls2d_entity_new("player");
         if (!entity) {
@@ -48,9 +50,17 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle)
         if (!pos) {
                 return NULL;
         }
+        anim = ls2d_animation_component_new();
+        if (!anim) {
+                return NULL;
+        }
+        ls2d_animation_component_add_animation((Ls2DAnimationComponent *)anim,
+                                               "walking",
+                                               animation);
         ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
         ls2d_entity_add_component(entity, sprite);
         ls2d_entity_add_component(entity, pos);
+        ls2d_entity_add_component(entity, anim);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
                                        (SDL_Point){ .x = 300, .y = 300 });
         ls2d_scene_add_entity(scene, entity);
@@ -101,7 +111,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk11.png"), duration);
 
         /* Sort out our player */
-        player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"));
+        player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"), walking);
 
         int ret = ls2d_engine_run(engine);
         return ret;

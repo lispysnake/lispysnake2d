@@ -82,12 +82,20 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
                                 Ls2DFrameInfo *frame)
 {
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
+        Ls2DAnimationComponent *anim = NULL;
         Ls2DComponent *pos = NULL;
         SDL_Rect area = { 0, 0, 0, 0 };
         SDL_Point xy = { 0, 0 };
+        Ls2DTextureHandle handle = self->handle;
+
+        anim = (Ls2DAnimationComponent *)ls2d_entity_get_component(component->parent_entity,
+                                                                   LS2D_COMP_ID_ANIMATION);
+        if (anim) {
+                handle = ls2d_animation_component_get_texture(anim);
+        }
 
         /* Grab a texture */
-        const Ls2DTextureNode *node = ls2d_texture_cache_lookup(cache, frame, self->handle);
+        const Ls2DTextureNode *node = ls2d_texture_cache_lookup(cache, frame, handle);
         if (!node) {
                 return;
         }

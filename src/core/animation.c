@@ -32,6 +32,7 @@ struct Ls2DAnimation {
         LsArray *frames;
         uint16_t cur_frame;
         Ls2DTextureHandle handle;
+        uint32_t ticks;
         bool looping;
         bool playing;
 };
@@ -109,6 +110,7 @@ bool ls2d_animation_add_frame(Ls2DAnimation *self, Ls2DTextureHandle handle, uin
         }
         frame->handle = handle;
         frame->duration = duration;
+
         return true;
 }
 
@@ -128,23 +130,29 @@ void ls2d_animation_update(Ls2DAnimation *self, Ls2DFrameInfo *frame)
                 return;
         }
 
-        cur_frame = lookup_frame(self->frames, self->cur_frame);
+        self->ticks += frame->tick_increment;
+        cur_frame = lookup_frame(self->frames->data, self->cur_frame);
         self->handle = cur_frame->handle;
 
         /* If we don't need to update... don't */
-        if (frame->ticks < cur_frame->duration) {
+        if (self->ticks < cur_frame->duration) {
                 return;
         }
 
+        self->cur_frame++;
+
         if (self->cur_frame > self->frames->len - 1) {
-                if (self->looping) {
+                if (!self->looping) {
                         ls2d_animation_stop(self);
                         return;
                 }
                 self->cur_frame = 0;
+                self->ticks = 0;
+        } else {
+                self->ticks = frame->tick_increment;
         }
 
-        cur_frame = lookup_frame(self->frames, self->cur_frame);
+        cur_frame = lookup_frame(self->frames->data, self->cur_frame);
         self->handle = cur_frame->handle;
 }
 
@@ -170,10 +178,11 @@ void ls2d_animation_reset(Ls2DAnimation *self)
                 return;
         }
         self->cur_frame = 0;
+        self->ticks = 0;
         if (ls_unlikely(self->frames->len) < 1) {
                 return;
         }
-        self->handle = lookup_frame(self->frames, 0)->handle;
+        self->handle = lookup_frame(self->frames->data, 0)->handle;
 }
 
 Ls2DTextureHandle ls2d_animation_get_texture(Ls2DAnimation *self)
