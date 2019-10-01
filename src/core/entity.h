@@ -26,36 +26,50 @@
 #include "ls2d.h"
 
 /**
- * Construct a new Ls2DBasicEntity with the given name
+ * Ls2DEntity is a virtual type that other entities may inherit from.
  */
-Ls2DBasicEntity *ls2d_basic_entity_new(const char *name);
+struct Ls2DEntity {
+        Ls2DObject object;
+
+        /* Draw callback that all components should implemented */
+        void (*draw)(struct Ls2DEntity *, Ls2DTextureCache *, Ls2DFrameInfo *);
+
+        /* Update callback that all components should implement */
+        void (*update)(struct Ls2DEntity *, Ls2DTextureCache *, Ls2DFrameInfo *);
+
+        /* Add a component. Must be implemented by subtypes. */
+        void (*add_component)(struct Ls2DEntity *, Ls2DComponent *);
+
+        /* Get a component. Must be implemented by subtypes */
+        Ls2DComponent *(*get_component)(struct Ls2DEntity *, int component_id);
+};
 
 /**
- * Inform the entity that all components need to draw now
+ * Inform the component it needs to draw now.
  */
-void ls2d_basic_entity_draw(Ls2DBasicEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
+void ls2d_entity_draw(Ls2DEntity *self, Ls2DTextureCache *, Ls2DFrameInfo *info);
 
 /**
- * Inform the entity that all components need to update now.
+ * Inform the component it needs to update now.
  */
-void ls2d_basic_entity_update(Ls2DBasicEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
+void ls2d_entity_update(Ls2DEntity *self, Ls2DTextureCache *, Ls2DFrameInfo *info);
 
 /**
  * Add a component to the entity.
  */
-void ls2d_basic_entity_add_component(Ls2DBasicEntity *self, Ls2DComponent *component);
+void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component);
 
 /**
  * Retrieve a component by ID
  */
-Ls2DComponent *ls2d_basic_entity_get_component(Ls2DBasicEntity *self, int component_id);
+Ls2DComponent *ls2d_entity_get_component(Ls2DEntity *self, int component_id);
 
 /**
- * Unref the allocated Ls2DBasicEntity
+ * Unref a previously allocated Ls2DEntity
  */
-Ls2DBasicEntity *ls2d_basic_entity_unref(Ls2DBasicEntity *self);
+Ls2DEntity *ls2d_entity_unref(Ls2DEntity *self);
 
-DEF_AUTOFREE(Ls2DBasicEntity, ls2d_basic_entity_unref)
+DEF_AUTOFREE(Ls2DEntity, ls2d_entity_unref)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

@@ -7,6 +7,7 @@ core_sources = [
      'engine.c',
      'engine-draw.c',
      'engine-update.c',
+     'entity.c',
      'input-manager.c',
      'object.c',
      'scene.c',
