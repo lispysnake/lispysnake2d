@@ -34,6 +34,8 @@
 struct Ls2DSpriteComponent {
         Ls2DComponent parent; /*< Parent */
         Ls2DTextureHandle handle;
+        SDL_RendererFlip flip;
+        double rotation;
 };
 
 static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DTextureCache *cache,
@@ -57,6 +59,8 @@ Ls2DComponent *ls2d_sprite_component_new()
 
         self = ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
 
+        self->flip = SDL_FLIP_NONE;
+        self->rotation = 0.0;
         self->parent.draw = ls2d_sprite_component_draw;
         self->parent.comp_id = LS2D_COMP_ID_SPRITE;
 
@@ -110,7 +114,30 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
                 dst.y = xy.y;
         }
 
-        SDL_RenderCopy(frame->renderer, node->texture, node->subregion ? &node->area : NULL, &dst);
+        /* TODO: Add anchor support. */
+        SDL_RenderCopyEx(frame->renderer,
+                         node->texture,
+                         node->subregion ? &node->area : NULL,
+                         &dst,
+                         self->rotation,
+                         NULL,
+                         self->flip);
+}
+
+void ls2d_sprite_component_set_flip(Ls2DSpriteComponent *self, SDL_RendererFlip flip)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->flip = flip;
+}
+
+void ls2d_sprite_component_set_rotation(Ls2DSpriteComponent *self, double rotation)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->rotation = rotation;
 }
 
 /*

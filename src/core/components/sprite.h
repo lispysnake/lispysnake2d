@@ -43,6 +43,10 @@ Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self);
 
 void ls2d_sprite_component_set_texture(Ls2DSpriteComponent *self, Ls2DTextureHandle handle);
 
+void ls2d_sprite_component_set_flip(Ls2DSpriteComponent *self, SDL_RendererFlip flip);
+
+void ls2d_sprite_component_set_rotation(Ls2DSpriteComponent *self, double rotation);
+
 DEF_AUTOFREE(Ls2DSpriteComponent, ls2d_sprite_component_unref)
 
 /*
