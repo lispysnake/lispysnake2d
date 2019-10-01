@@ -24,12 +24,12 @@
 #include "ls2d.h"
 
 static void ls2d_basic_entity_destroy(Ls2DBasicEntity *self);
-static void ls2d_basic_entity_draw(Ls2DBasicEntity *self, Ls2DTextureCache *cache,
+static void ls2d_basic_entity_draw(Ls2DEntity *entity, Ls2DTextureCache *cache,
                                    Ls2DFrameInfo *frame);
-static void ls2d_basic_entity_update(Ls2DBasicEntity *self, Ls2DTextureCache *cache,
+static void ls2d_basic_entity_update(Ls2DEntity *entity, Ls2DTextureCache *cache,
                                      Ls2DFrameInfo *frame);
-static void ls2d_basic_entity_add_component(Ls2DBasicEntity *self, Ls2DComponent *component);
-static Ls2DComponent *ls2d_basic_entity_get_component(Ls2DBasicEntity *self, int component_id);
+static void ls2d_basic_entity_add_component(Ls2DEntity *entity, Ls2DComponent *component);
+static Ls2DComponent *ls2d_basic_entity_get_component(Ls2DEntity *entity, int component_id);
 
 struct Ls2DBasicEntity {
         Ls2DEntity parent;
@@ -89,12 +89,15 @@ static void ls2d_basic_entity_destroy(Ls2DBasicEntity *self)
         ls_array_free(self->components, free_component);
 }
 
-static void ls2d_basic_entity_add_component(Ls2DBasicEntity *self, Ls2DComponent *component)
+static void ls2d_basic_entity_add_component(Ls2DEntity *entity, Ls2DComponent *component)
 {
+        Ls2DBasicEntity *self = (Ls2DBasicEntity *)entity;
+
         if (ls_unlikely(!self) || ls_unlikely(!component)) {
                 SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DBasicEntity not correctly initialised");
                 return;
         }
+
         ls2d_component_set_parent_entity(component, (Ls2DEntity *)self);
         ls_array_add(self->components, ls2d_object_ref(component));
 }
@@ -102,9 +105,11 @@ static void ls2d_basic_entity_add_component(Ls2DBasicEntity *self, Ls2DComponent
 /**
  * Inform the entity that all components need to draw now
  */
-static void ls2d_basic_entity_draw(Ls2DBasicEntity *self, Ls2DTextureCache *cache,
+static void ls2d_basic_entity_draw(Ls2DEntity *entity, Ls2DTextureCache *cache,
                                    Ls2DFrameInfo *frame)
 {
+        Ls2DBasicEntity *self = (Ls2DBasicEntity *)entity;
+
         for (uint16_t i = 0; i < self->components->len; i++) {
                 Ls2DComponent *comp = self->components->data[i];
                 ls2d_component_draw(comp, cache, frame);
@@ -114,9 +119,11 @@ static void ls2d_basic_entity_draw(Ls2DBasicEntity *self, Ls2DTextureCache *cach
 /**
  * Inform the entity that all components need to update now.
  */
-static void ls2d_basic_entity_update(Ls2DBasicEntity *self, Ls2DTextureCache *cache,
+static void ls2d_basic_entity_update(Ls2DEntity *entity, Ls2DTextureCache *cache,
                                      Ls2DFrameInfo *frame)
 {
+        Ls2DBasicEntity *self = (Ls2DBasicEntity *)entity;
+
         bool had_init = self->had_init;
         for (uint16_t i = 0; i < self->components->len; i++) {
                 Ls2DComponent *comp = self->components->data[i];
@@ -130,12 +137,11 @@ static void ls2d_basic_entity_update(Ls2DBasicEntity *self, Ls2DTextureCache *ca
         }
 }
 
-static Ls2DComponent *ls2d_basic_entity_get_component(Ls2DBasicEntity *self, int component_id)
+static Ls2DComponent *ls2d_basic_entity_get_component(Ls2DEntity *entity, int component_id)
 {
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
+        Ls2DBasicEntity *self = (Ls2DBasicEntity *)entity;
 
+        self = (Ls2DBasicEntity *)entity;
         /* Easier to have a map in future. */
         for (uint16_t i = 0; i < self->components->len; i++) {
                 Ls2DComponent *comp = self->components->data[i];
