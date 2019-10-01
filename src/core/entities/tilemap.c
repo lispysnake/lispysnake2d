@@ -24,8 +24,11 @@
 #include "ls2d.h"
 
 struct Ls2DTileMap {
-        Ls2DObject parent;
+        Ls2DEntity parent;
 };
+
+static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
+static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
 
 /**
  * We don't yet do anything fancy.
@@ -34,7 +37,7 @@ Ls2DObjectTable tilemap_vtable = {
         .obj_name = "Ls2DTileMap",
 };
 
-Ls2DTileMap *ls2d_tilemap_new()
+Ls2DEntity *ls2d_tilemap_new()
 {
         Ls2DTileMap *self = NULL;
 
@@ -42,13 +45,23 @@ Ls2DTileMap *ls2d_tilemap_new()
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+        self->parent.draw = ls2d_tilemap_draw;
+        self->parent.update = ls2d_tilemap_update;
 
-        return ls2d_object_init((Ls2DObject *)self, &tilemap_vtable);
+        return (Ls2DEntity *)ls2d_object_init((Ls2DObject *)self, &tilemap_vtable);
 }
 
 Ls2DTileMap *ls2d_tilemap_unref(Ls2DTileMap *self)
 {
         return ls2d_object_unref(self);
+}
+
+static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
+{
+}
+
+static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
+{
 }
 
 /*

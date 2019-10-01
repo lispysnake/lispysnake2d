@@ -30,7 +30,7 @@
 /**
  * Construct a new Ls2DTileMap
  */
-Ls2DTileMap *ls2d_tilemap_new(void);
+Ls2DEntity *ls2d_tilemap_new(void);
 
 /**
  * Unref a previously allocated tileMap
