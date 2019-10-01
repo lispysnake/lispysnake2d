@@ -30,7 +30,17 @@
 /**
  * Construct a new Ls2DTileMap
  */
-Ls2DEntity *ls2d_tilemap_new(void);
+Ls2DEntity *ls2d_tilemap_new(int tilesize, uint16_t map_width, uint16_t map_height);
+
+/**
+ * Attempt to insert a new layer in the map
+ */
+bool ls2d_tilemap_add_layer(Ls2DTileMap *map, int render_index);
+
+/**
+ * Set the gid in the given layer, at X by Y
+ */
+bool ls2d_tilemap_set(Ls2DTileMap *map, int layer_index, int x, int y, uint32_t gid);
 
 /**
  * Unref a previously allocated tileMap

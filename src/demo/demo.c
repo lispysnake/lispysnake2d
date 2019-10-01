@@ -112,14 +112,23 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene)
 {
         Ls2DEntity *entity = NULL;
 
-        entity = ls2d_tilemap_new();
+        entity = ls2d_tilemap_new(32, 5, 5);
         if (!entity) {
+                abort();
                 return NULL;
         }
 
         ls2d_scene_add_entity(scene, entity);
 
         /* TODO: Actually populate the tilemap! */
+        if (!ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 0, 0, 12)) {
+                abort();
+        }
+        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 2, 0, 12);
+        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 2, 0, 12);
+        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 3, 0, 12);
+        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 4, 0, 12);
+        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 4, 4, 12);
         return entity;
 }
 

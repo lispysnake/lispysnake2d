@@ -124,7 +124,9 @@ bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DEntity *entity)
                 return false;
         }
 
-        ls2d_camera_get_entity_position(entity, &pos_x, &pos_y);
+        if (!ls2d_camera_get_entity_position(entity, &pos_x, &pos_y)) {
+                return true;
+        }
 
         if (pos_x > self->world_bounds.w || pos_x < self->world_bounds.x) {
                 return false;

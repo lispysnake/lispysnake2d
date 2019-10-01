@@ -25,8 +25,19 @@
 
 struct Ls2DTileMap {
         Ls2DEntity parent;
+        int tile_size;
+        uint16_t width;
+        uint16_t height;
+        ;
+        LsArray *layers; /**<An array of Ls2DTileMapLayer */
 };
 
+typedef struct Ls2DTileMapLayer {
+        int render_index; /**<TODO: Shorten to uint8_t */
+        uint32_t *tiles;
+} Ls2DTileMapLayer;
+
+static void ls2d_tilemap_destroy(Ls2DTileMap *self);
 static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
 static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
 
@@ -35,9 +46,10 @@ static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2
  */
 Ls2DObjectTable tilemap_vtable = {
         .obj_name = "Ls2DTileMap",
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_tilemap_destroy,
 };
 
-Ls2DEntity *ls2d_tilemap_new()
+Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
 {
         Ls2DTileMap *self = NULL;
 
@@ -45,10 +57,27 @@ Ls2DEntity *ls2d_tilemap_new()
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+        self->layers = ls_array_new_size(sizeof(struct Ls2DTileMapLayer), 5);
+        if (ls_unlikely(!self->layers)) {
+                goto bail;
+        }
+
         self->parent.draw = ls2d_tilemap_draw;
         self->parent.update = ls2d_tilemap_update;
+        self->width = width;
+        self->height = height;
+        self->tile_size = tile_size;
+
+        if (ls_unlikely(!ls2d_tilemap_add_layer(self, 0))) {
+                goto bail;
+        }
 
         return (Ls2DEntity *)ls2d_object_init((Ls2DObject *)self, &tilemap_vtable);
+
+bail:
+        ls2d_tilemap_destroy(self->layers);
+        free(self);
+        return NULL;
 }
 
 Ls2DTileMap *ls2d_tilemap_unref(Ls2DTileMap *self)
@@ -56,8 +85,85 @@ Ls2DTileMap *ls2d_tilemap_unref(Ls2DTileMap *self)
         return ls2d_object_unref(self);
 }
 
+__attribute__((always_inline)) static inline Ls2DTileMapLayer *lookup_layer(void *cache, int index)
+{
+        Ls2DTileMapLayer *root = cache;
+        return &(root[index]);
+}
+
+static void ls2d_tilemap_free_layer(void *v)
+{
+        Ls2DTileMapLayer *layer = v;
+        if (ls_likely(layer->tiles != NULL)) {
+                free(layer->tiles);
+        }
+}
+
+static void ls2d_tilemap_destroy(Ls2DTileMap *self)
+{
+        if (ls_unlikely(!self->layers)) {
+                return;
+        }
+
+        for (uint16_t i = 0; i < self->layers->len; i++) {
+                Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
+                ls2d_tilemap_free_layer(layer);
+        }
+        ls_array_free(self->layers, NULL);
+}
+
+bool ls2d_tilemap_add_layer(Ls2DTileMap *self, int render_index)
+{
+        Ls2DTileMapLayer *layer = NULL;
+
+        if (ls_unlikely(!self)) {
+                return false;
+        }
+        if (!ls_array_add(self->layers, NULL)) {
+                return false;
+        }
+        uint16_t index = (uint32_t)(self->layers->len - 1);
+        layer = lookup_layer(self->layers->data, index);
+        layer->render_index = render_index;
+        layer->tiles = calloc(sizeof(uint32_t), self->width * self->height);
+        if (ls_unlikely(!layer->tiles)) {
+                return false;
+        }
+        return true;
+}
+
+bool ls2d_tilemap_set(Ls2DTileMap *self, int layer_index, int x, int y, uint32_t gid)
+{
+        Ls2DTileMapLayer *layer = NULL;
+
+        if (ls_unlikely(!self)) {
+                return false;
+        }
+
+        layer = lookup_layer(self->layers->data, layer_index);
+        if (ls_unlikely(!layer)) {
+                return false;
+        }
+        const int index = x + self->width * y;
+        layer->tiles[index] = gid;
+        return true;
+}
+
 static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
+        Ls2DTileMap *self = (Ls2DTileMap *)entity;
+
+        for (uint16_t i = 0; i < self->layers->len; i++) {
+                Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
+
+                for (uint16_t x = 0; x < self->width; x++) {
+                        for (uint16_t y = 0; y < self->height; y++) {
+                                uint32_t tile = layer->tiles[x + self->width * y];
+                                fprintf(stderr, "%d ", tile);
+                        }
+                        fprintf(stderr, "\n");
+                }
+        }
 }
 
 static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
