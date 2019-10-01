@@ -36,7 +36,9 @@ struct Ls2DScene {
         const char *name;
 
         LsPtrArray *entities;        /**<Our list of entities to render. */
+        LsHashmap *cameras;          /**<Our set of cameras */
         Ls2DTextureCache *tex_cache; /**< Our private texture cache. */
+        Ls2DCamera *active_camera;
 };
 
 /**
@@ -59,17 +61,26 @@ Ls2DScene *ls2d_scene_new(const char *name)
         self->name = name;
         self->entities = ls_ptr_array_new();
         if (ls_unlikely(!self->entities)) {
-                free(self);
-                return NULL;
+                goto bail;
         }
         self->tex_cache = ls2d_texture_cache_new();
         if (ls_unlikely(!self->tex_cache)) {
-                ls_array_free(self->entities, NULL);
-                free(self);
-                return NULL;
+                goto bail;
+        }
+        self->cameras = ls_hashmap_new_full(ls_hashmap_string_hash,
+                                            ls_hashmap_string_equal,
+                                            free,
+                                            (ls_hashmap_free_func)ls2d_camera_unref);
+        if (ls_unlikely(!self->cameras)) {
+                goto bail;
         }
 
         return ls2d_object_init((Ls2DObject *)self, &scene_vtable);
+
+bail:
+        ls2d_scene_destroy(self);
+        free(self);
+        return NULL;
 }
 
 Ls2DScene *ls2d_scene_unref(Ls2DScene *self)
@@ -84,8 +95,15 @@ static inline void free_entity(void *v)
 
 static void ls2d_scene_destroy(Ls2DScene *self)
 {
-        ls_array_free(self->entities, free_entity);
-        ls2d_texture_cache_unref(self->tex_cache);
+        if (ls_likely(self->entities != NULL)) {
+                ls_array_free(self->entities, free_entity);
+        }
+        if (ls_likely(self->tex_cache != NULL)) {
+                ls2d_texture_cache_unref(self->tex_cache);
+        }
+        if (ls_likely(self->cameras != NULL)) {
+                ls_hashmap_free(self->cameras);
+        }
 }
 
 const char *ls2d_scene_get_name(Ls2DScene *self)
