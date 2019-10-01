@@ -108,6 +108,21 @@ static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
         return entity;
 }
 
+static Ls2DEntity *add_tilemap(Ls2DScene *scene)
+{
+        Ls2DEntity *entity = NULL;
+
+        entity = ls2d_tilemap_new();
+        if (!entity) {
+                return NULL;
+        }
+
+        ls2d_scene_add_entity(scene, entity);
+
+        /* TODO: Actually populate the tilemap! */
+        return entity;
+}
+
 static bool mouse_callback(SDL_MouseMotionEvent *event, Ls2DFrameInfo *frame, void *userdata)
 {
         Ls2DCamera *camera = userdata;
@@ -124,6 +139,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DScene) *scene = NULL;
         autofree(Ls2DEntity) *player = NULL;
         autofree(Ls2DEntity) *npc = NULL;
+        autofree(Ls2DEntity) *tilemap = NULL;
         autofree(Ls2DTileSheet) *sheet = NULL;
         autofree(Ls2DTileSheet) *sheet_npc = NULL;
         autofree(Ls2DAnimation) *walking = NULL;
@@ -215,6 +231,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_camera_set_world_bounds(camera, world_bounds);
         ls2d_camera_set_xy(camera, (SDL_Point){ .x = 0, .y = 500 });
         ls2d_scene_add_camera(scene, "primary", camera);
+
+        tilemap = add_tilemap(scene);
 
         imanager = ls2d_engine_get_input_manager(engine);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_callback, camera);
