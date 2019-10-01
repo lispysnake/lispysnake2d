@@ -26,7 +26,7 @@
 #include "ls2d.h"
 
 /**
- * ls2d_animation_component adds drawable behaviours to an Ls2DBasicEntity.
+ * ls2d_animation_component adds drawable behaviours to an Ls2DEntity.
  */
 typedef struct Ls2DAnimationComponent Ls2DAnimationComponent;
 

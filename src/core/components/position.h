@@ -26,7 +26,7 @@
 #include "ls2d.h"
 
 /**
- * Ls2DPositionComponent adds drawable behaviours to an Ls2DBasicEntity.
+ * Ls2DPositionComponent adds drawable behaviours to an Ls2DEntity.
  */
 typedef struct Ls2DPositionComponent Ls2DPositionComponent;
 

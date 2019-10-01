@@ -50,7 +50,7 @@ void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
 Ls2DComponent *ls2d_entity_get_component(Ls2DEntity *self, int component_id)
 {
         if (ls_unlikely(!self) || ls_unlikely(!self->get_component)) {
-                return;
+                return NULL;
         }
         return self->get_component(self, component_id);
 }

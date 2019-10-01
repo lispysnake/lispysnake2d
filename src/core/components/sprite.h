@@ -26,7 +26,7 @@
 #include "ls2d.h"
 
 /**
- * Ls2DSpriteComponent adds drawable behaviours to an Ls2DBasicEntity.
+ * Ls2DSpriteComponent adds drawable behaviours to an Ls2DEntity.
  */
 typedef struct Ls2DSpriteComponent Ls2DSpriteComponent;
 

@@ -52,9 +52,9 @@ void ls2d_camera_set_xy(Ls2DCamera *self, SDL_Point lookat);
 /**
  * Returns true if the entity is within the bounds of the camera.
  */
-bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DBasicEntity *entity);
+bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DEntity *entity);
 
-bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DBasicEntity *entity, int *x, int *y);
+bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, int *x, int *y);
 
 /**
  * Update the camera

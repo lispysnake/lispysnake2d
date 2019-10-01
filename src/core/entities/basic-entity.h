@@ -28,27 +28,7 @@
 /**
  * Construct a new Ls2DBasicEntity with the given name
  */
-Ls2DBasicEntity *ls2d_basic_entity_new(const char *name);
-
-/**
- * Inform the entity that all components need to draw now
- */
-void ls2d_basic_entity_draw(Ls2DBasicEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
-
-/**
- * Inform the entity that all components need to update now.
- */
-void ls2d_basic_entity_update(Ls2DBasicEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
-
-/**
- * Add a component to the entity.
- */
-void ls2d_basic_entity_add_component(Ls2DBasicEntity *self, Ls2DComponent *component);
-
-/**
- * Retrieve a component by ID
- */
-Ls2DComponent *ls2d_basic_entity_get_component(Ls2DBasicEntity *self, int component_id);
+Ls2DEntity *ls2d_basic_entity_new(const char *name);
 
 /**
  * Unref the allocated Ls2DBasicEntity

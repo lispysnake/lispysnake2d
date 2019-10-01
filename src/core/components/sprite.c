@@ -91,8 +91,8 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
         SDL_Point xy = { 0, 0 };
         Ls2DTextureHandle handle = self->handle;
 
-        anim = (Ls2DAnimationComponent *)ls2d_basic_entity_get_component(component->parent_entity,
-                                                                         LS2D_COMP_ID_ANIMATION);
+        anim = (Ls2DAnimationComponent *)ls2d_entity_get_component(component->parent_entity,
+                                                                   LS2D_COMP_ID_ANIMATION);
         if (anim) {
                 handle = ls2d_animation_component_get_texture(anim);
         }

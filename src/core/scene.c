@@ -93,7 +93,7 @@ Ls2DScene *ls2d_scene_unref(Ls2DScene *self)
 
 static inline void free_entity(void *v)
 {
-        (void)ls2d_basic_entity_unref(v);
+        (void)ls2d_entity_unref(v);
 }
 
 static void ls2d_scene_destroy(Ls2DScene *self)
@@ -125,7 +125,7 @@ Ls2DTextureCache *ls2d_scene_get_texture_cache(Ls2DScene *self)
         return self->tex_cache;
 }
 
-static bool ls2d_scene_should_render(Ls2DScene *self, Ls2DBasicEntity *entity)
+static bool ls2d_scene_should_render(Ls2DScene *self, Ls2DEntity *entity)
 {
         if (ls_unlikely(!entity)) {
                 return false;
@@ -139,7 +139,7 @@ static bool ls2d_scene_should_render(Ls2DScene *self, Ls2DBasicEntity *entity)
         return true;
 }
 
-void ls2d_scene_add_entity(Ls2DScene *self, Ls2DBasicEntity *entity)
+void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity)
 {
         if (ls_unlikely(!self) || ls_unlikely(!entity)) {
                 SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DScene not yet initialised");
@@ -153,11 +153,11 @@ void ls2d_scene_add_entity(Ls2DScene *self, Ls2DBasicEntity *entity)
 void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
         for (uint16_t i = 0; i < self->entities->len; i++) {
-                Ls2DBasicEntity *entity = self->entities->data[i];
+                Ls2DEntity *entity = self->entities->data[i];
                 if (!ls2d_scene_should_render(self, entity)) {
                         continue;
                 }
-                ls2d_basic_entity_draw(entity, self->tex_cache, frame);
+                ls2d_entity_draw(entity, self->tex_cache, frame);
         }
 }
 
@@ -171,8 +171,8 @@ void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame)
         }
 
         for (uint16_t i = 0; i < self->entities->len; i++) {
-                Ls2DBasicEntity *entity = self->entities->data[i];
-                ls2d_basic_entity_update(entity, self->tex_cache, frame);
+                Ls2DEntity *entity = self->entities->data[i];
+                ls2d_entity_update(entity, self->tex_cache, frame);
         }
 }
 
