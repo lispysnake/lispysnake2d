@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+typedef struct Ls2DCamera Ls2DCamera;
 typedef struct Ls2DInputManager Ls2DInputManager;
 typedef struct Ls2DEngine Ls2DEngine;
 typedef struct Ls2DComponent Ls2DComponent;
@@ -51,6 +52,7 @@ typedef struct Ls2DAnimation Ls2DAnimation;
 #include "object.h"
 
 #include "animation.h"
+#include "camera.h"
 #include "component.h"
 #include "engine.h"
 #include "entity.h"

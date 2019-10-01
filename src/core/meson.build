@@ -2,6 +2,7 @@
 
 core_sources = [
      'animation.c',
+     'camera.c',
      'component.c',
      'entity.c',
      'engine.c',
