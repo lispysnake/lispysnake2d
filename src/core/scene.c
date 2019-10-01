@@ -21,8 +21,11 @@
 
  */
 
+#define _GNU_SOURCE
+
 #include <SDL.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ls2d.h"
 
@@ -122,6 +125,20 @@ Ls2DTextureCache *ls2d_scene_get_texture_cache(Ls2DScene *self)
         return self->tex_cache;
 }
 
+static bool ls2d_scene_should_render(Ls2DScene *self, Ls2DEntity *entity)
+{
+        if (ls_unlikely(!entity)) {
+                return false;
+        }
+        if (ls_unlikely(!self->active_camera)) {
+                return true;
+        }
+        if (!ls2d_camera_entity_in_bounds(self->active_camera, entity)) {
+                return false;
+        }
+        return true;
+}
+
 void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity)
 {
         if (ls_unlikely(!self) || ls_unlikely(!entity)) {
@@ -137,16 +154,50 @@ void ls2d_scene_draw(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
         for (uint16_t i = 0; i < self->entities->len; i++) {
                 Ls2DEntity *entity = self->entities->data[i];
+                if (!ls2d_scene_should_render(self, entity)) {
+                        continue;
+                }
                 ls2d_entity_draw(entity, self->tex_cache, frame);
         }
 }
 
 void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame)
 {
+        if (ls_likely(self->active_camera != NULL)) {
+                ls2d_camera_update(self->active_camera, frame);
+                frame->camera = self->active_camera;
+        } else {
+                frame->camera = NULL;
+        }
+
         for (uint16_t i = 0; i < self->entities->len; i++) {
                 Ls2DEntity *entity = self->entities->data[i];
                 ls2d_entity_update(entity, self->tex_cache, frame);
         }
+}
+
+bool ls2d_scene_add_camera(Ls2DScene *self, const char *id, Ls2DCamera *camera)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!camera)) {
+                return false;
+        }
+
+        char *id_c = strdup(id);
+        if (ls_unlikely(!id_c)) {
+                return false;
+        }
+
+        if (ls_unlikely(!ls_hashmap_put(self->cameras, id_c, ls2d_object_ref(camera)))) {
+                ls2d_camera_unref(camera);
+                free(id_c);
+                return false;
+        }
+
+        if (ls_unlikely(!self->active_camera)) {
+                self->active_camera = camera;
+        }
+
+        return true;
 }
 
 /*

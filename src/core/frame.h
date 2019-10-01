@@ -40,6 +40,7 @@ struct Ls2DFrameInfo {
         uint32_t tick_increment; /**<Tick increment from last */
         SDL_Renderer *renderer;  /**<Current renderer */
         SDL_Window *window;      /**<Displayed window */
+        Ls2DCamera *camera;      /**<Offset support. We need a sprite batcher. */
         uint32_t frames[5];
         uint32_t i_frame;
         uint32_t tick_delay;

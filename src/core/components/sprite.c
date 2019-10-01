@@ -87,7 +87,6 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
 {
         Ls2DSpriteComponent *self = (Ls2DSpriteComponent *)component;
         Ls2DAnimationComponent *anim = NULL;
-        Ls2DComponent *pos = NULL;
         SDL_Rect area = { 0, 0, 0, 0 };
         SDL_Point xy = { 0, 0 };
         Ls2DTextureHandle handle = self->handle;
@@ -108,8 +107,10 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
 
         /* Try setting up proper X, Y based on position component */
         SDL_Rect dst = { area.x, area.y, node->area.w, node->area.h };
-        pos = ls2d_entity_get_component(component->parent_entity, LS2D_COMP_ID_POSITION);
-        if (ls2d_position_component_get_xy((Ls2DPositionComponent *)pos, &xy)) {
+        if (ls2d_camera_convert_entity_position(frame->camera,
+                                                component->parent_entity,
+                                                &xy.x,
+                                                &xy.y)) {
                 dst.x = xy.x;
                 dst.y = xy.y;
         }

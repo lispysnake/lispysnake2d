@@ -56,6 +56,8 @@ void ls2d_scene_update(Ls2DScene *self, Ls2DFrameInfo *frame);
  */
 void ls2d_scene_add_entity(Ls2DScene *self, Ls2DEntity *entity);
 
+bool ls2d_scene_add_camera(Ls2DScene *self, const char *id, Ls2DCamera *camera);
+
 /**
  * Return access to the texture cache
  */

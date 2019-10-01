@@ -23,18 +23,43 @@
 
 #pragma once
 
+#include <SDL.h>
+
 #include "ls2d.h"
 
 /**
  * Construct a new Ls2DCamera. This allows manipulation of the view
  * within a scene. Without a camera, all scenes are static.
  */
-Ls2DCamera *ls2d_camera_new(void);
+Ls2DCamera *ls2d_camera_new(Ls2DScene *scene);
 
 /**
  * Unref a previously allocated camera
  */
 Ls2DCamera *ls2d_camera_unref(Ls2DCamera *self);
+
+/**
+ * Set the bounds for the camera.
+ */
+void ls2d_camera_set_world_bounds(Ls2DCamera *self, SDL_Rect bounds);
+
+/**
+ * Set the X,Y for the camera to look at.
+ * This function will automatically adjust to the world bounds.
+ */
+void ls2d_camera_set_xy(Ls2DCamera *self, SDL_Point lookat);
+
+/**
+ * Returns true if the entity is within the bounds of the camera.
+ */
+bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DEntity *entity);
+
+bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, int *x, int *y);
+
+/**
+ * Update the camera
+ */
+void ls2d_camera_update(Ls2DCamera *self, Ls2DFrameInfo *frame);
 
 DEF_AUTOFREE(Ls2DCamera, ls2d_camera_unref)
 

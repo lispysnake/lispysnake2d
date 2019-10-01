@@ -61,8 +61,7 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
         ls2d_entity_add_component(entity, sprite);
         ls2d_entity_add_component(entity, pos);
         ls2d_entity_add_component(entity, anim);
-        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
-                                       (SDL_Point){ .x = 300, .y = 300 });
+        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos, (SDL_Point){ .x = 0, .y = 0 });
         ls2d_scene_add_entity(scene, entity);
 
         return entity;
@@ -103,7 +102,7 @@ static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
         ls2d_entity_add_component(entity, pos);
         ls2d_entity_add_component(entity, anim);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
-                                       (SDL_Point){ .x = 500, .y = 300 });
+                                       (SDL_Point){ .x = 500, .y = 50 });
         ls2d_scene_add_entity(scene, entity);
 
         return entity;
@@ -122,6 +121,11 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DTileSheet) *sheet_npc = NULL;
         autofree(Ls2DAnimation) *walking = NULL;
         autofree(Ls2DAnimation) *walking_npc = NULL;
+        autofree(Ls2DCamera) *camera = NULL;
+        SDL_Rect world_bounds = { 0 };
+        world_bounds.w = 1024;
+        world_bounds.h = 600;
+
         Ls2DTextureCache *cache = NULL;
 
         /* Construct new engine */
@@ -197,6 +201,11 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
                                  duration);
 
         npc = demo_add_npc(scene, ls2d_tile_sheet_lookup(sheet_npc, "p3_stand.png"), walking_npc);
+
+        camera = ls2d_camera_new(scene);
+        ls2d_camera_set_world_bounds(camera, world_bounds);
+        ls2d_camera_set_xy(camera, (SDL_Point){ .x = 0, .y = 500 });
+        ls2d_scene_add_camera(scene, "primary", camera);
 
         int ret = ls2d_engine_run(engine);
         return ret;

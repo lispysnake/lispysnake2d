@@ -21,10 +21,16 @@
 
  */
 
+#include <assert.h>
+
 #include "ls2d.h"
 
 struct Ls2DCamera {
         Ls2DObject parent;
+        SDL_Rect world_bounds; /**< The current world size. */
+        SDL_Rect view;         /**< The current view size */
+        SDL_Point look_at;     /**<Where we're aimed at. */
+        Ls2DScene *scene;
 };
 
 /**
@@ -34,14 +40,19 @@ Ls2DObjectTable camera_vtable = {
         .obj_name = "Ls2DCamera",
 };
 
-Ls2DCamera *ls2d_camera_new()
+Ls2DCamera *ls2d_camera_new(Ls2DScene *scene)
 {
         Ls2DCamera *self = NULL;
+
+        if (!scene) {
+                return NULL;
+        }
 
         self = calloc(1, sizeof(struct Ls2DCamera));
         if (ls_unlikely(!self)) {
                 return NULL;
         }
+        self->scene = scene;
 
         return ls2d_object_init((Ls2DObject *)self, &camera_vtable);
 }
@@ -49,6 +60,95 @@ Ls2DCamera *ls2d_camera_new()
 Ls2DCamera *ls2d_camera_unref(Ls2DCamera *self)
 {
         return ls2d_object_unref(self);
+}
+
+void ls2d_camera_set_world_bounds(Ls2DCamera *self, SDL_Rect world_bounds)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        assert(world_bounds.w > 0);
+        assert(world_bounds.h > 0);
+        self->world_bounds = world_bounds;
+}
+
+void ls2d_camera_set_xy(Ls2DCamera *self, SDL_Point look_at)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->look_at = look_at;
+        /* TODO: Update camera properly. */
+}
+
+static bool ls2d_camera_get_entity_position(Ls2DCamera *self, Ls2DEntity *entity, int *pos_x,
+                                            int *pos_y)
+{
+        *pos_x = 0;
+        *pos_y = 0;
+
+        Ls2DComponent *position = NULL;
+        SDL_Rect real_pos = { 0 };
+        position = ls2d_entity_get_component(entity, LS2D_COMP_ID_POSITION);
+        if (!ls2d_position_component_get_xy((Ls2DSpriteComponent *)position, &real_pos)) {
+                return false;
+        }
+        *pos_x = real_pos.x;
+        *pos_y = real_pos.y;
+        return true;
+}
+
+bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, int *pos_x,
+                                         int *pos_y)
+{
+        int r_pos_x = 0, r_pos_y = 0;
+
+        if (ls_unlikely(!self) || ls_unlikely(!entity)) {
+                return false;
+        }
+
+        if (!ls2d_camera_get_entity_position(self, entity, &r_pos_x, &r_pos_y)) {
+                return false;
+        }
+
+        *pos_x = r_pos_x + self->look_at.x;
+        *pos_y = r_pos_y + self->look_at.y;
+
+        return true;
+}
+
+bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DEntity *entity)
+{
+        int pos_x = 0, pos_y = 0;
+
+        if (ls_unlikely(!self) || ls_unlikely(!entity)) {
+                return false;
+        }
+
+        ls2d_camera_get_entity_position(self, entity, &pos_x, &pos_y);
+
+        if (pos_x > self->world_bounds.w || pos_x < self->world_bounds.x) {
+                return false;
+        }
+        if (pos_y > self->world_bounds.h || pos_y < self->world_bounds.y) {
+                return false;
+        }
+
+        return true;
+}
+
+void ls2d_camera_update(Ls2DCamera *self, Ls2DFrameInfo *frame)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        /* If we have a logical size, use it. Otherwise, real size. */
+        SDL_RenderGetLogicalSize(frame->renderer, &self->view.w, &self->view.h);
+        if (self->view.w == 0) {
+                SDL_GetRendererOutputSize(frame->renderer, &self->view.w, &self->view.h);
+        }
+
+        /* TODO: Update camera to point at correct place. */
 }
 
 /*
