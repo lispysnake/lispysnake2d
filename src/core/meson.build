@@ -14,6 +14,7 @@ core_sources = [
      'texture-cache.c',
      'tilesheet.c',
      'tilesheet-xml.c',
+     'tilemap.c',
      'components/animation-component.c',
      'components/position.c',
      'components/sprite.c',

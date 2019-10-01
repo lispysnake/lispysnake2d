@@ -47,6 +47,7 @@ typedef struct Ls2DTextureNode Ls2DTextureNode;
 
 typedef struct Ls2DTileSheet Ls2DTileSheet;
 typedef struct Ls2DAnimation Ls2DAnimation;
+typedef struct Ls2DTileMap Ls2DTileMap;
 
 #include "libls.h"
 #include "object.h"
@@ -60,6 +61,7 @@ typedef struct Ls2DAnimation Ls2DAnimation;
 #include "input-manager.h"
 #include "scene.h"
 #include "texture-cache.h"
+#include "tilemap.h"
 #include "tilesheet.h"
 
 /* Our components */
