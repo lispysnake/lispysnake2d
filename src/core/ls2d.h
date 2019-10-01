@@ -36,7 +36,7 @@ typedef struct Ls2DCamera Ls2DCamera;
 typedef struct Ls2DInputManager Ls2DInputManager;
 typedef struct Ls2DEngine Ls2DEngine;
 typedef struct Ls2DComponent Ls2DComponent;
-typedef struct Ls2DEntity Ls2DEntity;
+typedef struct Ls2DBasicEntity Ls2DBasicEntity;
 typedef struct Ls2DFrameInfo Ls2DFrameInfo;
 typedef struct Ls2DObject Ls2DObject;
 typedef struct Ls2DScene Ls2DScene;
@@ -56,13 +56,14 @@ typedef struct Ls2DTileMap Ls2DTileMap;
 #include "camera.h"
 #include "component.h"
 #include "engine.h"
-#include "entity.h"
 #include "frame.h"
 #include "input-manager.h"
 #include "scene.h"
 #include "texture-cache.h"
-#include "tilemap.h"
 #include "tilesheet.h"
+
+#include "entities/entity.h"
+#include "entities/tilemap.h"
 
 /* Our components */
 enum Ls2DComponentID {

@@ -52,7 +52,7 @@ Ls2DComponent *ls2d_component_unref(Ls2DComponent *self)
         return ls2d_object_unref(self);
 }
 
-void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DEntity *entity)
+void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DBasicEntity *entity)
 
 {
         if (ls_unlikely(!self)) {
@@ -61,7 +61,7 @@ void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DEntity *entity)
         self->parent_entity = entity;
 }
 
-Ls2DEntity *ls2d_component_get_parent_entity(Ls2DComponent *self)
+Ls2DBasicEntity *ls2d_component_get_parent_entity(Ls2DComponent *self)
 {
         if (ls_unlikely(!self)) {
                 return NULL;

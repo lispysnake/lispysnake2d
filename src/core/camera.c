@@ -81,7 +81,7 @@ void ls2d_camera_set_xy(Ls2DCamera *self, SDL_Point look_at)
         /* TODO: Update camera properly. */
 }
 
-static bool ls2d_camera_get_entity_position(Ls2DCamera *self, Ls2DEntity *entity, int *pos_x,
+static bool ls2d_camera_get_entity_position(Ls2DCamera *self, Ls2DBasicEntity *entity, int *pos_x,
                                             int *pos_y)
 {
         *pos_x = 0;
@@ -89,7 +89,7 @@ static bool ls2d_camera_get_entity_position(Ls2DCamera *self, Ls2DEntity *entity
 
         Ls2DComponent *position = NULL;
         SDL_Rect real_pos = { 0 };
-        position = ls2d_entity_get_component(entity, LS2D_COMP_ID_POSITION);
+        position = ls2d_basic_entity_get_component(entity, LS2D_COMP_ID_POSITION);
         if (!ls2d_position_component_get_xy((Ls2DSpriteComponent *)position, &real_pos)) {
                 return false;
         }
@@ -98,7 +98,7 @@ static bool ls2d_camera_get_entity_position(Ls2DCamera *self, Ls2DEntity *entity
         return true;
 }
 
-bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, int *pos_x,
+bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DBasicEntity *entity, int *pos_x,
                                          int *pos_y)
 {
         int r_pos_x = 0, r_pos_y = 0;
@@ -117,7 +117,7 @@ bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, i
         return true;
 }
 
-bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DEntity *entity)
+bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DBasicEntity *entity)
 {
         int pos_x = 0, pos_y = 0;
 

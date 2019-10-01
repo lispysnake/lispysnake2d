@@ -23,9 +23,9 @@
 
 #include "ls2d.h"
 
-static void ls2d_entity_destroy(Ls2DEntity *self);
+static void ls2d_basic_entity_destroy(Ls2DBasicEntity *self);
 
-struct Ls2DEntity {
+struct Ls2DBasicEntity {
         Ls2DObject parent;
 
         const char *name;
@@ -39,15 +39,15 @@ struct Ls2DEntity {
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable entity_vtable = {
-        .destroy = (ls2d_object_vfunc_destroy)ls2d_entity_destroy,
-        .obj_name = "Ls2DEntity",
+        .destroy = (ls2d_object_vfunc_destroy)ls2d_basic_entity_destroy,
+        .obj_name = "Ls2DBasicEntity",
 };
 
-Ls2DEntity *ls2d_entity_new(const char *name)
+Ls2DBasicEntity *ls2d_basic_entity_new(const char *name)
 {
-        Ls2DEntity *self = NULL;
+        Ls2DBasicEntity *self = NULL;
 
-        self = calloc(1, sizeof(struct Ls2DEntity));
+        self = calloc(1, sizeof(struct Ls2DBasicEntity));
         if (ls_unlikely(!self)) {
                 return NULL;
         }
@@ -63,7 +63,7 @@ Ls2DEntity *ls2d_entity_new(const char *name)
         return ls2d_object_init((Ls2DObject *)self, &entity_vtable);
 }
 
-Ls2DEntity *ls2d_entity_unref(Ls2DEntity *self)
+Ls2DBasicEntity *ls2d_basic_entity_unref(Ls2DBasicEntity *self)
 {
         return ls2d_object_unref(self);
 }
@@ -73,15 +73,15 @@ static inline void free_component(void *v)
         (void)ls2d_component_unref(v);
 }
 
-static void ls2d_entity_destroy(Ls2DEntity *self)
+static void ls2d_basic_entity_destroy(Ls2DBasicEntity *self)
 {
         ls_array_free(self->components, free_component);
 }
 
-void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
+void ls2d_basic_entity_add_component(Ls2DBasicEntity *self, Ls2DComponent *component)
 {
         if (ls_unlikely(!self) || ls_unlikely(!component)) {
-                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DEntity not correctly initialised");
+                SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ls2DBasicEntity not correctly initialised");
                 return;
         }
         ls2d_component_set_parent_entity(component, self);
@@ -91,7 +91,7 @@ void ls2d_entity_add_component(Ls2DEntity *self, Ls2DComponent *component)
 /**
  * Inform the entity that all components need to draw now
  */
-void ls2d_entity_draw(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
+void ls2d_basic_entity_draw(Ls2DBasicEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         for (uint16_t i = 0; i < self->components->len; i++) {
                 Ls2DComponent *comp = self->components->data[i];
@@ -102,7 +102,7 @@ void ls2d_entity_draw(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *
 /**
  * Inform the entity that all components need to update now.
  */
-void ls2d_entity_update(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
+void ls2d_basic_entity_update(Ls2DBasicEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         bool had_init = self->had_init;
         for (uint16_t i = 0; i < self->components->len; i++) {
@@ -117,7 +117,7 @@ void ls2d_entity_update(Ls2DEntity *self, Ls2DTextureCache *cache, Ls2DFrameInfo
         }
 }
 
-Ls2DComponent *ls2d_entity_get_component(Ls2DEntity *self, int component_id)
+Ls2DComponent *ls2d_basic_entity_get_component(Ls2DBasicEntity *self, int component_id)
 {
         if (ls_unlikely(!self)) {
                 return NULL;

@@ -30,15 +30,15 @@
 /**
  * Return an entity that will become the main player.
  */
-static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
-                                   Ls2DAnimation *animation)
+static Ls2DBasicEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
+                                        Ls2DAnimation *animation)
 {
-        Ls2DEntity *entity = NULL;
+        Ls2DBasicEntity *entity = NULL;
         autofree(Ls2DComponent) *sprite = NULL;
         autofree(Ls2DComponent) *pos = NULL;
         autofree(Ls2DComponent) *anim = NULL;
 
-        entity = ls2d_entity_new("player");
+        entity = ls2d_basic_entity_new("player");
         if (!entity) {
                 return NULL;
         }
@@ -58,9 +58,9 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
                                                "walking",
                                                animation);
         ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
-        ls2d_entity_add_component(entity, sprite);
-        ls2d_entity_add_component(entity, pos);
-        ls2d_entity_add_component(entity, anim);
+        ls2d_basic_entity_add_component(entity, sprite);
+        ls2d_basic_entity_add_component(entity, pos);
+        ls2d_basic_entity_add_component(entity, anim);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos, (SDL_Point){ .x = 0, .y = 0 });
         ls2d_scene_add_entity(scene, entity);
 
@@ -70,15 +70,15 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
 /**
  * Return an entity that will become an NPC
  */
-static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
-                                Ls2DAnimation *animation)
+static Ls2DBasicEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
+                                     Ls2DAnimation *animation)
 {
-        Ls2DEntity *entity = NULL;
+        Ls2DBasicEntity *entity = NULL;
         autofree(Ls2DComponent) *sprite = NULL;
         autofree(Ls2DComponent) *pos = NULL;
         autofree(Ls2DComponent) *anim = NULL;
 
-        entity = ls2d_entity_new("npc");
+        entity = ls2d_basic_entity_new("npc");
         if (!entity) {
                 return NULL;
         }
@@ -98,9 +98,9 @@ static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
                                                "walking",
                                                animation);
         ls2d_sprite_component_set_texture((Ls2DSpriteComponent *)sprite, handle);
-        ls2d_entity_add_component(entity, sprite);
-        ls2d_entity_add_component(entity, pos);
-        ls2d_entity_add_component(entity, anim);
+        ls2d_basic_entity_add_component(entity, sprite);
+        ls2d_basic_entity_add_component(entity, pos);
+        ls2d_basic_entity_add_component(entity, anim);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
                                        (SDL_Point){ .x = 500, .y = 50 });
         ls2d_scene_add_entity(scene, entity);
@@ -122,8 +122,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 {
         autofree(Ls2DEngine) *engine = NULL;
         autofree(Ls2DScene) *scene = NULL;
-        autofree(Ls2DEntity) *player = NULL;
-        autofree(Ls2DEntity) *npc = NULL;
+        autofree(Ls2DBasicEntity) *player = NULL;
+        autofree(Ls2DBasicEntity) *npc = NULL;
         autofree(Ls2DTileSheet) *sheet = NULL;
         autofree(Ls2DTileSheet) *sheet_npc = NULL;
         autofree(Ls2DAnimation) *walking = NULL;

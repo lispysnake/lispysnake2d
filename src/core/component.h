@@ -27,11 +27,11 @@
 
 /**
  * Ls2DComponent is a basic block of behaviour for any given entity,
- * and must be added to an Ls2DEntity.
+ * and must be added to an Ls2DBasicEntity.
  */
 struct Ls2DComponent {
         Ls2DObject object;
-        Ls2DEntity *parent_entity;
+        Ls2DBasicEntity *parent_entity;
         int comp_id; /**<Public component ID */
 
         /* Draw callback that all components should implemented */
@@ -65,12 +65,12 @@ int ls2d_component_get_id(Ls2DComponent *self);
  * Set the parent entity for this component
  * @TODO: Make this private API.
  */
-void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DEntity *entity);
+void ls2d_component_set_parent_entity(Ls2DComponent *self, Ls2DBasicEntity *entity);
 
 /**
  * Grab the parent entity
  */
-Ls2DEntity *ls2d_component_get_parent_entity(Ls2DComponent *self);
+Ls2DBasicEntity *ls2d_component_get_parent_entity(Ls2DComponent *self);
 
 Ls2DComponent *ls2d_component_unref(Ls2DComponent *self);
 
