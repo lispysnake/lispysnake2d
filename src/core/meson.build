@@ -4,7 +4,6 @@ core_sources = [
      'animation.c',
      'camera.c',
      'component.c',
-     'entity.c',
      'engine.c',
      'engine-draw.c',
      'engine-update.c',
@@ -14,10 +13,11 @@ core_sources = [
      'texture-cache.c',
      'tilesheet.c',
      'tilesheet-xml.c',
-     'tilemap.c',
      'components/animation-component.c',
      'components/position.c',
      'components/sprite.c',
+     'entities/basic-entity.c',
+     'entities/tilemap.c'
 ]
 
 core_deps = [

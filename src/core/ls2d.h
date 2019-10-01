@@ -62,7 +62,7 @@ typedef struct Ls2DTileMap Ls2DTileMap;
 #include "texture-cache.h"
 #include "tilesheet.h"
 
-#include "entities/entity.h"
+#include "entities/basic-entity.h"
 #include "entities/tilemap.h"
 
 /* Our components */
