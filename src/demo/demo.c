@@ -108,6 +108,13 @@ static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
         return entity;
 }
 
+static bool mouse_callback(SDL_MouseMotionEvent *event, Ls2DFrameInfo *frame, void *userdata)
+{
+        Ls2DCamera *camera = userdata;
+        ls2d_camera_set_xy(camera, (SDL_Point){ .x = event->x, .y = event->y });
+        return true;
+}
+
 /**
  * Main entry point to the demo.
  */
@@ -122,6 +129,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DAnimation) *walking = NULL;
         autofree(Ls2DAnimation) *walking_npc = NULL;
         autofree(Ls2DCamera) *camera = NULL;
+        Ls2DInputManager *imanager = NULL;
+
         SDL_Rect world_bounds = { 0 };
         world_bounds.w = 1024;
         world_bounds.h = 600;
@@ -207,6 +216,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_camera_set_xy(camera, (SDL_Point){ .x = 0, .y = 500 });
         ls2d_scene_add_camera(scene, "primary", camera);
 
+        imanager = ls2d_engine_get_input_manager(engine);
+        ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_callback, camera);
         int ret = ls2d_engine_run(engine);
         return ret;
 }
