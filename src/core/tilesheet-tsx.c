@@ -91,8 +91,6 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
                                LS_PTR_TO_INT(handle));
         }
 
-        int width = parser->image.width - (1 * parser->tileset.margin);
-        int height = parser->image.height - (1 * parser->tileset.margin);
         int x = parser->tileset.margin;
         int y = parser->tileset.margin;
         int column = 0;
