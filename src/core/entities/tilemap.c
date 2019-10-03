@@ -23,6 +23,13 @@
 
 #include "ls2d.h"
 
+#define LS2D_TILE_FLIPPED_HORIZONTALLY 0x80000000
+#define LS2D_TILE_FLIPPED_VERTICALLY 0x40000000
+#define LS2D_TILE_FLIPPED_DIAGONALLY 0x20000000
+#define LS2D_TILE_MASK                                                                             \
+        ~(LS2D_TILE_FLIPPED_HORIZONTALLY | LS2D_TILE_FLIPPED_VERTICALLY |                          \
+          LS2D_TILE_FLIPPED_DIAGONALLY)
+
 struct Ls2DTileMap {
         Ls2DEntity parent;
         int tile_size;
@@ -142,7 +149,7 @@ static inline uint32_t *ls2d_tilemap_get(Ls2DTileMap *self, int layer_index, int
 
         layer = lookup_layer(self->layers->data, layer_index);
         if (ls_unlikely(!layer)) {
-                return false;
+                return NULL;
         }
 
         const int index = x + self->width * y;
@@ -152,27 +159,65 @@ static inline uint32_t *ls2d_tilemap_get(Ls2DTileMap *self, int layer_index, int
         return &layer->tiles[index];
 }
 
-bool ls2d_tilemap_set(Ls2DTileMap *self, int layer_index, int x, int y, uint32_t gid)
+static bool ls2d_tilemap_get_tile(Ls2DTileMap *self, int layer_index, int x, int y, Ls2DTile *tile)
 {
-        uint32_t *tile = ls2d_tilemap_get(self, layer_index, x, y);
-        if (ls_unlikely(!tile)) {
+        uint32_t *gid = ls2d_tilemap_get(self, layer_index, x, y);
+        if (ls_unlikely(!gid)) {
                 return false;
         }
-        *tile = gid;
+        const uint32_t r_gid = *gid;
+        tile->flipped_horizontal = r_gid & LS2D_TILE_FLIPPED_HORIZONTALLY ? true : false;
+        tile->flipped_vertical = r_gid & LS2D_TILE_FLIPPED_VERTICALLY ? true : false;
+        tile->flipped_diagonal = r_gid & LS2D_TILE_FLIPPED_DIAGONALLY ? true : false;
+        tile->gid = r_gid & LS2D_TILE_MASK;
+
+        return true;
+}
+
+bool ls2d_tilemap_set_tile(Ls2DTileMap *self, int layer_index, int x, int y, Ls2DTile tile)
+{
+        uint32_t *t = ls2d_tilemap_get(self, layer_index, x, y);
+        if (ls_unlikely(!t)) {
+                return false;
+        }
+        uint32_t new_gid = tile.gid;
+        if (tile.flipped_horizontal) {
+                new_gid |= LS2D_TILE_FLIPPED_HORIZONTALLY;
+        }
+        if (tile.flipped_vertical) {
+                new_gid |= LS2D_TILE_FLIPPED_VERTICALLY;
+        }
+        if (tile.flipped_diagonal) {
+                new_gid |= LS2D_TILE_FLIPPED_DIAGONALLY;
+        }
+        *t = new_gid;
         return true;
 }
 
 static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         Ls2DTileMap *self = (Ls2DTileMap *)entity;
+        Ls2DTile tile = { 0 };
 
         for (uint16_t i = 0; i < self->layers->len; i++) {
                 Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
 
                 for (uint16_t x = 0; x < self->width; x++) {
                         for (uint16_t y = 0; y < self->height; y++) {
-                                uint32_t tile = layer->tiles[x + self->width * y];
-                                fprintf(stderr, "%d ", tile);
+                                if (!ls2d_tilemap_get_tile(self, i, x, y, &tile)) {
+                                        fprintf(stderr, "Missing tile??!\n");
+                                        abort();
+                                }
+                                fprintf(stderr, "%d ", tile.gid);
+                                if (tile.flipped_horizontal) {
+                                        fprintf(stderr, "(H)");
+                                }
+                                if (tile.flipped_vertical) {
+                                        fprintf(stderr, "(V)");
+                                }
+                                if (tile.flipped_diagonal) {
+                                        fprintf(stderr, "(D)");
+                                }
                         }
                         fprintf(stderr, "\n");
                 }

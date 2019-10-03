@@ -28,6 +28,16 @@
 #include "ls2d.h"
 
 /**
+ * Helper type to help set and retrieve tile cell attributes
+ */
+struct Ls2DTile {
+        uint32_t gid;
+        bool flipped_horizontal;
+        bool flipped_diagonal;
+        bool flipped_vertical;
+};
+
+/**
  * Construct a new Ls2DTileMap
  */
 Ls2DEntity *ls2d_tilemap_new(int tilesize, uint16_t map_width, uint16_t map_height);
@@ -40,7 +50,7 @@ bool ls2d_tilemap_add_layer(Ls2DTileMap *map, int render_index);
 /**
  * Set the gid in the given layer, at X by Y
  */
-bool ls2d_tilemap_set(Ls2DTileMap *map, int layer_index, int x, int y, uint32_t gid);
+bool ls2d_tilemap_set_tile(Ls2DTileMap *map, int layer_index, int x, int y, Ls2DTile tile);
 
 /**
  * Unref a previously allocated tileMap

@@ -121,14 +121,26 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene)
         ls2d_scene_add_entity(scene, entity);
 
         /* TODO: Actually populate the tilemap! */
-        if (!ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 0, 0, 12)) {
+        if (!ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
+                                   0,
+                                   0,
+                                   0,
+                                   (Ls2DTile){ .gid = 12, .flipped_horizontal = true })) {
                 abort();
         }
-        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 2, 0, 12);
-        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 2, 0, 12);
-        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 3, 0, 12);
-        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 4, 0, 12);
-        ls2d_tilemap_set((Ls2DTileMap *)entity, 0, 4, 4, 12);
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 0, (Ls2DTile){ .gid = 12 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
+                              0,
+                              2,
+                              0,
+                              (Ls2DTile){ .gid = 12, .flipped_diagonal = true });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 0, (Ls2DTile){ .gid = 12 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 4, 0, (Ls2DTile){ .gid = 12 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
+                              0,
+                              4,
+                              4,
+                              (Ls2DTile){ .gid = 12, .flipped_vertical = true });
         return entity;
 }
 
