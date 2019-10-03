@@ -210,14 +210,11 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
         int max_row = self->height;
         int max_col = self->width;
 
-        /* TODO: Calculate x/y start and maximum from camera! */
+        /* Grab the draw area (renderable section of camera) */
         if (ls2d_camera_get_view(frame->camera, &draw_area)) {
-                draw_area.x += current_col * self->tile_size;
-                draw_area.y += current_row * self->tile_size;
-
-                x_start = draw_area.x;
+                x_start = 0 - draw_area.x;
                 x_draw = x_start;
-                y_start = draw_area.y;
+                y_start = 0 - draw_area.y;
                 y_draw = y_start;
         }
 

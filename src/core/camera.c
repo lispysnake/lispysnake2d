@@ -110,8 +110,8 @@ bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, i
                 return false;
         }
 
-        *pos_x = r_pos_x + self->look_at.x;
-        *pos_y = r_pos_y + self->look_at.y;
+        *pos_x = r_pos_x - self->look_at.x;
+        *pos_y = r_pos_y - self->look_at.y;
 
         return true;
 }

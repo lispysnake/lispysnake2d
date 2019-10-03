@@ -61,7 +61,8 @@ static Ls2DEntity *demo_add_player(Ls2DScene *scene, Ls2DTextureHandle handle,
         ls2d_entity_add_component(entity, sprite);
         ls2d_entity_add_component(entity, pos);
         ls2d_entity_add_component(entity, anim);
-        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos, (SDL_Point){ .x = 0, .y = 0 });
+        ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
+                                       (SDL_Point){ .x = 40, .y = 150 });
         ls2d_scene_add_entity(scene, entity);
 
         return entity;
@@ -112,7 +113,7 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene)
 {
         Ls2DEntity *entity = NULL;
 
-        entity = ls2d_tilemap_new(96, 5, 5);
+        entity = ls2d_tilemap_new(96, 10, 10);
         if (!entity) {
                 abort();
                 return NULL;
