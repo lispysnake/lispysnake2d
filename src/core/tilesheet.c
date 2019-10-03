@@ -44,8 +44,10 @@ static Ls2DTileSheet *ls2d_tile_sheet_new_internal(Ls2DTextureCache *cache, bool
         }
 
         if (free_keys) {
-                self->textures =
-                    ls_hashmap_new_full(ls_hashmap_string_hash, ls_hashmap_string_equal, free, NULL);
+                self->textures = ls_hashmap_new_full(ls_hashmap_string_hash,
+                                                     ls_hashmap_string_equal,
+                                                     free,
+                                                     NULL);
         } else {
                 self->textures = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
         }

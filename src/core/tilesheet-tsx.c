@@ -70,17 +70,55 @@ fail:
         return ret;
 }
 
-static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser, xmlTextReader *reader)
+static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser,
+                                      xmlTextReader *reader)
 {
         autofree(xmlChar) *source = NULL;
         Ls2DTextureHandle handle;
+        Ls2DTextureHandle subhandle;
+
+        ls2d_tile_sheet_get_int_attr(reader, &parser->image.width, "width");
+        ls2d_tile_sheet_get_int_attr(reader, &parser->image.height, "height");
 
         source = xmlTextReaderGetAttribute(reader, BAD_CAST "source");
-        fprintf(stderr, "Tile %d: Loading image %s\n", parser->tile.id, source);
 
-        /* TODO: Handle sheet differently. */
         handle = ls2d_texture_cache_load_file(self->cache, (char *)source);
-        ls_hashmap_put(self->textures, LS_PTR_TO_INT(parser->tile.id), LS_PTR_TO_INT(handle));
+
+        /* Basic sheet logic. */
+        if (!parser->sheet) {
+                ls_hashmap_put(self->textures,
+                               LS_PTR_TO_INT(parser->tile.id),
+                               LS_PTR_TO_INT(handle));
+        }
+
+        int width = parser->image.width - (1 * parser->tileset.margin);
+        int height = parser->image.height - (1 * parser->tileset.margin);
+        int x = parser->tileset.margin;
+        int y = parser->tileset.margin;
+        int column = 0;
+
+        for (int tile = 0; tile < parser->tileset.count; tile++) {
+                SDL_Rect region = { .x = x,
+                                    .y = y,
+                                    .w = parser->tileset.width - parser->tileset.spacing,
+                                    .h = parser->tileset.height - parser->tileset.spacing };
+
+                /* seek */
+                column++;
+
+                if (column == parser->tileset.columns) {
+                        x = parser->tileset.margin;
+                        y += parser->tileset.spacing;
+                        y += parser->tileset.height;
+                        column = 0;
+                } else {
+                        x += parser->tileset.spacing;
+                        x += parser->tileset.width;
+                }
+
+                subhandle = ls2d_texture_cache_subregion(self->cache, handle, region);
+                ls_hashmap_put(self->textures, LS_PTR_TO_INT(tile), subhandle);
+        }
 }
 
 /**
@@ -97,7 +135,7 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
         }
 
         if (parser->in_tileset && xmlStrEqual(name, BAD_CAST "grid")) {
-                parser->in_grid = !parser->in_grid;                
+                parser->in_grid = !parser->in_grid;
                 return;
         }
 
@@ -120,6 +158,10 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
         } else if (parser->in_tileset && xmlStrEqual(name, BAD_CAST "image")) {
                 parser->in_image = !parser->in_image;
                 parser->sheet = !parser->sheet;
+                if (!parser->in_image) {
+                        return;
+                }
+                ls2d_tile_sheet_image_tsx(self, parser, reader);
                 return;
         }
 
