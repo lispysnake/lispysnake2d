@@ -28,8 +28,8 @@ struct Ls2DTileMap {
         int tile_size;
         uint16_t width;
         uint16_t height;
-        ;
         LsArray *layers; /**<An array of Ls2DTileMapLayer */
+        int size;
 };
 
 typedef struct Ls2DTileMapLayer {
@@ -67,6 +67,7 @@ Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
         self->width = width;
         self->height = height;
         self->tile_size = tile_size;
+        self->size = self->width * self->height;
 
         if (ls_unlikely(!ls2d_tilemap_add_layer(self, 0))) {
                 goto bail;
@@ -132,20 +133,32 @@ bool ls2d_tilemap_add_layer(Ls2DTileMap *self, int render_index)
         return true;
 }
 
-bool ls2d_tilemap_set(Ls2DTileMap *self, int layer_index, int x, int y, uint32_t gid)
+static inline uint32_t *ls2d_tilemap_get(Ls2DTileMap *self, int layer_index, int x, int y)
 {
         Ls2DTileMapLayer *layer = NULL;
-
         if (ls_unlikely(!self)) {
-                return false;
+                return NULL;
         }
 
         layer = lookup_layer(self->layers->data, layer_index);
         if (ls_unlikely(!layer)) {
                 return false;
         }
+
         const int index = x + self->width * y;
-        layer->tiles[index] = gid;
+        if (index > self->size) {
+                return NULL;
+        }
+        return &layer->tiles[index];
+}
+
+bool ls2d_tilemap_set(Ls2DTileMap *self, int layer_index, int x, int y, uint32_t gid)
+{
+        uint32_t *tile = ls2d_tilemap_get(self, layer_index, x, y);
+        if (ls_unlikely(!tile)) {
+                return false;
+        }
+        *tile = gid;
         return true;
 }
 
