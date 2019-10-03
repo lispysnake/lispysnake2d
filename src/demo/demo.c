@@ -147,6 +147,7 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene)
         ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 1, 4, (Ls2DTile){ .gid = 12 });
         ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 4, (Ls2DTile){ .gid = 13 });
         ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 4, (Ls2DTile){ .gid = 11 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 9, 9, (Ls2DTile){ .gid = 12 });
         return entity;
 }
 
@@ -212,6 +213,8 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk10.png"), duration);
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk11.png"), duration);
 
+        tilemap = add_tilemap(scene);
+
         /* Sort out our player */
         player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"), walking);
 
@@ -258,8 +261,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_camera_set_world_bounds(camera, world_bounds);
         ls2d_camera_set_xy(camera, (SDL_Point){ .x = 0, .y = 500 });
         ls2d_scene_add_camera(scene, "primary", camera);
-
-        tilemap = add_tilemap(scene);
 
         imanager = ls2d_engine_get_input_manager(engine);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_callback, camera);

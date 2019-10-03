@@ -120,6 +120,7 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                 ls2d_engine_destroy(engine);
                 return NULL;
         }
+        SDL_RenderSetLogicalSize(engine->render, 1366, 768);
 
         engine->input_manager = ls2d_input_manager_new();
         if (!engine->input_manager) {
