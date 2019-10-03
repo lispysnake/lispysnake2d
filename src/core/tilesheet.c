@@ -105,7 +105,7 @@ static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self)
         ls_hashmap_free(self->textures);
 }
 
-Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, const char *id)
+Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key)
 {
         void *ret = NULL;
 
@@ -113,7 +113,7 @@ Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, const char *id)
                 return 0;
         }
 
-        ret = ls_hashmap_get(self->textures, (char *)id);
+        ret = ls_hashmap_get(self->textures, key);
         if (!ret) {
                 return 0;
         }
