@@ -230,13 +230,15 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                         fprintf(stderr, "Missing tile??!\n");
                                         abort();
                                 }
-                                if (tile.gid <= 0) {
-                                        goto draw_next;
-                                }
                                 SDL_Rect area = { .w = self->tile_size,
                                                   .h = self->tile_size,
                                                   .x = x_draw,
                                                   .y = y_draw };
+                                if (tile.gid <= 0) {
+                                        SDL_SetRenderDrawColor(frame->renderer, 255, 255, 255, 255);
+                                        SDL_RenderDrawRect(frame->renderer, &area);
+                                        goto draw_next;
+                                }
                                 if (tile.gid == 12) {
                                         SDL_SetRenderDrawColor(frame->renderer, 125, 125, 125, 255);
                                 } else if (tile.gid == 13) {
