@@ -30,11 +30,8 @@
 #include "ls2d.h"
 #include "tilesheet-private.h"
 
-DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)
-DEF_AUTOFREE(xmlChar, xmlFree)
-
-static void ls2d_tile_sheet_walk(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
-                                 xmlTextReader *reader);
+static void ls2d_tile_sheet_walk_xml(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
+                                     xmlTextReader *reader);
 
 /**
  * Attempt to load XML file.
@@ -61,7 +58,7 @@ bool ls2d_tile_sheet_parse_xml(Ls2DTileSheet *self, const char *filename)
         }
 
         while ((r = xmlTextReaderRead(reader)) > 0) {
-                ls2d_tile_sheet_walk(self, &parser, reader);
+                ls2d_tile_sheet_walk_xml(self, &parser, reader);
         }
         ret = true;
 
@@ -89,8 +86,8 @@ static void ls2d_tile_sheet_get_int_attr(xmlTextReader *reader, int *storage, co
 /**
  * Walk each node and then process it.
  */
-static void ls2d_tile_sheet_walk(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
-                                 xmlTextReader *reader)
+static void ls2d_tile_sheet_walk_xml(Ls2DTileSheet *self, Ls2DTileSheetXML *parser,
+                                     xmlTextReader *reader)
 {
         const xmlChar *name = NULL;
 

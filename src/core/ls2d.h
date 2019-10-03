@@ -76,6 +76,12 @@ enum Ls2DComponentID {
         LS2D_COMP_ID_ANIMATION,
 };
 
+enum Ls2DTileOrientation {
+        LS2D_TILE_ORIENTATION_NONE = 0,
+        LS2D_TILE_ORIENTATION_ORTHOGONAL, /**<We actually only support orthogonal right now. */
+        LS2D_TILE_ORIENTATION_MAX,
+};
+
 #include "components/animation-component.h"
 #include "components/position.h"
 #include "components/sprite.h"

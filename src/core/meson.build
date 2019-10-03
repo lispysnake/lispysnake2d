@@ -13,6 +13,7 @@ core_sources = [
      'scene.c',
      'texture-cache.c',
      'tilesheet.c',
+     'tilesheet-tsx.c',
      'tilesheet-xml.c',
      'components/animation-component.c',
      'components/position.c',

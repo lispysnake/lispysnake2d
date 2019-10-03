@@ -31,6 +31,11 @@
 Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char *xml_path);
 
 /**
+ * Construct a new Ls2DTileSheet from a TSX file
+ */
+Ls2DTileSheet *ls2d_tile_sheet_new_from_tsx(Ls2DTextureCache *cache, const char *xml_path);
+
+/**
  * Return a texture handle corresponding to the given ID
  * This will map to the internal cache's texture handle.
  */

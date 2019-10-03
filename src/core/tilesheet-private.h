@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <libxml/xmlreader.h>
+
 #include "ls2d.h"
 
 /**
@@ -39,6 +41,9 @@ struct Ls2DTileSheet {
  * Private API headers for the Ls2DTileSheet implementation
  */
 
+/**
+ * XML instance parser
+ */
 typedef struct Ls2DTileSheetXML {
         bool in_atlas;
         bool in_subtexture;
@@ -55,9 +60,42 @@ typedef struct Ls2DTileSheetXML {
 } Ls2DTileSheetXML;
 
 /**
+ * TSX instance parser
+ */
+typedef struct Ls2DTileSheetTSX {
+        bool in_tileset;
+        bool in_image;
+        bool in_grid;
+        bool in_tile;
+        bool sheet; /**<Whether this is a simple tilesheet */
+        struct {
+                int width;   /**< Tile height */
+                int height;  /**< Tile width */
+                int count;   /**< How many tiles? */
+                int columns; /**<How many across is it? */
+                int spacing; /**<Spacing between tiles */
+                int margin;  /**<How much margin is present in the main image */
+        } tileset;
+        struct {
+                int orientation;
+                int width;
+                int height;
+        } grid;
+        struct {
+                int width;
+                int height;
+                char *source;
+        } image;
+} Ls2DTileSheetTSX;
+
+/**
  * Attempt to load XML file.
  */
 bool ls2d_tile_sheet_parse_xml(Ls2DTileSheet *self, const char *filename);
+bool ls2d_tile_sheet_parse_tsx(Ls2DTileSheet *self, const char *filename);
+
+DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)
+DEF_AUTOFREE(xmlChar, xmlFree)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

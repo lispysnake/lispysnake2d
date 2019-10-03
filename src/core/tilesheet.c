@@ -58,7 +58,7 @@ static Ls2DTileSheet *ls2d_tile_sheet_new(Ls2DTextureCache *cache)
         return ls2d_object_init((Ls2DObject *)self, &tile_sheet_vtable);
 }
 
-Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char *xml_path)
+Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char *file_path)
 {
         Ls2DTileSheet *self = NULL;
 
@@ -67,7 +67,24 @@ Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char 
                 return NULL;
         }
 
-        if (!ls2d_tile_sheet_parse_xml(self, xml_path)) {
+        if (!ls2d_tile_sheet_parse_xml(self, file_path)) {
+                ls2d_tile_sheet_unref(self);
+                return NULL;
+        }
+
+        return self;
+}
+
+Ls2DTileSheet *ls2d_tile_sheet_new_from_tsx(Ls2DTextureCache *cache, const char *file_path)
+{
+        Ls2DTileSheet *self = NULL;
+
+        self = ls2d_tile_sheet_new(cache);
+        if (!self) {
+                return NULL;
+        }
+
+        if (!ls2d_tile_sheet_parse_tsx(self, file_path)) {
                 ls2d_tile_sheet_unref(self);
                 return NULL;
         }
