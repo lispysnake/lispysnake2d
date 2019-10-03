@@ -113,7 +113,7 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene)
 {
         Ls2DEntity *entity = NULL;
 
-        entity = ls2d_tilemap_new(96, 10, 10);
+        entity = ls2d_tilemap_new(70, 10, 10);
         if (!entity) {
                 abort();
                 return NULL;
@@ -197,6 +197,11 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         sheet = ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player1.xml");
         sheet_npc =
             ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player3.xml");
+
+        {
+                autofree(Ls2DTileSheet) *t_sheet =
+                    ls2d_tile_sheet_new_from_tsx(cache, "../../Desktop/TESTMAP.tsx");
+        }
 
         walking = ls2d_animation_new();
         ls2d_animation_set_looping(walking, true);
