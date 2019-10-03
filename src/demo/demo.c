@@ -109,9 +109,10 @@ static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
         return entity;
 }
 
-static Ls2DEntity *add_tilemap(Ls2DScene *scene)
+static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
 {
         Ls2DEntity *entity = NULL;
+        autofree(Ls2DTileSheet) *sheet_tsx = NULL;
 
         entity = ls2d_tilemap_new(70, 10, 10);
         if (!entity) {
@@ -121,33 +122,36 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene)
 
         ls2d_scene_add_entity(scene, entity);
 
+        sheet_tsx = ls2d_tile_sheet_new_from_tsx(cache, "demo_data/TESTMAP.tsx");
+        ls2d_tilemap_set_tilesheet((Ls2DTileMap *)entity, sheet_tsx);
+
         /* TODO: Actually populate the tilemap! */
         if (!ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
                                    0,
                                    0,
                                    0,
-                                   (Ls2DTile){ .gid = 12, .flipped_horizontal = true })) {
+                                   (Ls2DTile){ .gid = 100, .flipped_horizontal = true })) {
                 abort();
         }
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 0, (Ls2DTile){ .gid = 12 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 0, (Ls2DTile){ .gid = 100 });
         ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
                               0,
                               2,
                               0,
-                              (Ls2DTile){ .gid = 12, .flipped_diagonal = true });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 0, (Ls2DTile){ .gid = 12 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 4, 0, (Ls2DTile){ .gid = 13 });
+                              (Ls2DTile){ .gid = 100, .flipped_diagonal = true });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 0, (Ls2DTile){ .gid = 100 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 4, 0, (Ls2DTile){ .gid = 100 });
         ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
                               0,
                               4,
                               4,
-                              (Ls2DTile){ .gid = 12, .flipped_vertical = true });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 0, 4, (Ls2DTile){ .gid = 13 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 2, (Ls2DTile){ .gid = 12 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 1, 4, (Ls2DTile){ .gid = 12 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 4, (Ls2DTile){ .gid = 13 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 4, (Ls2DTile){ .gid = 11 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 9, 9, (Ls2DTile){ .gid = 12 });
+                              (Ls2DTile){ .gid = 100, .flipped_vertical = true });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 0, 4, (Ls2DTile){ .gid = 100 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 2, (Ls2DTile){ .gid = 100 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 1, 4, (Ls2DTile){ .gid = 100 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 4, (Ls2DTile){ .gid = 100 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 4, (Ls2DTile){ .gid = 100 });
+        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 9, 9, (Ls2DTile){ .gid = 100 });
         return entity;
 }
 
@@ -198,11 +202,6 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         sheet_npc =
             ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player3.xml");
 
-        {
-                autofree(Ls2DTileSheet) *t_sheet =
-                    ls2d_tile_sheet_new_from_tsx(cache, "demo_data/TESTMAP.tsx");
-        }
-
         walking = ls2d_animation_new();
         ls2d_animation_set_looping(walking, true);
         uint32_t duration = 1000 / 20;
@@ -218,7 +217,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk10.png"), duration);
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk11.png"), duration);
 
-        tilemap = add_tilemap(scene);
+        tilemap = add_tilemap(scene, cache);
 
         /* Sort out our player */
         player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"), walking);

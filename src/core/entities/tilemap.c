@@ -32,6 +32,7 @@
 
 struct Ls2DTileMap {
         Ls2DEntity parent;
+        Ls2DTileSheet *sheet;
         int tile_size;
         uint16_t width;
         uint16_t height;
@@ -109,6 +110,10 @@ static void ls2d_tilemap_free_layer(void *v)
 
 static void ls2d_tilemap_destroy(Ls2DTileMap *self)
 {
+        if (ls_likely(self->sheet) != NULL) {
+                ls2d_tile_sheet_unref(self->sheet);
+        }
+
         if (ls_unlikely(!self->layers)) {
                 return;
         }
@@ -223,27 +228,32 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
 
                 for (uint16_t y = current_row; y < max_row; y++) {
                         for (uint16_t x = current_col; x < max_col; x++) {
-                                if (!ls2d_tilemap_get_tile(self, i, x, y, &tile)) {
-                                        fprintf(stderr, "Missing tile??!\n");
-                                        abort();
-                                }
+                                Ls2DTextureNode *node = NULL;
+                                Ls2DTextureHandle handle;
                                 SDL_Rect area = { .w = self->tile_size,
                                                   .h = self->tile_size,
                                                   .x = x_draw,
                                                   .y = y_draw };
-                                if (tile.gid <= 0) {
+                                if (!ls2d_tilemap_get_tile(self, i, x, y, &tile)) {
+                                        fprintf(stderr, "Missing tile??!\n");
+                                        abort();
+                                }
+                                handle =
+                                    ls2d_tile_sheet_lookup(self->sheet, LS_INT_TO_PTR(tile.gid));
+                                node = ls2d_texture_cache_lookup(cache, frame, handle);
+                                if (tile.gid == 0 || !node) {
                                         SDL_SetRenderDrawColor(frame->renderer, 255, 255, 255, 255);
                                         SDL_RenderDrawRect(frame->renderer, &area);
                                         goto draw_next;
                                 }
-                                if (tile.gid == 12) {
-                                        SDL_SetRenderDrawColor(frame->renderer, 125, 125, 125, 255);
-                                } else if (tile.gid == 13) {
-                                        SDL_SetRenderDrawColor(frame->renderer, 255, 0, 0, 255);
-                                } else {
-                                        SDL_SetRenderDrawColor(frame->renderer, 0, 255, 0, 255);
-                                }
-                                SDL_RenderFillRect(frame->renderer, &area);
+
+                                SDL_RenderCopyEx(frame->renderer,
+                                                 node->texture,
+                                                 node->subregion ? &node->area : NULL,
+                                                 &area,
+                                                 0,
+                                                 NULL,
+                                                 0);
                         draw_next:
                                 x_draw += self->tile_size;
                         }
@@ -252,6 +262,14 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                         x_draw = x_start;
                 }
         }
+}
+
+void ls2d_tilemap_set_tilesheet(Ls2DTileMap *self, Ls2DTileSheet *sheet)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        self->sheet = ls2d_object_ref(sheet);
 }
 
 static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
