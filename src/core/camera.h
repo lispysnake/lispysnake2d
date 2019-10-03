@@ -57,6 +57,11 @@ bool ls2d_camera_entity_in_bounds(Ls2DCamera *self, Ls2DEntity *entity);
 bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, int *x, int *y);
 
 /**
+ * Get the current viewport (x/y/w/h)
+ */
+bool ls2d_camera_get_view(Ls2DCamera *self, SDL_Rect *view);
+
+/**
  * Update the camera
  */
 void ls2d_camera_update(Ls2DCamera *self, Ls2DFrameInfo *frame);

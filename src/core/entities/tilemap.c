@@ -198,28 +198,59 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
 {
         Ls2DTileMap *self = (Ls2DTileMap *)entity;
         Ls2DTile tile = { 0 };
+        SDL_Rect draw_area = { 0 };
+
+        int x_start = 0;
+        int y_start = 0;
+        int x_draw = x_start;
+        int y_draw = y_start;
+
+        int current_row = 0;
+        int current_col = 0;
+        int max_row = self->height;
+        int max_col = self->width;
+
+        /* TODO: Calculate x/y start and maximum from camera! */
+        if (ls2d_camera_get_view(frame->camera, &draw_area)) {
+                draw_area.x += current_col * self->tile_size;
+                draw_area.y += current_row * self->tile_size;
+
+                x_start = draw_area.x;
+                x_draw = x_start;
+                y_start = draw_area.y;
+                y_draw = y_start;
+        }
 
         for (uint16_t i = 0; i < self->layers->len; i++) {
                 Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
 
-                for (uint16_t x = 0; x < self->width; x++) {
-                        for (uint16_t y = 0; y < self->height; y++) {
+                for (uint16_t y = current_row; y < max_row; y++) {
+                        for (uint16_t x = current_col; x < max_col; x++) {
                                 if (!ls2d_tilemap_get_tile(self, i, x, y, &tile)) {
                                         fprintf(stderr, "Missing tile??!\n");
                                         abort();
                                 }
-                                fprintf(stderr, "%d ", tile.gid);
-                                if (tile.flipped_horizontal) {
-                                        fprintf(stderr, "(H)");
+                                if (tile.gid <= 0) {
+                                        goto draw_next;
                                 }
-                                if (tile.flipped_vertical) {
-                                        fprintf(stderr, "(V)");
+                                SDL_Rect area = { .w = self->tile_size,
+                                                  .h = self->tile_size,
+                                                  .x = x_draw,
+                                                  .y = y_draw };
+                                if (tile.gid == 12) {
+                                        SDL_SetRenderDrawColor(frame->renderer, 125, 125, 125, 255);
+                                } else if (tile.gid == 13) {
+                                        SDL_SetRenderDrawColor(frame->renderer, 255, 0, 0, 255);
+                                } else {
+                                        SDL_SetRenderDrawColor(frame->renderer, 0, 255, 0, 255);
                                 }
-                                if (tile.flipped_diagonal) {
-                                        fprintf(stderr, "(D)");
-                                }
+                                SDL_RenderFillRect(frame->renderer, &area);
+                        draw_next:
+                                x_draw += self->tile_size;
                         }
-                        fprintf(stderr, "\n");
+                        /* Increment to next row */
+                        y_draw += self->tile_size;
+                        x_draw = x_start;
                 }
         }
 }

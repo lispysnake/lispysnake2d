@@ -26,6 +26,7 @@ core_deps = [
     dep_sdl_image,
     dep_xml,
     libls.get_variable('link_libls'),
+    meson.get_compiler('c').find_library('m', required: false),
 ]
 
 libcore = static_library(

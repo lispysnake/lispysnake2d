@@ -152,6 +152,18 @@ void ls2d_camera_update(Ls2DCamera *self, Ls2DFrameInfo *frame)
         /* TODO: Update camera to point at correct place. */
 }
 
+bool ls2d_camera_get_view(Ls2DCamera *self, SDL_Rect *view)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!view)) {
+                return false;
+        }
+        view->x = self->look_at.x;
+        view->y = self->look_at.y;
+        view->w = self->view.w;
+        view->h = self->view.h;
+        return true;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
