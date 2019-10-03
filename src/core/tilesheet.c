@@ -34,10 +34,7 @@ Ls2DObjectTable tile_sheet_vtable = {
         .obj_name = "Ls2DTileSheet",
 };
 
-/**
- * Convenience wrapped
- */
-static Ls2DTileSheet *ls2d_tile_sheet_new(Ls2DTextureCache *cache)
+static Ls2DTileSheet *ls2d_tile_sheet_new_internal(Ls2DTextureCache *cache, bool free_keys)
 {
         Ls2DTileSheet *self = NULL;
 
@@ -46,8 +43,12 @@ static Ls2DTileSheet *ls2d_tile_sheet_new(Ls2DTextureCache *cache)
                 return NULL;
         }
 
-        self->textures =
-            ls_hashmap_new_full(ls_hashmap_string_hash, ls_hashmap_string_equal, free, NULL);
+        if (free_keys) {
+                self->textures =
+                    ls_hashmap_new_full(ls_hashmap_string_hash, ls_hashmap_string_equal, free, NULL);
+        } else {
+                self->textures = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
+        }
 
         if (ls_unlikely(!self->textures)) {
                 free(self);
@@ -62,7 +63,7 @@ Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char 
 {
         Ls2DTileSheet *self = NULL;
 
-        self = ls2d_tile_sheet_new(cache);
+        self = ls2d_tile_sheet_new_internal(cache, true);
         if (!self) {
                 return NULL;
         }
@@ -79,7 +80,7 @@ Ls2DTileSheet *ls2d_tile_sheet_new_from_tsx(Ls2DTextureCache *cache, const char 
 {
         Ls2DTileSheet *self = NULL;
 
-        self = ls2d_tile_sheet_new(cache);
+        self = ls2d_tile_sheet_new_internal(cache, false);
         if (!self) {
                 return NULL;
         }

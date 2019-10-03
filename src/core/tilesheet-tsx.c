@@ -70,6 +70,19 @@ fail:
         return ret;
 }
 
+static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser, xmlTextReader *reader)
+{
+        autofree(xmlChar) *source = NULL;
+        Ls2DTextureHandle handle;
+
+        source = xmlTextReaderGetAttribute(reader, BAD_CAST "source");
+        fprintf(stderr, "Tile %d: Loading image %s\n", parser->tile.id, source);
+
+        /* TODO: Handle sheet differently. */
+        handle = ls2d_texture_cache_load_file(self->cache, (char *)source);
+        ls_hashmap_put(self->textures, LS_PTR_TO_INT(parser->tile.id), LS_PTR_TO_INT(handle));
+}
+
 /**
  * Walk each node and then process it.
  */
@@ -84,17 +97,25 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
         }
 
         if (parser->in_tileset && xmlStrEqual(name, BAD_CAST "grid")) {
-                parser->in_grid = !parser->in_grid;
+                parser->in_grid = !parser->in_grid;                
                 return;
         }
 
         if (parser->in_tileset && xmlStrEqual(name, BAD_CAST "tile")) {
-                parser->in_tile = !parser->in_tileset;
+                parser->in_tile = !parser->in_tile;
+                if (!parser->in_tile) {
+                        return;
+                }
+                ls2d_tile_sheet_get_int_attr(reader, &parser->tile.id, "id");
                 return;
         }
 
         if (parser->in_tile && xmlStrEqual(name, BAD_CAST "image")) {
                 parser->in_image = !parser->in_image;
+                if (!parser->in_image) {
+                        return;
+                }
+                ls2d_tile_sheet_image_tsx(self, parser, reader);
                 return;
         } else if (parser->in_tileset && xmlStrEqual(name, BAD_CAST "image")) {
                 parser->in_image = !parser->in_image;
@@ -104,6 +125,14 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
 
         if (xmlStrEqual(name, BAD_CAST "tileset")) {
                 parser->in_tileset = !parser->in_tileset;
+                ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.width, "tilewidth");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.height, "tileheight");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.spacing, "spacing");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.margin, "margin");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.count, "tilecount");
+                ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.columns, "columns");
+
+                fprintf(stderr, "Width %d by %d\n", parser->tileset.width, parser->tileset.columns);
         }
 }
 

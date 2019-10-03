@@ -77,6 +77,9 @@ typedef struct Ls2DTileSheetTSX {
                 int margin;  /**<How much margin is present in the main image */
         } tileset;
         struct {
+                int id;
+        } tile;
+        struct {
                 int orientation;
                 int width;
                 int height;
