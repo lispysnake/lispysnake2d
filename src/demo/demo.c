@@ -200,7 +200,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         {
                 autofree(Ls2DTileSheet) *t_sheet =
-                    ls2d_tile_sheet_new_from_tsx(cache, "../../Desktop/TESTMAP.tsx");
+                    ls2d_tile_sheet_new_from_tsx(cache, "demo_data/TESTMAP.tsx");
         }
 
         walking = ls2d_animation_new();
