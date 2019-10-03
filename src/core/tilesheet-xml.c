@@ -70,19 +70,6 @@ fail:
         return ret;
 }
 
-static void ls2d_tile_sheet_get_int_attr(xmlTextReader *reader, int *storage, const char *id)
-{
-        autofree(xmlChar) *attr = NULL;
-
-        /* TODO: Proper error checking of atoi, etc. */
-        attr = xmlTextReaderGetAttribute(reader, BAD_CAST id);
-        if (!attr) {
-                *storage = 0;
-                return;
-        }
-        *storage = atoi((const char *)attr);
-}
-
 /**
  * Walk each node and then process it.
  */

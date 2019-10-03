@@ -97,6 +97,19 @@ bool ls2d_tile_sheet_parse_tsx(Ls2DTileSheet *self, const char *filename);
 DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)
 DEF_AUTOFREE(xmlChar, xmlFree)
 
+static inline void ls2d_tile_sheet_get_int_attr(xmlTextReader *reader, int *storage, const char *id)
+{
+        autofree(xmlChar) *attr = NULL;
+
+        /* TODO: Proper error checking of atoi, etc. */
+        attr = xmlTextReaderGetAttribute(reader, BAD_CAST id);
+        if (!attr) {
+                *storage = 0;
+                return;
+        }
+        *storage = atoi((const char *)attr);
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *
