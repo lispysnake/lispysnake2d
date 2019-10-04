@@ -114,7 +114,7 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
         Ls2DEntity *entity = NULL;
         autofree(Ls2DTileSheet) *sheet_tsx = NULL;
 
-        entity = ls2d_tilemap_new(70, 30, 30);
+        entity = ls2d_tilemap_new(70, 15, 15);
         if (!entity) {
                 abort();
                 return NULL;

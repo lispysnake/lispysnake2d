@@ -171,8 +171,6 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.margin, "margin");
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.count, "tilecount");
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.columns, "columns");
-
-                fprintf(stderr, "Width %d by %d\n", parser->tileset.width, parser->tileset.columns);
         }
 }
 

@@ -204,30 +204,53 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
         Ls2DTileMap *self = (Ls2DTileMap *)entity;
         Ls2DTile tile = { 0 };
         SDL_Rect draw_area = { 0 };
+        int first_column = 0;
+        int first_row = 0;
+        int max_row = self->height;
+        int max_column = self->width;
 
         int x_start = 0;
         int y_start = 0;
         int x_draw = x_start;
         int y_draw = y_start;
 
-        int current_row = 0;
-        int current_col = 0;
-        int max_row = self->height;
-        int max_col = self->width;
+        /* Basic Premise:
+         * Work out the visible rows and columns for the draw area
+         * Only draw those columns
+         * Draw at offset to camera and missing columns
+         */
 
-        /* Grab the draw area (renderable section of camera) */
         if (ls2d_camera_get_view(frame->camera, &draw_area)) {
+                int visible_columns = ceil((float)draw_area.w / self->tile_size);
+                int visible_rows = ceil((float)draw_area.h / self->tile_size);
+
+                first_row = floor((float)draw_area.y / self->tile_size);
+                first_column = floor((float)draw_area.x / self->tile_size);
+
+                /* TODO: Introduce MAX/MIN macros */
+                max_column = first_column + visible_columns + 1;
+                max_row = first_row + visible_rows + 1;
+                if (max_row > self->height) {
+                        max_row = self->height;
+                }
+                if (max_column > self->width) {
+                        max_column = self->width;
+                }
+
                 x_start = 0 - draw_area.x;
+                x_start += first_column * self->tile_size;
                 x_draw = x_start;
+
                 y_start = 0 - draw_area.y;
+                y_start += first_row * self->tile_size;
                 y_draw = y_start;
         }
 
         for (uint16_t i = 0; i < self->layers->len; i++) {
                 Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
 
-                for (uint16_t y = current_row; y < max_row; y++) {
-                        for (uint16_t x = current_col; x < max_col; x++) {
+                for (uint16_t y = first_row; y < max_row; y++) {
+                        for (uint16_t x = first_column; x < max_column; x++) {
                                 Ls2DTextureNode *node = NULL;
                                 Ls2DTextureHandle handle;
                                 SDL_Rect area = { .w = self->tile_size,
