@@ -67,7 +67,68 @@ fail:
 
 static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader)
 {
-        /* TODO: Implement */
+        const xmlChar *name = NULL;
+
+        name = xmlTextReaderConstName(reader);
+        if (!name) {
+                return;
+        }
+
+        /* Encountered tileset */
+        if (parser->in_map && xmlStrEqual(name, BAD_CAST "tileset")) {
+                parser->in_tileset = !parser->in_tileset;
+                return;
+        }
+
+        /* Encountered layer definition */
+        if (parser->in_map && xmlStrEqual(name, BAD_CAST "layer")) {
+                parser->in_layer = !parser->in_layer;
+                if (!parser->in_layer) {
+                        return;
+                }
+                ls2d_tilemap_get_int_attr(reader, &parser->layer.id, "id");
+                ls2d_tilemap_get_int_attr(reader, &parser->layer.width, "width");
+                ls2d_tilemap_get_int_attr(reader, &parser->layer.height, "height");
+
+                fprintf(stderr,
+                        "Layer %d, %dx%d\n",
+                        parser->layer.id,
+                        parser->layer.width,
+                        parser->layer.height);
+
+                if (!ls2d_tilemap_add_layer(self, parser->layer.id)) {
+                        abort();
+                }
+                return;
+        }
+
+        /* Encountered data definition */
+        if (parser->in_layer && xmlStrEqual(name, BAD_CAST "data")) {
+                parser->in_data = !parser->in_data;
+                return;
+        }
+
+        /* Encountered map definition */
+        if (xmlStrEqual(name, BAD_CAST "map")) {
+                parser->in_map = true;
+                if (!parser->in_map) {
+                        return;
+                }
+                /* Handle map attributes */
+                ls2d_tilemap_get_int_attr(reader, &parser->map.width, "width");
+                ls2d_tilemap_get_int_attr(reader, &parser->map.tile_width, "tilewidth");
+                ls2d_tilemap_get_int_attr(reader, &parser->map.height, "height");
+                ls2d_tilemap_get_int_attr(reader, &parser->map.tile_height, "tileheight");
+
+                /* Set up basic attributes now */
+                self->width = (uint16_t)parser->map.width;
+                self->height = (uint16_t)parser->map.height;
+                self->size = self->width * self->height;
+
+                /* TODO: Move away from tile_size increments and have tile_height/tile_width */
+                self->tile_size = parser->map.tile_width;
+                return;
+        }
 }
 
 /*
