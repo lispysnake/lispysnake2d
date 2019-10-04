@@ -109,12 +109,55 @@ static Ls2DEntity *demo_add_npc(Ls2DScene *scene, Ls2DTextureHandle handle,
         return entity;
 }
 
+static uint32_t gids[] = {
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   70,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   65,  82,  0,   0,   0,   0,   0,   133, 0,   0,
+        0,   0,   0,   0,   0,   0,   0,   0,   0,   33,  104, 104, 104, 125, 125, 125, 0,   133,
+        0,   0,   0,   0,   133, 133, 33,  104, 104, 104, 104, 21,  153, 153, 153, 103, 103, 103,
+        104, 104, 104, 104, 104, 104, 104, 104, 21,  153, 153, 153, 153, 153, 153, 153, 153, 44,
+        44,  44,  153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 153, 104, 104, 104,
+        153, 44,  44,  44
+};
+
+static uint32_t gids_2[] = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,  1, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
 {
         Ls2DEntity *entity = NULL;
         autofree(Ls2DTileSheet) *sheet_tsx = NULL;
 
-        entity = ls2d_tilemap_new(70, 30, 15);
+        entity = ls2d_tilemap_new(70, 20, 20);
         if (!entity) {
                 abort();
                 return NULL;
@@ -122,20 +165,26 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
 
         ls2d_scene_add_entity(scene, entity);
 
-        sheet_tsx = ls2d_tile_sheet_new_from_tsx(cache, "demo_data/TESTMAP.tsx");
+        sheet_tsx = ls2d_tile_sheet_new_from_tsx(cache, "demo_data/platformer_tiles.tsx");
         ls2d_tilemap_set_tilesheet((Ls2DTileMap *)entity, sheet_tsx);
+        ls2d_tilemap_add_layer((Ls2DTileMap *)entity, 1);
 
-        for (int x = 0; x < 30; x++) {
-                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 9, (Ls2DTile){ .gid = 138 });
+        for (int x = 0; x < 20; x++) {
+                for (int y = 0; y < 20; y++) {
+                        const int index = x + 20 * y;
+                        ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
+                                              0,
+                                              x,
+                                              y,
+                                              (Ls2DTile){ .gid = gids[index] });
+                        ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
+                                              1,
+                                              x,
+                                              y,
+                                              (Ls2DTile){ .gid = gids_2[index] });
+                }
         }
 
-        for (int x = 0; x < 30; x++) {
-                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 10, (Ls2DTile){ .gid = 7 });
-                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 11, (Ls2DTile){ .gid = 7 });
-                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 12, (Ls2DTile){ .gid = 7 });
-                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 13, (Ls2DTile){ .gid = 7 });
-                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 14, (Ls2DTile){ .gid = 7 });
-        }
         return entity;
 }
 
@@ -215,7 +264,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk10.png"), duration);
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk11.png"), duration);
 
-        tilemap = add_tilemap2(scene, cache);
+        tilemap = add_tilemap(scene, cache);
 
         /* Sort out our player */
         player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"), walking);

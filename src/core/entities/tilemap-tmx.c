@@ -68,6 +68,7 @@ fail:
 static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader)
 {
         const xmlChar *name = NULL;
+        const xmlChar *value = NULL;
 
         name = xmlTextReaderConstName(reader);
         if (!name) {
@@ -105,6 +106,7 @@ static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
         /* Encountered data definition */
         if (parser->in_layer && xmlStrEqual(name, BAD_CAST "data")) {
                 parser->in_data = !parser->in_data;
+                /* TODO: Determine blob type */
                 return;
         }
 
@@ -128,6 +130,11 @@ static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
                 /* TODO: Move away from tile_size increments and have tile_height/tile_width */
                 self->tile_size = parser->map.tile_width;
                 return;
+        }
+
+        if (parser->in_data) {
+                value = xmlTextReaderConstValue(reader);
+                fprintf(stderr, "CSV: %s\n", value);
         }
 }
 

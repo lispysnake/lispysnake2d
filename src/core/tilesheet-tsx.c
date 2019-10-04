@@ -89,6 +89,7 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
                 ls_hashmap_put(self->textures,
                                LS_PTR_TO_INT(parser->tile.id),
                                LS_PTR_TO_INT(handle));
+                return;
         }
 
         int x = parser->tileset.margin;
@@ -115,7 +116,7 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
                 }
 
                 subhandle = ls2d_texture_cache_subregion(self->cache, handle, region);
-                ls_hashmap_put(self->textures, LS_PTR_TO_INT(tile), subhandle);
+                ls_hashmap_put(self->textures, LS_PTR_TO_INT(tile + 1), subhandle);
         }
 }
 
