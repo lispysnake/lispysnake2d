@@ -23,48 +23,41 @@
 
 #pragma once
 
-#include <SDL.h>
-
 #include "ls2d.h"
 
-/**
- * Helper type to help set and retrieve tile cell attributes
- */
-struct Ls2DTile {
-        uint32_t gid;
-        bool flipped_horizontal;
-        bool flipped_diagonal;
-        bool flipped_vertical;
+#define LS2D_TILE_FLIPPED_HORIZONTALLY 0x80000000
+#define LS2D_TILE_FLIPPED_VERTICALLY 0x40000000
+#define LS2D_TILE_FLIPPED_DIAGONALLY 0x20000000
+#define LS2D_TILE_MASK                                                                             \
+        ~(LS2D_TILE_FLIPPED_HORIZONTALLY | LS2D_TILE_FLIPPED_VERTICALLY |                          \
+          LS2D_TILE_FLIPPED_DIAGONALLY)
+
+struct Ls2DTileMap {
+        Ls2DEntity parent;
+        Ls2DTileSheet *sheet;
+        int tile_size;
+        uint16_t width;
+        uint16_t height;
+        LsArray *layers; /**<An array of Ls2DTileMapLayer */
+        int size;
+
+        struct {
+                int first_column;
+                int first_row;
+                int max_row;
+                int max_column;
+
+                int x_start;
+                int y_start;
+        } render;
 };
 
-/**
- * Construct a new Ls2DTileMap
- */
-Ls2DEntity *ls2d_tilemap_new(int tilesize, uint16_t map_width, uint16_t map_height);
+typedef struct Ls2DTileMapLayer {
+        int render_index; /**<TODO: Shorten to uint8_t */
+        uint32_t *tiles;
+} Ls2DTileMapLayer;
 
-/**
- * Construct a new Ls2DTileMap from a TMX file
- */
-Ls2DEntity *ls2d_tilemap_new_from_tsx(const char *filename);
-
-/**
- * Attempt to insert a new layer in the map
- */
-bool ls2d_tilemap_add_layer(Ls2DTileMap *map, int render_index);
-
-/**
- * Set the gid in the given layer, at X by Y
- */
-bool ls2d_tilemap_set_tile(Ls2DTileMap *map, int layer_index, int x, int y, Ls2DTile tile);
-
-void ls2d_tilemap_set_tilesheet(Ls2DTileMap *map, Ls2DTileSheet *tilesheet);
-
-/**
- * Unref a previously allocated tileMap
- */
-Ls2DTileMap *ls2d_tilemap_unref(Ls2DTileMap *self);
-
-DEF_AUTOFREE(Ls2DTileMap, ls2d_tilemap_unref)
+bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, const char *filename);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

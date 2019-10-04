@@ -22,38 +22,7 @@
  */
 
 #include "ls2d.h"
-
-#define LS2D_TILE_FLIPPED_HORIZONTALLY 0x80000000
-#define LS2D_TILE_FLIPPED_VERTICALLY 0x40000000
-#define LS2D_TILE_FLIPPED_DIAGONALLY 0x20000000
-#define LS2D_TILE_MASK                                                                             \
-        ~(LS2D_TILE_FLIPPED_HORIZONTALLY | LS2D_TILE_FLIPPED_VERTICALLY |                          \
-          LS2D_TILE_FLIPPED_DIAGONALLY)
-
-struct Ls2DTileMap {
-        Ls2DEntity parent;
-        Ls2DTileSheet *sheet;
-        int tile_size;
-        uint16_t width;
-        uint16_t height;
-        LsArray *layers; /**<An array of Ls2DTileMapLayer */
-        int size;
-
-        struct {
-                int first_column;
-                int first_row;
-                int max_row;
-                int max_column;
-
-                int x_start;
-                int y_start;
-        } render;
-};
-
-typedef struct Ls2DTileMapLayer {
-        int render_index; /**<TODO: Shorten to uint8_t */
-        uint32_t *tiles;
-} Ls2DTileMapLayer;
+#include "tilemap-private.h"
 
 static void ls2d_tilemap_destroy(Ls2DTileMap *self);
 static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
@@ -67,7 +36,7 @@ Ls2DObjectTable tilemap_vtable = {
         .destroy = (ls2d_object_vfunc_destroy)ls2d_tilemap_destroy,
 };
 
-Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
+static Ls2DTileMap *ls2d_tilemap_new_internal(void)
 {
         Ls2DTileMap *self = NULL;
 
@@ -82,21 +51,53 @@ Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
 
         self->parent.draw = ls2d_tilemap_draw;
         self->parent.update = ls2d_tilemap_update;
+
+        return (Ls2DTileMap *)ls2d_object_init((Ls2DObject *)self, &tilemap_vtable);
+bail:
+        ls2d_tilemap_destroy(self);
+        free(self);
+        return NULL;
+}
+
+Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
+{
+        Ls2DTileMap *self = NULL;
+
+        self = ls2d_tilemap_new_internal();
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+
         self->width = width;
         self->height = height;
         self->tile_size = tile_size;
         self->size = self->width * self->height;
 
         if (ls_unlikely(!ls2d_tilemap_add_layer(self, 0))) {
-                goto bail;
+                ls2d_tilemap_destroy(self);
+                free(self);
+                return NULL;
         }
 
-        return (Ls2DEntity *)ls2d_object_init((Ls2DObject *)self, &tilemap_vtable);
+        return (Ls2DEntity *)self;
+}
 
-bail:
-        ls2d_tilemap_destroy(self->layers);
-        free(self);
-        return NULL;
+Ls2DEntity *ls2d_tilemap_new_from_tsx(const char *filename)
+{
+        Ls2DTileMap *self = NULL;
+
+        self = ls2d_tilemap_new_internal();
+        if (ls_unlikely(!self)) {
+                return NULL;
+        }
+
+        if (!ls2d_tilemap_load_tsx(self, filename)) {
+                ls2d_tilemap_destroy(self);
+                free(self);
+                return NULL;
+        }
+
+        return (Ls2DEntity *)self;
 }
 
 Ls2DTileMap *ls2d_tilemap_unref(Ls2DTileMap *self)
