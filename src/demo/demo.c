@@ -114,7 +114,7 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
         Ls2DEntity *entity = NULL;
         autofree(Ls2DTileSheet) *sheet_tsx = NULL;
 
-        entity = ls2d_tilemap_new(70, 15, 15);
+        entity = ls2d_tilemap_new(70, 30, 15);
         if (!entity) {
                 abort();
                 return NULL;
@@ -125,33 +125,17 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
         sheet_tsx = ls2d_tile_sheet_new_from_tsx(cache, "demo_data/TESTMAP.tsx");
         ls2d_tilemap_set_tilesheet((Ls2DTileMap *)entity, sheet_tsx);
 
-        /* TODO: Actually populate the tilemap! */
-        if (!ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
-                                   0,
-                                   0,
-                                   0,
-                                   (Ls2DTile){ .gid = 100, .flipped_horizontal = true })) {
-                abort();
+        for (int x = 0; x < 30; x++) {
+                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 9, (Ls2DTile){ .gid = 138 });
         }
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 0, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
-                              0,
-                              2,
-                              0,
-                              (Ls2DTile){ .gid = 100, .flipped_diagonal = true });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 0, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 4, 0, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity,
-                              0,
-                              4,
-                              4,
-                              (Ls2DTile){ .gid = 100, .flipped_vertical = true });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 0, 4, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 2, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 1, 4, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 2, 4, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 3, 4, (Ls2DTile){ .gid = 100 });
-        ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, 9, 9, (Ls2DTile){ .gid = 100 });
+
+        for (int x = 0; x < 30; x++) {
+                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 10, (Ls2DTile){ .gid = 7 });
+                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 11, (Ls2DTile){ .gid = 7 });
+                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 12, (Ls2DTile){ .gid = 7 });
+                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 13, (Ls2DTile){ .gid = 7 });
+                ls2d_tilemap_set_tile((Ls2DTileMap *)entity, 0, x, 14, (Ls2DTile){ .gid = 7 });
+        }
         return entity;
 }
 
