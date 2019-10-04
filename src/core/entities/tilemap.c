@@ -215,11 +215,12 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
         Ls2DTileMap *self = (Ls2DTileMap *)entity;
         Ls2DTile tile = { 0 };
         SDL_Rect draw_area = { 0 };
-        int x_draw = self->render.x_start;
-        int y_draw = self->render.y_start;
+        int x_draw, y_draw = 0;
 
         for (uint16_t i = 0; i < self->layers->len; i++) {
                 Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
+                x_draw = self->render.x_start;
+                y_draw = self->render.y_start;
 
                 for (uint16_t y = self->render.first_row; y < self->render.max_row; y++) {
                         for (uint16_t x = self->render.first_column; x < self->render.max_column;
@@ -237,9 +238,17 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                 handle =
                                     ls2d_tile_sheet_lookup(self->sheet, LS_INT_TO_PTR(tile.gid));
                                 node = ls2d_texture_cache_lookup(cache, frame, handle);
+
+                                /* Draw outline texture for layer 0 */
                                 if (tile.gid == 0 || !node) {
-                                        SDL_SetRenderDrawColor(frame->renderer, 255, 255, 255, 255);
-                                        SDL_RenderDrawRect(frame->renderer, &area);
+                                        if (i == 0) {
+                                                SDL_SetRenderDrawColor(frame->renderer,
+                                                                       255,
+                                                                       255,
+                                                                       255,
+                                                                       255);
+                                                SDL_RenderDrawRect(frame->renderer, &area);
+                                        }
                                         goto draw_next;
                                 }
 
