@@ -23,6 +23,10 @@
 
 #pragma once
 
+#include <fcntl.h>
+#include <libxml/xmlreader.h>
+#include <unistd.h>
+
 #include "ls2d.h"
 
 #define LS2D_TILE_FLIPPED_HORIZONTALLY 0x80000000
@@ -57,7 +61,54 @@ typedef struct Ls2DTileMapLayer {
         uint32_t *tiles;
 } Ls2DTileMapLayer;
 
+/**
+ * XML instance parser
+ */
+typedef struct Ls2DTileMapTMX {
+        bool in_map;
+        bool in_tileset;
+        bool in_layer;
+        bool in_data;
+
+        struct {
+                int orientation;
+                int width;
+                int height;
+                int tile_width;
+                int tile_height;
+                /* TODO: Support infinite.. ?*/
+        } map;
+
+        struct {
+                int first_gid;
+                char *source;
+        } tileset;
+
+        struct {
+                int id;
+                char *name;
+                int width;
+                int height;
+        } layer;
+} Ls2DTileMapTMX;
+
 bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, const char *filename);
+
+DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)
+DEF_AUTOFREE(xmlChar, xmlFree)
+
+static inline void ls2d_tilemap_get_int_attr(xmlTextReader *reader, int *storage, const char *id)
+{
+        autofree(xmlChar) *attr = NULL;
+
+        /* TODO: Proper error checking of atoi, etc. */
+        attr = xmlTextReaderGetAttribute(reader, BAD_CAST id);
+        if (!attr) {
+                *storage = 0;
+                return;
+        }
+        *storage = atoi((const char *)attr);
+}
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

@@ -139,6 +139,20 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
         return entity;
 }
 
+static Ls2DEntity *add_tilemap2(Ls2DScene *scene, Ls2DTextureCache *cache)
+{
+        Ls2DEntity *entity = NULL;
+
+        entity = ls2d_tilemap_new_from_tmx("demo_data/platformer.tmx");
+        if (!entity) {
+                abort();
+                return NULL;
+        }
+
+        ls2d_scene_add_entity(scene, entity);
+        return entity;
+}
+
 static bool mouse_callback(SDL_MouseMotionEvent *event, Ls2DFrameInfo *frame, void *userdata)
 {
         Ls2DCamera *camera = userdata;
@@ -201,7 +215,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk10.png"), duration);
         ls2d_animation_add_frame(walking, ls2d_tile_sheet_lookup(sheet, "p1_walk11.png"), duration);
 
-        tilemap = add_tilemap(scene, cache);
+        tilemap = add_tilemap2(scene, cache);
 
         /* Sort out our player */
         player = demo_add_player(scene, ls2d_tile_sheet_lookup(sheet, "p1_stand.png"), walking);

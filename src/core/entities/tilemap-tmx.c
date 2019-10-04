@@ -1,31 +1,73 @@
-; /*
-  * This file is part of lispysnake2d.
-  *
-  * Copyright (c) 2019 Lispy Snake, Ltd.
-  *
-  * This software is provided 'as-is', without any express or implied
-  * warranty. In no event will the authors be held liable for any damages
-  * arising from the use of this software.
-  *
-  * Permission is granted to anyone to use this software for any purpose,
-  * including commercial applications, and to alter it and redistribute it
-  * freely, subject to the following restrictions:
-  *
-  * 1. The origin of this software must not be misrepresented; you must not
-  *    claim that you wrote the original software. If you use this software
-  *    in a product, an acknowledgment in the product documentation would be
-  *    appreciated but is not required.
-  * 2. Altered source versions must be plainly marked as such, and must not be
-  *    misrepresented as being the original software.
-  * 3. This notice may not be removed or altered from any source distribution.
+/*
+ * This file is part of lispysnake2d.
+ *
+ * Copyright (c) 2019 Lispy Snake, Ltd.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
 
-  */
+ */
+
+#define _GNU_SOURCE
+
+#include <fcntl.h>
+#include <libxml/xmlreader.h>
+#include <unistd.h>
 
 #include "tilemap-private.h"
 
+static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader);
+
 bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, const char *filename)
 {
-        return false;
+        int fd = 0;
+        autofree(xmlTextReader) *reader = NULL;
+        bool ret = false;
+        int r = 0;
+        Ls2DTileMapTMX parser = { 0 };
+
+        fd = open(filename, O_RDONLY);
+        if (fd < 0) {
+                goto fail;
+        }
+
+        /* Not portable. Improve for Windows. */
+        (void)posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
+
+        reader = xmlReaderForFd(fd, filename, NULL, 0);
+        if (!reader) {
+                goto fail;
+        }
+
+        while ((r = xmlTextReaderRead(reader)) > 0) {
+                ls2d_tilemap_walk_tmx(self, &parser, reader);
+        }
+        ret = true;
+
+fail:
+        if (fd >= 0) {
+                close(fd);
+        }
+
+        return ret;
+}
+
+static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader)
+{
+        /* TODO: Implement */
 }
 
 /*

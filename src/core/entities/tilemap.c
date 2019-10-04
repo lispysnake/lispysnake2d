@@ -82,7 +82,7 @@ Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
         return (Ls2DEntity *)self;
 }
 
-Ls2DEntity *ls2d_tilemap_new_from_tsx(const char *filename)
+Ls2DEntity *ls2d_tilemap_new_from_tmx(const char *filename)
 {
         Ls2DTileMap *self = NULL;
 
