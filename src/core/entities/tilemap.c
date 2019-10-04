@@ -38,6 +38,16 @@ struct Ls2DTileMap {
         uint16_t height;
         LsArray *layers; /**<An array of Ls2DTileMapLayer */
         int size;
+
+        struct {
+                int first_column;
+                int first_row;
+                int max_row;
+                int max_column;
+
+                int x_start;
+                int y_start;
+        } render;
 };
 
 typedef struct Ls2DTileMapLayer {
@@ -204,53 +214,15 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
         Ls2DTileMap *self = (Ls2DTileMap *)entity;
         Ls2DTile tile = { 0 };
         SDL_Rect draw_area = { 0 };
-        int first_column = 0;
-        int first_row = 0;
-        int max_row = self->height;
-        int max_column = self->width;
-
-        int x_start = 0;
-        int y_start = 0;
-        int x_draw = x_start;
-        int y_draw = y_start;
-
-        /* Basic Premise:
-         * Work out the visible rows and columns for the draw area
-         * Only draw those columns
-         * Draw at offset to camera and missing columns
-         */
-
-        if (ls2d_camera_get_view(frame->camera, &draw_area)) {
-                int visible_columns = ceil((float)draw_area.w / self->tile_size);
-                int visible_rows = ceil((float)draw_area.h / self->tile_size);
-
-                first_row = floor((float)draw_area.y / self->tile_size);
-                first_column = floor((float)draw_area.x / self->tile_size);
-
-                /* TODO: Introduce MAX/MIN macros */
-                max_column = first_column + visible_columns + 1;
-                max_row = first_row + visible_rows + 1;
-                if (max_row > self->height) {
-                        max_row = self->height;
-                }
-                if (max_column > self->width) {
-                        max_column = self->width;
-                }
-
-                x_start = 0 - draw_area.x;
-                x_start += first_column * self->tile_size;
-                x_draw = x_start;
-
-                y_start = 0 - draw_area.y;
-                y_start += first_row * self->tile_size;
-                y_draw = y_start;
-        }
+        int x_draw = self->render.x_start;
+        int y_draw = self->render.y_start;
 
         for (uint16_t i = 0; i < self->layers->len; i++) {
                 Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
 
-                for (uint16_t y = first_row; y < max_row; y++) {
-                        for (uint16_t x = first_column; x < max_column; x++) {
+                for (uint16_t y = self->render.first_row; y < self->render.max_row; y++) {
+                        for (uint16_t x = self->render.first_column; x < self->render.max_column;
+                             x++) {
                                 Ls2DTextureNode *node = NULL;
                                 Ls2DTextureHandle handle;
                                 SDL_Rect area = { .w = self->tile_size,
@@ -282,7 +254,7 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                         }
                         /* Increment to next row */
                         y_draw += self->tile_size;
-                        x_draw = x_start;
+                        x_draw = self->render.x_start;
                 }
         }
 }
@@ -297,6 +269,50 @@ void ls2d_tilemap_set_tilesheet(Ls2DTileMap *self, Ls2DTileSheet *sheet)
 
 static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
+        Ls2DTileMap *self = (Ls2DTileMap *)entity;
+        SDL_Rect draw_area = { 0 };
+
+        int visible_columns = 0;
+        int visible_rows = 0;
+
+        /* Basic Premise:
+         * Work out the visible rows and columns for the draw area
+         * Only draw those columns
+         * Draw at offset to camera and missing columns
+         * TODO: Optimise by only changing the camera when it needs changing.
+         */
+
+        if (!ls2d_camera_get_view(frame->camera, &draw_area)) {
+                self->render.first_column = 0;
+                self->render.first_row = 0;
+                self->render.max_row = self->height;
+                self->render.max_column = self->width;
+                self->render.x_start = 0;
+                self->render.y_start = 0;
+                return;
+        }
+
+        visible_columns = ceil((float)draw_area.w / self->tile_size);
+        visible_rows = ceil((float)draw_area.h / self->tile_size);
+
+        self->render.first_row = floor((float)draw_area.y / self->tile_size);
+        self->render.first_column = floor((float)draw_area.x / self->tile_size);
+
+        /* TODO: Introduce MAX/MIN macros */
+        self->render.max_column = self->render.first_column + visible_columns + 1;
+        self->render.max_row = self->render.first_row + visible_rows + 1;
+        if (self->render.max_row > self->height) {
+                self->render.max_row = self->height;
+        }
+        if (self->render.max_column > self->width) {
+                self->render.max_column = self->width;
+        }
+
+        self->render.x_start = 0 - draw_area.x;
+        self->render.x_start += self->render.first_column * self->tile_size;
+
+        self->render.y_start = 0 - draw_area.y;
+        self->render.y_start += self->render.first_row * self->tile_size;
 }
 
 /*
