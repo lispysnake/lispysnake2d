@@ -23,6 +23,7 @@
 
 #include "ls2d.h"
 
+static void ls2d_animation_init(Ls2DAnimation *self);
 static void ls2d_animation_destroy(Ls2DAnimation *self);
 
 struct Ls2DAnimation {
@@ -50,28 +51,22 @@ typedef struct Ls2DAnimationFrame {
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable animation_vtable = {
+        .init = (ls2d_object_vfunc_init)ls2d_animation_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_animation_destroy,
         .obj_name = "Ls2DAnimation",
 };
 
-Ls2DAnimation *ls2d_animation_new()
+static void ls2d_animation_init(Ls2DAnimation *self)
 {
-        Ls2DAnimation *self = NULL;
-
-        self = calloc(1, sizeof(struct Ls2DAnimation));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
         self->cur_frame = 0;
         self->looping = true;
         self->playing = true;
         self->frames = ls_array_new_size(sizeof(struct Ls2DAnimationFrame), 3);
-        if (ls_unlikely(!self->frames)) {
-                free(self);
-                return NULL;
-        }
+}
 
-        return ls2d_object_init((Ls2DObject *)self, &animation_vtable);
+Ls2DAnimation *ls2d_animation_new()
+{
+        return LS2D_NEW(Ls2DAnimation, animation_vtable);
 }
 
 Ls2DAnimation *ls2d_animation_unref(Ls2DAnimation *self)
