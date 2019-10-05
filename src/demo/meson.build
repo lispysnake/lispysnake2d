@@ -1,6 +1,7 @@
 demo_sources = [
     'main.c',
     'level.c',
+    'player.c',
 ]
 
 demo_dependencies = [

@@ -45,6 +45,10 @@ bool demo_game_init(Ls2DGame *game)
         if (!demo_game_load_tilemap(self)) {
                 return false;
         }
+        /* Player */
+        if (!demo_game_make_player(self)) {
+                return false;
+        }
 
         ls2d_engine_add_scene(game->engine, self->scene);
         fprintf(stderr, "Init end!\n");

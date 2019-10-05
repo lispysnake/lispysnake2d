@@ -31,12 +31,14 @@ typedef struct DemoGame {
         Ls2DScene *scene;
         Ls2DCamera *camera;
         Ls2DEntity *tilemap;
+        Ls2DEntity *player;
 } DemoGame;
 
 bool demo_game_init(Ls2DGame *game);
 void demo_game_destroy(Ls2DGame *game);
 
 bool demo_game_load_tilemap(DemoGame *self);
+bool demo_game_make_player(DemoGame *self);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
