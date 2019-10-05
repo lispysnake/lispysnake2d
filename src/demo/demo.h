@@ -22,31 +22,21 @@
  */
 
 #include <SDL.h>
+#include <stdlib.h>
 
-#include "engine-private.h"
-#include "libls.h"
+#include "ls2d.h"
 
-void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
-{
-        /* Clear the background */
-        SDL_SetRenderDrawColor(self->render, 135, 206, 235, 255);
-        SDL_RenderClear(self->render);
+typedef struct DemoGame {
+        Ls2DGame parent;
+        Ls2DScene *scene;
+        Ls2DCamera *camera;
+        Ls2DEntity *tilemap;
+} DemoGame;
 
-        /* Clear old bfufer */
-        SDL_SetRenderTarget(self->render, self->buffer);
-        SDL_RenderClear(self->render);
+bool demo_game_init(Ls2DGame *game);
+void demo_game_destroy(Ls2DGame *game);
 
-        /* Draw the active scene */
-        if (ls_likely(self->active_scene != NULL)) {
-                ls2d_scene_draw(self->active_scene, frame);
-        }
-
-        /* Copy the buffer in */
-        SDL_SetRenderTarget(self->render, NULL);
-        SDL_RenderCopy(self->render, self->buffer, NULL, NULL);
-
-        SDL_RenderPresent(self->render);
-}
+bool demo_game_load_tilemap(DemoGame *self);
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

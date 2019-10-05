@@ -53,7 +53,9 @@ void ls2d_engine_process_events(Ls2DEngine *self, Ls2DFrameInfo *frame)
 {
         SDL_Event event = { 0 };
 
-        ls2d_scene_update(self->active_scene, frame);
+        if (ls_likely(self->active_scene != NULL)) {
+                ls2d_scene_update(self->active_scene, frame);
+        }
 
         /* Event update */
         while (SDL_PollEvent(&event) != 0) {

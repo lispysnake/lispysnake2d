@@ -214,6 +214,9 @@ cleanup:
 int ls2d_engine_run(Ls2DEngine *self, Ls2DGame *game)
 {
         Ls2DFrameInfo frame = { 0 };
+        if (ls_unlikely(!self)) {
+                return EXIT_FAILURE;
+        }
         if (ls_unlikely(!game)) {
                 fprintf(stderr, "Missing game!\n");
                 return EXIT_FAILURE;
@@ -233,7 +236,10 @@ int ls2d_engine_run(Ls2DEngine *self, Ls2DGame *game)
         frame.renderer = self->render;
 
         if (game->funcs.init) {
-                game->funcs.init(game);
+                if (!game->funcs.init(game)) {
+                        fprintf(stderr, "Game init failed\n");
+                        return EXIT_FAILURE;
+                }
         }
 
         /* Primary event loop */

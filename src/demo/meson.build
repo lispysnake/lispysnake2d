@@ -1,5 +1,6 @@
 demo_sources = [
-    'demo.c',
+    'main.c',
+    'level.c',
 ]
 
 demo_dependencies = [
