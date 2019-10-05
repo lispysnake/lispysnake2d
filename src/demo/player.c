@@ -70,6 +70,7 @@ bool demo_game_make_player(DemoGame *self)
         ls2d_entity_add_component(self->player, sprite);
         ls2d_entity_add_component(self->player, pos);
         ls2d_entity_add_component(self->player, anim);
+        ls2d_sprite_component_set_flip((Ls2DSpriteComponent *)sprite, SDL_FLIP_HORIZONTAL);
         ls2d_position_component_set_xy((Ls2DPositionComponent *)pos,
                                        (SDL_Point){ .x = 690, .y = 16 * 70 - 25 });
         ls2d_scene_add_entity(self->scene, self->player);
