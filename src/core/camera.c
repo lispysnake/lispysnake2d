@@ -33,28 +33,22 @@ struct Ls2DCamera {
         Ls2DScene *scene;
 };
 
-/**
- * We don't yet do anything fancy.
- */
 Ls2DObjectTable camera_vtable = {
         .obj_name = "Ls2DCamera",
 };
 
 Ls2DCamera *ls2d_camera_new(Ls2DScene *scene)
 {
+        Ls2DObject *object = LS2D_NEW(Ls2DCamera, camera_vtable);
         Ls2DCamera *self = NULL;
 
-        if (!scene) {
+        if (ls_unlikely(!object)) {
                 return NULL;
         }
 
-        self = calloc(1, sizeof(struct Ls2DCamera));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
+        self = (Ls2DCamera *)object;
         self->scene = scene;
-
-        return ls2d_object_init((Ls2DObject *)self, &camera_vtable);
+        return self;
 }
 
 Ls2DCamera *ls2d_camera_unref(Ls2DCamera *self)
