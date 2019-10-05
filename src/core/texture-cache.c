@@ -35,6 +35,7 @@
 
 DEF_AUTOFREE(SDL_Surface, SDL_FreeSurface)
 
+static void ls2d_texture_cache_init(Ls2DTextureCache *self);
 static void ls2d_texture_cache_destroy(Ls2DTextureCache *self);
 
 /**
@@ -50,25 +51,19 @@ struct Ls2DTextureCache {
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable texture_cache_vtable = {
+        .init = (ls2d_object_vfunc_init)ls2d_texture_cache_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_texture_cache_destroy,
         .obj_name = "Ls2DTextureCache",
 };
 
 Ls2DTextureCache *ls2d_texture_cache_new()
 {
-        Ls2DTextureCache *self = NULL;
+        return LS2D_NEW(Ls2DTextureCache, texture_cache_vtable);
+}
 
-        self = calloc(1, sizeof(struct Ls2DTextureCache));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
+static void ls2d_texture_cache_init(Ls2DTextureCache *self)
+{
         self->cache = ls_array_new_size(sizeof(struct Ls2DTextureNode), DEFAULT_CACHE_SIZE);
-        if (ls_unlikely(!self->cache)) {
-                free(self);
-                return NULL;
-        }
-
-        return ls2d_object_init((Ls2DObject *)self, &texture_cache_vtable);
 }
 
 Ls2DTextureCache *ls2d_texture_cache_unref(Ls2DTextureCache *self)
@@ -87,9 +82,6 @@ static SDL_Texture *load_texture_internal(Ls2DTextureNode *node, Ls2DFrameInfo *
                 fprintf(stderr, "Failed to load %s: %s\n", node->filename, IMG_GetError());
                 return NULL;
         }
-
-        /* Mask magenta as transparent */
-        // SDL_SetColorKey(img_surface, SDL_TRUE, 0xFF00FF);
 
         /* If the window has no surface, we can't optimize it */
         win_surface = SDL_GetWindowSurface(frame->window);
