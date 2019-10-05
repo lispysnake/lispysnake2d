@@ -23,6 +23,7 @@
 
 #include "ls2d.h"
 
+static void ls2d_basic_entity_init(Ls2DBasicEntity *self);
 static void ls2d_basic_entity_destroy(Ls2DBasicEntity *self);
 static void ls2d_basic_entity_draw(Ls2DEntity *entity, Ls2DTextureCache *cache,
                                    Ls2DFrameInfo *frame);
@@ -45,33 +46,28 @@ struct Ls2DBasicEntity {
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable entity_vtable = {
+        .init = (ls2d_object_vfunc_init)ls2d_basic_entity_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_basic_entity_destroy,
         .obj_name = "Ls2DBasicEntity",
 };
 
 Ls2DEntity *ls2d_basic_entity_new(const char *name)
 {
-        Ls2DBasicEntity *self = NULL;
-
-        self = calloc(1, sizeof(struct Ls2DBasicEntity));
+        Ls2DBasicEntity *self = LS2D_NEW(Ls2DBasicEntity, entity_vtable);
         if (ls_unlikely(!self)) {
                 return NULL;
         }
-        self->components = ls_ptr_array_new();
-        if (ls_unlikely(!self->components)) {
-                free(self);
-                return NULL;
-        }
+        self->name = name;
+        return (Ls2DEntity *)self;
+}
 
+static void ls2d_basic_entity_init(Ls2DBasicEntity *self)
+{
+        self->components = ls_ptr_array_new();
         self->parent.draw = ls2d_basic_entity_draw;
         self->parent.update = ls2d_basic_entity_update;
         self->parent.add_component = ls2d_basic_entity_add_component;
         self->parent.get_component = ls2d_basic_entity_get_component;
-
-        /* Scene name for traversal */
-        self->name = name;
-
-        return (Ls2DEntity *)ls2d_object_init((Ls2DObject *)self, &entity_vtable);
 }
 
 Ls2DBasicEntity *ls2d_basic_entity_unref(Ls2DBasicEntity *self)
