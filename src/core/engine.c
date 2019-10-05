@@ -185,6 +185,9 @@ static void ls2d_engine_destroy(Ls2DEngine *self)
         if (ls_unlikely(!self)) {
                 goto cleanup;
         }
+        if (ls_likely(self->game != NULL) && ls_likely(self->game->funcs.destroy != NULL)) {
+                self->game->funcs.destroy(self->game);
+        }
         if (ls_likely(self->render != NULL)) {
                 SDL_DestroyRenderer(self->render);
         }
@@ -208,9 +211,16 @@ cleanup:
  * Internally we're responsible for the primary event queue, so we'll
  * manage it here and if necessary dispatch it.
  */
-int ls2d_engine_run(Ls2DEngine *self)
+int ls2d_engine_run(Ls2DEngine *self, Ls2DGame *game)
 {
         Ls2DFrameInfo frame = { 0 };
+        if (ls_unlikely(!game)) {
+                fprintf(stderr, "Missing game!\n");
+                return EXIT_FAILURE;
+        }
+
+        game->engine = self;
+        self->game = game;
 
         /* Make sure to show the window */
         SDL_ShowWindow(self->window);
@@ -221,6 +231,10 @@ int ls2d_engine_run(Ls2DEngine *self)
 
         frame.window = self->window;
         frame.renderer = self->render;
+
+        if (game->funcs.init) {
+                game->funcs.init(game);
+        }
 
         /* Primary event loop */
         while (self->running) {

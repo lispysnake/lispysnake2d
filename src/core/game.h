@@ -27,49 +27,22 @@
 
 #include "ls2d.h"
 
-/**
- * Return a new Ls2DEngine object
- */
-Ls2DEngine *ls2d_engine_new(int width, int height);
+typedef bool (*ls2d_game_init_func)(Ls2DGame *);
+typedef void (*ls2d_game_destroy_func)(Ls2DGame *);
+
+typedef struct Ls2DGameVTable {
+        ls2d_game_init_func init;
+        ls2d_game_destroy_func destroy;
+} Ls2DGameVTable;
 
 /**
- * Return a new Ls2DEngine object for the current display size
+ * Ls2DGame is merely a shallow object that sets up virtual function
+ * calls for the Engine to run logic.
  */
-Ls2DEngine *ls2d_engine_new_current_display(void);
-
-/**
- * Unref a previously allocated Ls2DEngine object
- */
-Ls2DEngine *ls2d_engine_unref(Ls2DEngine *self);
-
-/**
- * Run an Ls2DEngine until termination.
- * For convenience this will return standard EXIT_SUCCESS/EXIT_FAILURE
- * codes.
- */
-int ls2d_engine_run(Ls2DEngine *self, Ls2DGame *game);
-
-/**
- * Update the fullscreen state of the display
- */
-void ls2d_engine_set_fullscreen(Ls2DEngine *self, bool fullscreen);
-
-/**
- * Set a framerate cap on the engine. If set to 0, there will be no cap.
- */
-void ls2d_engine_set_fps_cap(Ls2DEngine *self, uint32_t fps);
-
-/**
- * Add a new scene to the Ls2DEngine.
- */
-void ls2d_engine_add_scene(Ls2DEngine *self, Ls2DScene *scene);
-
-/**
- * Return the global input manager
- */
-Ls2DInputManager *ls2d_engine_get_input_manager(Ls2DEngine *self);
-
-DEF_AUTOFREE(Ls2DEngine, ls2d_engine_unref)
+typedef struct Ls2DGame {
+        Ls2DGameVTable funcs;
+        Ls2DEngine *engine;
+} Ls2DGame;
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

@@ -50,6 +50,7 @@ struct Ls2DEngine {
         Ls2DScene *active_scene;
         Ls2DInputManager *input_manager;
         SDL_Texture *buffer;
+        Ls2DGame *game;
 };
 
 /**

@@ -32,6 +32,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+typedef struct Ls2DGame Ls2DGame;
+typedef struct Ls2DGameVTable Ls2DGameVTable;
+
 typedef struct Ls2DCamera Ls2DCamera;
 typedef struct Ls2DInputManager Ls2DInputManager;
 typedef struct Ls2DEngine Ls2DEngine;
@@ -60,6 +63,7 @@ typedef struct Ls2DTileMap Ls2DTileMap;
 #include "engine.h"
 #include "entity.h"
 #include "frame.h"
+#include "game.h"
 #include "input-manager.h"
 #include "scene.h"
 #include "texture-cache.h"

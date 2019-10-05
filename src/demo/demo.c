@@ -210,6 +210,17 @@ static bool mouse_callback(SDL_MouseMotionEvent *event, Ls2DFrameInfo *frame, vo
         return true;
 }
 
+static bool demo_init(Ls2DGame *game)
+{
+        fprintf(stderr, "Game init\n");
+        return true;
+}
+
+static void demo_destroy(Ls2DGame *game)
+{
+        fprintf(stderr, "Game end\n");
+}
+
 /**
  * Main entry point to the demo.
  */
@@ -226,6 +237,11 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         autofree(Ls2DAnimation) *walking_npc = NULL;
         autofree(Ls2DCamera) *camera = NULL;
         Ls2DInputManager *imanager = NULL;
+        Ls2DGame game = { 0 };
+        game.funcs = (Ls2DGameVTable){
+                .init = demo_init,
+                .destroy = demo_destroy,
+        };
 
         SDL_Rect world_bounds = { 0 };
         world_bounds.w = 1024;
@@ -317,7 +333,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
 
         imanager = ls2d_engine_get_input_manager(engine);
         ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_callback, camera);
-        int ret = ls2d_engine_run(engine);
+        int ret = ls2d_engine_run(engine, &game);
         return ret;
 }
 
