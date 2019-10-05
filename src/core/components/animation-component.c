@@ -28,6 +28,7 @@
 #include "ls2d.h"
 
 static void ls2d_animation_component_destroy(Ls2DAnimationComponent *self);
+static void ls2d_animation_component_init(Ls2DAnimationComponent *self);
 static void ls2d_animation_component_update(Ls2DComponent *component, Ls2DTextureCache *cache,
                                             Ls2DFrameInfo *frame);
 
@@ -45,32 +46,23 @@ struct Ls2DAnimationComponent {
  */
 Ls2DObjectTable animation_component_vtable = {
         .obj_name = "Ls2DAnimationComponent",
+        .init = (ls2d_object_vfunc_init)ls2d_animation_component_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_animation_component_destroy,
 };
 
 Ls2DComponent *ls2d_animation_component_new()
 {
-        Ls2DAnimationComponent *self = NULL;
+        return (Ls2DComponent *)LS2D_NEW(Ls2DAnimationComponent, animation_component_vtable);
+}
 
-        self = calloc(1, sizeof(struct Ls2DAnimationComponent));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
+static void ls2d_animation_component_init(Ls2DAnimationComponent *self)
+{
         self->anims = ls_hashmap_new_full(ls_hashmap_string_hash,
                                           ls_hashmap_string_equal,
                                           free,
                                           (ls_hashmap_free_func)ls2d_object_unref);
-        if (ls_unlikely(!self->anims)) {
-                ls2d_animation_component_destroy(self);
-                free(self);
-                return NULL;
-        }
-
-        self = ls2d_object_init((Ls2DObject *)self, &animation_component_vtable);
         self->parent.comp_id = LS2D_COMP_ID_ANIMATION;
         self->parent.update = ls2d_animation_component_update;
-
-        return (Ls2DComponent *)self;
 }
 
 Ls2DAnimationComponent *ls2d_animation_component_unref(Ls2DAnimationComponent *self)
