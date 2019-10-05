@@ -241,7 +241,7 @@ int main(__ls_unused__ int argc, __ls_unused__ char **argv)
         ls2d_engine_set_fps_cap(engine, 60);
 
         /* Create root scene */
-        scene = ls2d_scene_new("game_screen");
+        scene = ls2d_scene_new();
         ls2d_engine_add_scene(engine, scene);
 
         /* Grab our textures */

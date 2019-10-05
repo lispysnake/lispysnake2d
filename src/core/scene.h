@@ -31,18 +31,13 @@
  * Notably, this optimises the event queue as we'll only dispatch the
  * input handling to the visible renderables within the active scene.
  */
-Ls2DScene *ls2d_scene_new(const char *name);
+Ls2DScene *ls2d_scene_new(void);
 
 /**
  * Unref an allocated Scene. This will also deference any
  * attached resources.
  */
 Ls2DScene *ls2d_scene_unref(Ls2DScene *self);
-
-/**
- * Get the name of this scene object
- */
-const char *ls2d_scene_get_name(Ls2DScene *self);
 
 /**
  * Draw the scene using the current FrameInfo
