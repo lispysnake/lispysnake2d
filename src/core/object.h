@@ -63,7 +63,7 @@ void *ls2d_object_init(Ls2DObject *object, Ls2DObjectTable *vtable);
 
 Ls2DObject *ls2d_object_new(size_t size, Ls2DObjectTable *vtable);
 
-#define LS2D_NEW(x, y) ls2d_object_new(sizeof(x), &y)
+#define LS2D_NEW(x, y) (x *)ls2d_object_new(sizeof(x), &y)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

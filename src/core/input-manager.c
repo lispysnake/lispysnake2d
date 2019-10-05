@@ -24,6 +24,7 @@
 #include "ls2d.h"
 
 static void ls2d_input_manager_destroy(Ls2DInputManager *self);
+static void ls2d_input_manager_init(Ls2DInputManager *self);
 
 /**
  * Opaque Ls2DInputManager implementation
@@ -47,26 +48,19 @@ struct Ls2DInputManager {
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable input_manager_vtable = {
+        .init = (ls2d_object_vfunc_init)ls2d_input_manager_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_input_manager_destroy,
         .obj_name = "Ls2DInputManager",
 };
 
 Ls2DInputManager *ls2d_input_manager_new()
 {
-        Ls2DInputManager *self = NULL;
+        return LS2D_NEW(Ls2DInputManager, input_manager_vtable);
+}
 
-        self = calloc(1, sizeof(struct Ls2DInputManager));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
-
+static void ls2d_input_manager_init(Ls2DInputManager *self)
+{
         self->key_callbacks = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
-        if (ls_unlikely(!self->key_callbacks)) {
-                ls2d_input_manager_destroy(self);
-                return NULL;
-        }
-
-        return ls2d_object_init((Ls2DObject *)self, &input_manager_vtable);
 }
 
 Ls2DInputManager *ls2d_input_manager_unref(Ls2DInputManager *self)

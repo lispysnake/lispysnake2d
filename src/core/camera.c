@@ -39,14 +39,12 @@ Ls2DObjectTable camera_vtable = {
 
 Ls2DCamera *ls2d_camera_new(Ls2DScene *scene)
 {
-        Ls2DObject *object = LS2D_NEW(Ls2DCamera, camera_vtable);
-        Ls2DCamera *self = NULL;
+        Ls2DCamera *self = LS2D_NEW(Ls2DCamera, camera_vtable);
 
-        if (ls_unlikely(!object)) {
+        if (ls_unlikely(!self)) {
                 return NULL;
         }
 
-        self = (Ls2DCamera *)object;
         self->scene = scene;
         return self;
 }
