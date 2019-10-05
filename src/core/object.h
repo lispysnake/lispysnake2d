@@ -26,6 +26,10 @@
 #include <stdatomic.h>
 
 /**
+ * The init function for an object
+ */
+typedef void (*ls2d_object_vfunc_init)(void *);
+/**
  * The destructor function for an object
  */
 typedef void (*ls2d_object_vfunc_destroy)(void *);
@@ -35,6 +39,7 @@ typedef void (*ls2d_object_vfunc_destroy)(void *);
  * extended.
  */
 typedef struct Ls2DObjectTable {
+        ls2d_object_vfunc_init init;
         ls2d_object_vfunc_destroy destroy;
         const char *obj_name;
 } Ls2DObjectTable;
@@ -55,6 +60,10 @@ void *ls2d_object_ref(void *);
 void *ls2d_object_unref(void *v);
 
 void *ls2d_object_init(Ls2DObject *object, Ls2DObjectTable *vtable);
+
+Ls2DObject *ls2d_object_new(size_t size, Ls2DObjectTable *vtable);
+
+#define LS2D_NEW(x, y) ls2d_object_new(sizeof(x), &y)
 
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html

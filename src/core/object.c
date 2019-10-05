@@ -65,7 +65,26 @@ void *ls2d_object_init(Ls2DObject *object, Ls2DObjectTable *vtable)
         assert(vtable != NULL);
         object->ref_count = ATOMIC_VAR_INIT(1);
         object->vtable = vtable;
+        if (ls_unlikely(!object->vtable->init)) {
+                return object;
+        }
+        printf("Init object %s* %p\n", object->vtable->obj_name, (void *)object);
+        /* TODO: Ensure init passes..? */
+        object->vtable->init(object);
         return object;
+}
+
+Ls2DObject *ls2d_object_new(size_t size, Ls2DObjectTable *vtable)
+{
+        void *obj = NULL;
+
+        assert(size > sizeof(struct Ls2DObject));
+        obj = calloc(1, size);
+        if (!obj) {
+                fprintf(stderr, "Failed to allocate object %s\n", vtable->obj_name);
+                return NULL;
+        }
+        return ls2d_object_init((Ls2DObject *)obj, vtable);
 }
 
 /*
