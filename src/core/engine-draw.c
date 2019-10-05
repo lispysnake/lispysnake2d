@@ -28,11 +28,20 @@
 
 void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
 {
-        /* Blit the background */
+        /* Clear the background */
         SDL_SetRenderDrawColor(self->render, 0, 0, 0, 255);
         SDL_RenderClear(self->render);
 
+        /* Clear old bfufer */
+        SDL_SetRenderTarget(self->render, self->buffer);
+        SDL_RenderClear(self->render);
+
+        /* Draw the active scene */
         ls2d_scene_draw(self->active_scene, frame);
+
+        /* Copy the buffer in */
+        SDL_SetRenderTarget(self->render, NULL);
+        SDL_RenderCopy(self->render, self->buffer, NULL, NULL);
 
         SDL_RenderPresent(self->render);
 }

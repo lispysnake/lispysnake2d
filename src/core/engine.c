@@ -120,7 +120,20 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
                 ls2d_engine_destroy(engine);
                 return NULL;
         }
-        SDL_RenderSetLogicalSize(engine->render, 1366, 768);
+        SDL_RenderSetLogicalSize(engine->render, width, height);
+
+        engine->buffer = SDL_CreateTexture(engine->render,
+                                           SDL_PIXELFORMAT_RGBA8888,
+                                           SDL_TEXTUREACCESS_TARGET,
+                                           width,
+                                           height);
+        if (ls_unlikely(!engine->buffer)) {
+                SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
+                                "Couldn't create double buffer: %s\n",
+                                SDL_GetError());
+                ls2d_engine_destroy(engine);
+                return NULL;
+        }
 
         engine->input_manager = ls2d_input_manager_new();
         if (!engine->input_manager) {

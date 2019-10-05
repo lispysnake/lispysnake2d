@@ -49,6 +49,7 @@ struct Ls2DEngine {
         LsList *scenes;
         Ls2DScene *active_scene;
         Ls2DInputManager *input_manager;
+        SDL_Texture *buffer;
 };
 
 /**

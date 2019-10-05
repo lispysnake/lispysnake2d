@@ -98,7 +98,7 @@ static SDL_Texture *load_texture_internal(Ls2DTextureNode *node, Ls2DFrameInfo *
         }
 
         /* Try to optimize it */
-        opt_surface = SDL_ConvertSurface(img_surface, win_surface->format, 0);
+        opt_surface = SDL_ConvertSurfaceFormat(img_surface, SDL_PIXELFORMAT_RGBA8888, 0);
         if (!opt_surface) {
                 fprintf(stderr,
                         "Failed to optimize surface %s: %s\n",
