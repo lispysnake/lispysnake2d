@@ -28,6 +28,8 @@
 
 #include "ls2d.h"
 
+static void ls2d_position_component_init(Ls2DPositionComponent *self);
+
 /**
  * Opaque Ls2DPositionComponent implementation
  */
@@ -42,21 +44,17 @@ struct Ls2DPositionComponent {
  */
 Ls2DObjectTable position_vtable = {
         .obj_name = "Ls2DPositionComponent",
+        .init = (ls2d_object_vfunc_init)ls2d_position_component_init,
 };
 
 Ls2DComponent *ls2d_position_component_new()
 {
-        Ls2DPositionComponent *self = NULL;
+        return (Ls2DComponent *)LS2D_NEW(Ls2DPositionComponent, position_vtable);
+}
 
-        self = calloc(1, sizeof(struct Ls2DPositionComponent));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
-
-        self = ls2d_object_init((Ls2DObject *)self, &position_vtable);
+static void ls2d_position_component_init(Ls2DPositionComponent *self)
+{
         self->parent.comp_id = LS2D_COMP_ID_POSITION;
-
-        return (Ls2DComponent *)self;
 }
 
 Ls2DPositionComponent *ls2d_position_component_unref(Ls2DPositionComponent *self)
