@@ -167,6 +167,7 @@ static Ls2DEntity *add_tilemap(Ls2DScene *scene, Ls2DTextureCache *cache)
 
         sheet_tsx = ls2d_tile_sheet_new_from_tsx(cache, "demo_data/platformer_tiles.tsx");
         ls2d_tilemap_set_tilesheet((Ls2DTileMap *)entity, sheet_tsx);
+        ls2d_tilemap_add_layer((Ls2DTileMap *)entity, 0);
         ls2d_tilemap_add_layer((Ls2DTileMap *)entity, 1);
 
         for (int x = 0; x < 20; x++) {

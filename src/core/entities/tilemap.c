@@ -25,6 +25,7 @@
 #include "tilemap-private.h"
 
 static void ls2d_tilemap_destroy(Ls2DTileMap *self);
+static void ls2d_tilemap_init(Ls2DTileMap *self);
 static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
 static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame);
 
@@ -33,30 +34,20 @@ static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2
  */
 Ls2DObjectTable tilemap_vtable = {
         .obj_name = "Ls2DTileMap",
+        .init = (ls2d_object_vfunc_init)ls2d_tilemap_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_tilemap_destroy,
 };
 
 static Ls2DTileMap *ls2d_tilemap_new_internal(void)
 {
-        Ls2DTileMap *self = NULL;
+        return LS2D_NEW(Ls2DTileMap, tilemap_vtable);
+}
 
-        self = calloc(1, sizeof(struct Ls2DTileMap));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
+static void ls2d_tilemap_init(Ls2DTileMap *self)
+{
         self->layers = ls_array_new_size(sizeof(struct Ls2DTileMapLayer), 5);
-        if (ls_unlikely(!self->layers)) {
-                goto bail;
-        }
-
         self->parent.draw = ls2d_tilemap_draw;
         self->parent.update = ls2d_tilemap_update;
-
-        return (Ls2DTileMap *)ls2d_object_init((Ls2DObject *)self, &tilemap_vtable);
-bail:
-        ls2d_tilemap_destroy(self);
-        free(self);
-        return NULL;
 }
 
 Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
@@ -72,12 +63,6 @@ Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
         self->height = height;
         self->tile_size = tile_size;
         self->size = self->width * self->height;
-
-        if (ls_unlikely(!ls2d_tilemap_add_layer(self, 0))) {
-                ls2d_tilemap_destroy(self);
-                free(self);
-                return NULL;
-        }
 
         return (Ls2DEntity *)self;
 }
