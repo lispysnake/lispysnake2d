@@ -40,31 +40,27 @@ struct Ls2DSpriteComponent {
 
 static void ls2d_sprite_component_draw(Ls2DComponent *self, Ls2DTextureCache *cache,
                                        Ls2DFrameInfo *frame);
+static void ls2d_sprite_component_init(Ls2DSpriteComponent *self);
 
 /**
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable sprite_vtable = {
         .obj_name = "Ls2DSpriteComponent",
+        .init = (ls2d_object_vfunc_init)ls2d_sprite_component_init,
 };
 
 Ls2DComponent *ls2d_sprite_component_new()
 {
-        Ls2DSpriteComponent *self = NULL;
+        return (Ls2DComponent *)LS2D_NEW(Ls2DSpriteComponent, sprite_vtable);
+}
 
-        self = calloc(1, sizeof(struct Ls2DSpriteComponent));
-        if (ls_unlikely(!self)) {
-                return NULL;
-        }
-
-        self = ls2d_object_init((Ls2DObject *)self, &sprite_vtable);
-
+static void ls2d_sprite_component_init(Ls2DSpriteComponent *self)
+{
         self->flip = SDL_FLIP_NONE;
         self->rotation = 0.0;
         self->parent.draw = ls2d_sprite_component_draw;
         self->parent.comp_id = LS2D_COMP_ID_SPRITE;
-
-        return (Ls2DComponent *)self;
 }
 
 Ls2DSpriteComponent *ls2d_sprite_component_unref(Ls2DSpriteComponent *self)
