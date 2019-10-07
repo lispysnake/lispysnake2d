@@ -220,20 +220,21 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                         fprintf(stderr, "Missing tile??!\n");
                                         abort();
                                 }
+                                if (ls_unlikely(!self->sheet)) {
+                                        goto render_square;
+                                }
                                 handle =
                                     ls2d_tile_sheet_lookup(self->sheet, LS_INT_TO_PTR(tile.gid));
                                 node = ls2d_texture_cache_lookup(cache, frame, handle);
+                                if (!node) {
+                                        continue;
+                                }
 
+                        render_square:
                                 /* Draw outline texture for layer 0 */
                                 if (tile.gid == 0 || !node) {
-                                        if (i == 200) {
-                                                SDL_SetRenderDrawColor(frame->renderer,
-                                                                       255,
-                                                                       255,
-                                                                       255,
-                                                                       255);
-                                                SDL_RenderDrawRect(frame->renderer, &area);
-                                        }
+                                        SDL_SetRenderDrawColor(frame->renderer, 255, 255, 255, 255);
+                                        SDL_RenderDrawRect(frame->renderer, &area);
                                         goto draw_next;
                                 }
 

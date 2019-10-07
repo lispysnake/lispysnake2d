@@ -212,6 +212,9 @@ const Ls2DTextureNode *ls2d_texture_cache_lookup(Ls2DTextureCache *self, Ls2DFra
         }
 
         node = lookup_node(self->cache->data, handle);
+        if (ls_unlikely(!node)) {
+                return NULL;
+        }
         if (!node->texture) {
                 if (node->parent && !node->parent->texture) {
                         node->parent->texture = load_texture(node->parent, frame);
