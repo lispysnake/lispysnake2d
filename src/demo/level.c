@@ -85,15 +85,9 @@ static uint32_t gids_2[] = {
 
 bool demo_game_load_tilemap(DemoGame *self)
 {
-        autofree(Ls2DTileSheet) *sheet_tsx = NULL;
-        Ls2DTextureCache *cache = NULL;
-
         self->tilemap = ls2d_tilemap_new(70, 70, 20);
         ls2d_scene_add_entity(self->scene, self->tilemap);
-        cache = ls2d_scene_get_texture_cache(self->scene);
 
-        sheet_tsx = ls2d_tile_sheet_new_from_tsx(cache, "data/Overworld.tsx");
-        ls2d_tilemap_set_tilesheet((Ls2DTileMap *)self->tilemap, sheet_tsx);
         ls2d_tilemap_add_layer((Ls2DTileMap *)self->tilemap, 0);
         ls2d_tilemap_add_layer((Ls2DTileMap *)self->tilemap, 1);
 
