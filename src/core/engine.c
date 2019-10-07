@@ -112,7 +112,8 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
         /* Setup our renderer, lock vsync for now. */
         engine->render = SDL_CreateRenderer(engine->window,
                                             -1,
-                                            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+                                            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC |
+                                                SDL_RENDERER_TARGETTEXTURE);
         if (!engine->render) {
                 SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
                                 "Couldn't create a renderer: %s",
