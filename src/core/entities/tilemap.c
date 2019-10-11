@@ -175,6 +175,16 @@ static bool ls2d_tilemap_get_tile(Ls2DTileMap *self, int layer_index, int x, int
         return true;
 }
 
+bool ls2d_tilemap_set_internal(Ls2DTileMap *self, int layer_index, int x, int y, uint32_t gid)
+{
+        uint32_t *t = ls2d_tilemap_get(self, layer_index, x, y);
+        if (ls_unlikely(!t)) {
+                return false;
+        }
+        *t = gid;
+        return true;
+}
+
 bool ls2d_tilemap_set_tile(Ls2DTileMap *self, int layer_index, int x, int y, Ls2DTile tile)
 {
         uint32_t *t = ls2d_tilemap_get(self, layer_index, x, y);

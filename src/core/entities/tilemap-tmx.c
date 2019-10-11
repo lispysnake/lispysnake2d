@@ -69,7 +69,28 @@ fail:
 
 static bool ls2d_tilemap_load_csv(Ls2DTileMap *self, Ls2DTileMapTMX *parser, const xmlChar *text)
 {
-        fprintf(stderr, "CSV: %s\n", (const char *)text);
+        autofree(char) *dup = strdup((const char *)text);
+        int key = 0;
+        char *csv = NULL;
+        int x = 0, y = 0;
+
+        if (!dup) {
+                return false;
+        }
+        csv = strtok(dup, ",\n");
+        while (csv) {
+                key = atoi(csv);
+                if (!ls2d_tilemap_set_internal(self, parser->layer.id - 1, x, y, key)) {
+                        return false;
+                }
+
+                ++x;
+                if (x >= parser->map.width) {
+                        x = 0;
+                        y++;
+                }
+                csv = strtok(NULL, ",\n");
+        }
         return true;
 }
 
