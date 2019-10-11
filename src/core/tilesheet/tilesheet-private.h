@@ -51,24 +51,6 @@ typedef struct Ls2DTileSheetCell {
  */
 
 /**
- * XML instance parser
- */
-typedef struct Ls2DTileSheetXML {
-        bool in_atlas;
-        bool in_subtexture;
-        struct {
-                Ls2DTextureHandle handle;
-        } texture;
-        struct {
-                int width;
-                int height;
-                int x;
-                int y;
-                char *filename;
-        } subtexture;
-} Ls2DTileSheetXML;
-
-/**
  * TSX instance parser
  */
 typedef struct Ls2DTileSheetTSX {
@@ -109,7 +91,6 @@ bool ls2d_tile_sheet_put_animation(Ls2DTileSheet *self, void *key, Ls2DAnimation
 /**
  * Attempt to load XML file.
  */
-bool ls2d_tile_sheet_parse_xml(Ls2DTileSheet *self, const char *filename);
 bool ls2d_tile_sheet_parse_tsx(Ls2DTileSheet *self, const char *filename);
 
 DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)

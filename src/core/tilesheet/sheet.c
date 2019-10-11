@@ -25,6 +25,7 @@
 
 #include "tilesheet-private.h"
 
+static void ls2d_tile_sheet_init(Ls2DTileSheet *self);
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self);
 static void ls2d_tile_sheet_destroy_cell(Ls2DTileSheetCell *cell);
 
@@ -32,77 +33,35 @@ static void ls2d_tile_sheet_destroy_cell(Ls2DTileSheetCell *cell);
  * We don't yet do anything fancy.
  */
 Ls2DObjectTable tile_sheet_vtable = {
+        .init = (ls2d_object_vfunc_init)ls2d_tile_sheet_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_tile_sheet_destroy,
         .obj_name = "Ls2DTileSheet",
 };
 
-static Ls2DTileSheet *ls2d_tile_sheet_new_internal(Ls2DTextureCache *cache, bool free_keys)
+Ls2DTileSheet *ls2d_tile_sheet_new(Ls2DTextureCache *cache, const char *tsx_path)
 {
-        Ls2DTileSheet *self = NULL;
+        Ls2DTileSheet *self = LS2D_NEW(Ls2DTileSheet, tile_sheet_vtable);
 
-        self = calloc(1, sizeof(struct Ls2DTileSheet));
         if (ls_unlikely(!self)) {
                 return NULL;
         }
 
-        if (free_keys) {
-                self->textures = ls_hashmap_new_full(ls_hashmap_string_hash,
-                                                     ls_hashmap_string_equal,
-                                                     free,
-                                                     ls2d_tile_sheet_destroy_cell);
-        } else {
-                self->textures = ls_hashmap_new_full(ls_hashmap_simple_hash,
-                                                     ls_hashmap_simple_equal,
-                                                     NULL,
-                                                     ls2d_tile_sheet_destroy_cell);
-        }
-
-        if (ls_unlikely(!self->textures)) {
-                free(self);
-                return NULL;
-        }
-        self->animations = ls_ptr_array_new();
-        if (ls_unlikely(!self->animations)) {
-                free(self);
-                return NULL;
-        }
         self->cache = cache;
-
-        return ls2d_object_init((Ls2DObject *)self, &tile_sheet_vtable);
-}
-
-Ls2DTileSheet *ls2d_tile_sheet_new_from_xml(Ls2DTextureCache *cache, const char *file_path)
-{
-        Ls2DTileSheet *self = NULL;
-
-        self = ls2d_tile_sheet_new_internal(cache, true);
-        if (!self) {
-                return NULL;
-        }
-
-        if (!ls2d_tile_sheet_parse_xml(self, file_path)) {
-                ls2d_tile_sheet_unref(self);
+        if (!ls2d_tile_sheet_parse_tsx(self, tsx_path)) {
+                ls2d_object_unref((Ls2DObject *)self);
                 return NULL;
         }
 
         return self;
 }
 
-Ls2DTileSheet *ls2d_tile_sheet_new_from_tsx(Ls2DTextureCache *cache, const char *file_path)
+static void ls2d_tile_sheet_init(Ls2DTileSheet *self)
 {
-        Ls2DTileSheet *self = NULL;
-
-        self = ls2d_tile_sheet_new_internal(cache, false);
-        if (!self) {
-                return NULL;
-        }
-
-        if (!ls2d_tile_sheet_parse_tsx(self, file_path)) {
-                ls2d_tile_sheet_unref(self);
-                return NULL;
-        }
-
-        return self;
+        self->textures = ls_hashmap_new_full(ls_hashmap_simple_hash,
+                                             ls_hashmap_simple_equal,
+                                             NULL,
+                                             ls2d_tile_sheet_destroy_cell);
+        self->animations = ls_ptr_array_new();
 }
 
 Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self)

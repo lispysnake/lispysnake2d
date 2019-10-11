@@ -35,6 +35,11 @@ Ls2DSpriteSheet *ls2d_sprite_sheet_new(Ls2DTextureCache *cache, const char *xml_
  */
 Ls2DSpriteSheet *ls2d_sprite_sheet_unref(Ls2DSpriteSheet *self);
 
+/**
+ * Lookup the corresponding texture handle for the given key
+ */
+Ls2DTextureHandle ls2d_sprite_sheet_lookup(Ls2DSpriteSheet *self, char *key);
+
 DEF_AUTOFREE(Ls2DSpriteSheet, ls2d_sprite_sheet_unref)
 
 /*

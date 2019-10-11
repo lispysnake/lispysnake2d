@@ -31,7 +31,7 @@ static void ls2d_sprite_sheet_destroy(Ls2DSpriteSheet *self);
 /**
  * We don't yet do anything fancy.
  */
-Ls2DObjectTable tile_sheet_vtable = {
+Ls2DObjectTable sprite_sheet_vtable = {
         .init = (ls2d_object_vfunc_init)ls2d_sprite_sheet_init,
         .destroy = (ls2d_object_vfunc_destroy)ls2d_sprite_sheet_destroy,
         .obj_name = "Ls2DSpriteSheet",
@@ -45,15 +45,19 @@ static void ls2d_sprite_sheet_init(Ls2DSpriteSheet *self)
 
 Ls2DSpriteSheet *ls2d_sprite_sheet_new(Ls2DTextureCache *cache, const char *xml_file)
 {
-        Ls2DSpriteSheet *ret = LS2D_NEW(Ls2DSpriteSheet, tile_sheet_vtable);
-        if (ls_unlikely(!ret)) {
+        Ls2DSpriteSheet *self = LS2D_NEW(Ls2DSpriteSheet, sprite_sheet_vtable);
+
+        if (ls_unlikely(!self)) {
                 return NULL;
         }
-        ret->cache = cache;
-        if (!ls2d_sprite_sheet_parse_xml(ret, xml_file)) {
-                ls2d_object_unref((Ls2DObject *)ret);
+
+        self->cache = cache;
+        if (!ls2d_sprite_sheet_parse_xml(self, xml_file)) {
+                ls2d_object_unref((Ls2DObject *)self);
                 return NULL;
         }
+
+        return self;
 }
 
 Ls2DSpriteSheet *ls2d_sprite_sheet_unref(Ls2DSpriteSheet *self)

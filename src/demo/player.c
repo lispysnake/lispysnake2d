@@ -25,28 +25,50 @@
 
 static Ls2DAnimation *demo_player_animation(DemoGame *self)
 {
-        autofree(Ls2DTileSheet) *sheet = NULL;
+        autofree(Ls2DSpriteSheet) *sheet = NULL;
         Ls2DAnimation *walking = NULL;
         Ls2DTextureCache *cache = NULL;
 
         /* Grab our textures */
         cache = ls2d_scene_get_texture_cache(self->scene);
-        sheet = ls2d_tile_sheet_new_from_xml(cache, "demo_data/platform/spritesheet_player1.xml");
+        sheet = ls2d_sprite_sheet_new(cache, "demo_data/platform/spritesheet_player1.xml");
 
         walking = ls2d_animation_new();
         ls2d_animation_set_looping(walking, true);
         uint32_t duration = 1000 / 20;
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk01.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk02.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk03.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk04.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk05.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk06.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk07.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk08.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk09.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk10.png"), duration);
-        ls2d_animation_add_frame(walking, ls2d_tile_sheet_get(sheet, "p1_walk11.png"), duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk01.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk02.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk03.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk04.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk05.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk06.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk07.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk08.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk09.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk10.png"),
+                                 duration);
+        ls2d_animation_add_frame(walking,
+                                 ls2d_sprite_sheet_lookup(sheet, "p1_walk11.png"),
+                                 duration);
 
         return walking;
 }

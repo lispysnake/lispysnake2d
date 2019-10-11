@@ -189,7 +189,7 @@ static bool ls2d_tilemap_load_tileset(Ls2DTileMap *self, Ls2DTileMapTMX *parser,
         }
         fprintf(stderr, "Load %s with firstgid %d\n", source, first_gid);
 
-        tsx = ls2d_tile_sheet_new_from_tsx(parser->cache, (const char *)source);
+        tsx = ls2d_tile_sheet_new(parser->cache, (const char *)source);
         if (!tsx) {
                 return false;
         }

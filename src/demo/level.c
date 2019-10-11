@@ -102,7 +102,7 @@ bool demo_game_load_tilemap(DemoGame *self)
                 }
         }
 
-        tsx = ls2d_tile_sheet_new_from_tsx(cache, "data/Overworld.tsx");
+        tsx = ls2d_tile_sheet_new(cache, "data/Overworld.tsx");
         ls2d_tilemap_add_tilesheet((Ls2DTileMap *)self->tilemap, tsx);
         ls2d_scene_add_entity(self->scene, self->tilemap);
 
