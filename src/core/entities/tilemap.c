@@ -304,6 +304,11 @@ static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2
          * TODO: Optimise by only changing the camera when it needs changing.
          */
 
+        for (uint16_t i = 0; i < self->tilesheets->len; i++) {
+                Ls2DTileSheet *sheet = (Ls2DTileSheet *)self->tilesheets->data[i];
+                ls2d_tile_sheet_update(sheet, frame);
+        }
+
         if (!ls2d_camera_get_view(frame->camera, &draw_area)) {
                 self->render.first_column = 0;
                 self->render.first_row = 0;

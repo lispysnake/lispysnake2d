@@ -191,9 +191,6 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
 
         if (parser->in_animation && xmlStrEqual(name, BAD_CAST "frame")) {
                 parser->in_frame = !parser->in_frame;
-                if (!parser->in_frame) {
-                        return;
-                }
                 ls2d_tile_sheet_add_frame(self, parser, reader);
                 return;
         }
@@ -218,26 +215,27 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
 
 static void ls2d_tile_sheet_start_animation(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser)
 {
-        /*if (parser->animation) {
+        if (parser->animation) {
                 ls2d_animation_unref(parser->animation);
         }
-        parser->animation = ls2d_animation_new();*/
+        parser->animation = ls2d_animation_new();
 }
 
 static void ls2d_tile_sheet_end_animation(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser)
 {
-        /*
+        Ls2DTileSheetCell *cell = NULL;
+
         fprintf(stderr, "Pushing animation for tile %d\n", parser->tile.id);
-        ls2d_tile_sheet_put_animation(self, LS_PTR_TO_INT(parser->tile.id), parser->animation);
+
+        cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, parser->tile.id);
+        cell->animation = parser->animation;
         ls_array_add(self->animations, parser->animation);
         parser->animation = NULL;
-        * */
 }
 
 static void ls2d_tile_sheet_add_frame(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser,
                                       xmlTextReader *reader)
 {
-        /*
         Ls2DTileSheetCell *old_cell = NULL;
         Ls2DTileSheetCell *source_cell = NULL;
 
@@ -247,14 +245,8 @@ static void ls2d_tile_sheet_add_frame(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
         ls2d_tile_sheet_get_int_attr(reader, &tile_id, "tileid");
         ls2d_tile_sheet_get_int_attr(reader, &duration, "duration");
 
-        source_cell = ls_hashmap_get(self->textures, LS_INT_TO_PTR(tile_id));
-        if (!source_cell) {
-                abort();
-        }
-        old_cell = ls_hashmap_get(self->textures, LS_INT_TO_PTR(parser->tile.id));
-        if (!old_cell) {
-                abort();
-        }
+        source_cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, tile_id);
+        old_cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, parser->tile.id);
 
         if (!ls2d_animation_add_frame(parser->animation, source_cell->handle, (uint32_t)duration)) {
                 abort();
@@ -266,7 +258,6 @@ static void ls2d_tile_sheet_add_frame(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
                 tile_id,
                 duration,
                 source_cell->handle);
-        */
 }
 
 /*
