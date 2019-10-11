@@ -46,6 +46,7 @@ static Ls2DTileMap *ls2d_tilemap_new_internal(void)
 static void ls2d_tilemap_init(Ls2DTileMap *self)
 {
         self->layers = ls_array_new_size(sizeof(struct Ls2DTileMapLayer), 5);
+        self->tilesheets = ls_ptr_array_new_size(1);
         self->parent.draw = ls2d_tilemap_draw;
         self->parent.update = ls2d_tilemap_update;
 }
@@ -106,10 +107,6 @@ static void ls2d_tilemap_free_layer(void *v)
 
 static void ls2d_tilemap_destroy(Ls2DTileMap *self)
 {
-        if (ls_likely(self->sheet) != NULL) {
-                ls2d_tile_sheet_unref(self->sheet);
-        }
-
         if (ls_unlikely(!self->layers)) {
                 return;
         }
@@ -119,6 +116,7 @@ static void ls2d_tilemap_destroy(Ls2DTileMap *self)
                 ls2d_tilemap_free_layer(layer);
         }
         ls_array_free(self->layers, NULL);
+        ls_array_free(self->tilesheets, ls2d_tile_sheet_unref);
 }
 
 bool ls2d_tilemap_add_layer(Ls2DTileMap *self, int render_index)
@@ -205,6 +203,21 @@ bool ls2d_tilemap_set_tile(Ls2DTileMap *self, int layer_index, int x, int y, Ls2
         return true;
 }
 
+static Ls2DTextureNode *ls2d_tilemap_find_texture_node(Ls2DTileMap *self, Ls2DTextureCache *cache,
+                                                       Ls2DFrameInfo *frame, uint32_t gid)
+{
+        for (uint16_t i = 0; i < self->tilesheets->len; i++) {
+                Ls2DTextureHandle handle = 0;
+                Ls2DTileSheet *sheet = (Ls2DTileSheet *)self->tilesheets->data[i];
+
+                if (!ls2d_tile_sheet_lookup(sheet, LS_INT_TO_PTR(gid), &handle)) {
+                        continue;
+                }
+                return ls2d_texture_cache_lookup(cache, frame, handle);
+        }
+        return NULL;
+}
+
 static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         Ls2DTileMap *self = (Ls2DTileMap *)entity;
@@ -231,20 +244,11 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                         fprintf(stderr, "Missing tile??!\n");
                                         abort();
                                 }
-                                if (ls_unlikely(!self->sheet)) {
-                                        goto render_square;
-                                }
-                                if (!ls2d_tile_sheet_lookup(self->sheet,
-                                                            LS_INT_TO_PTR(tile.gid),
-                                                            &handle)) {
-                                        continue;
-                                }
-                                node = ls2d_texture_cache_lookup(cache, frame, handle);
-                                if (!node) {
-                                        continue;
+                                node = ls2d_tilemap_find_texture_node(self, cache, frame, tile.gid);
+                                if (ls_likely(node != NULL)) {
+                                        goto render_texture;
                                 }
 
-                        render_square:
                                 /* Draw outline texture for layer 0 */
                                 if (tile.gid == 0 || !node) {
                                         if (i == 0) {
@@ -257,6 +261,9 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                         }
                                         goto draw_next;
                                 }
+                                continue;
+
+                        render_texture:
 
                                 SDL_RenderCopyEx(frame->renderer,
                                                  node->texture,
@@ -275,12 +282,12 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
         }
 }
 
-void ls2d_tilemap_set_tilesheet(Ls2DTileMap *self, Ls2DTileSheet *sheet)
+void ls2d_tilemap_add_tilesheet(Ls2DTileMap *self, Ls2DTileSheet *sheet)
 {
         if (ls_unlikely(!self)) {
                 return;
         }
-        self->sheet = ls2d_object_ref(sheet);
+        ls_array_add(self->tilesheets, ls2d_object_ref(sheet));
 }
 
 static void ls2d_tilemap_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)

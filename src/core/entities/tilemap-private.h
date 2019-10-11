@@ -38,11 +38,11 @@
 
 struct Ls2DTileMap {
         Ls2DEntity parent;
-        Ls2DTileSheet *sheet;
         int tile_size;
         uint16_t width;
         uint16_t height;
-        LsArray *layers; /**<An array of Ls2DTileMapLayer */
+        LsArray *layers;     /**<An array of Ls2DTileMapLayer */
+        LsArray *tilesheets; /**<An array of tilesheets */
         int size;
 
         struct {

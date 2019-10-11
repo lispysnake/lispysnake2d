@@ -193,6 +193,7 @@ static bool ls2d_tilemap_load_tileset(Ls2DTileMap *self, Ls2DTileMapTMX *parser,
         if (!tsx) {
                 return false;
         }
+        ls2d_tilemap_add_tilesheet(self, tsx);
         return true;
 }
 

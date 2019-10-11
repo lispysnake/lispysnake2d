@@ -57,7 +57,7 @@ bool ls2d_tilemap_add_layer(Ls2DTileMap *map, int render_index);
  */
 bool ls2d_tilemap_set_tile(Ls2DTileMap *map, int layer_index, int x, int y, Ls2DTile tile);
 
-void ls2d_tilemap_set_tilesheet(Ls2DTileMap *map, Ls2DTileSheet *tilesheet);
+void ls2d_tilemap_add_tilesheet(Ls2DTileMap *map, Ls2DTileSheet *tilesheet);
 
 /**
  * Unref a previously allocated tileMap
