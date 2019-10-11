@@ -30,6 +30,8 @@
 #include "tilemap-private.h"
 
 static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader);
+static bool ls2d_tilemap_load_tileset(Ls2DTileMap *self, Ls2DTileMapTMX *parser,
+                                      xmlTextReader *reader);
 
 bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, Ls2DTextureCache *cache, const char *filename)
 {
@@ -107,7 +109,9 @@ static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
 
         /* Encountered tileset */
         if (parser->in_map && xmlStrEqual(name, BAD_CAST "tileset")) {
-                parser->in_tileset = !parser->in_tileset;
+                if (!ls2d_tilemap_load_tileset(self, parser, reader)) {
+                        return false;
+                }
                 return true;
         }
 
@@ -167,6 +171,27 @@ static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
                 if (!ls2d_tilemap_load_csv(self, parser, value)) {
                         return false;
                 }
+        }
+        return true;
+}
+
+static bool ls2d_tilemap_load_tileset(Ls2DTileMap *self, Ls2DTileMapTMX *parser,
+                                      xmlTextReader *reader)
+{
+        int first_gid = 0;
+        autofree(xmlChar) *source = NULL;
+        autofree(Ls2DTileSheet) *tsx = NULL;
+
+        ls2d_tilemap_get_int_attr(reader, &first_gid, "firstgid");
+        source = xmlTextReaderGetAttribute(reader, BAD_CAST "source");
+        if (!source) {
+                return false;
+        }
+        fprintf(stderr, "Load %s with firstgid %d\n", source, first_gid);
+
+        tsx = ls2d_tile_sheet_new_from_tsx(parser->cache, (const char *)source);
+        if (!tsx) {
+                return false;
         }
         return true;
 }

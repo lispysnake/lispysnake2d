@@ -66,7 +66,6 @@ typedef struct Ls2DTileMapLayer {
  */
 typedef struct Ls2DTileMapTMX {
         bool in_map;
-        bool in_tileset;
         bool in_layer;
         bool in_data;
 
