@@ -23,9 +23,18 @@
 
 #include "demo.h"
 
+static bool mouse_callback(SDL_MouseMotionEvent *event, Ls2DFrameInfo *frame, void *userdata)
+{
+        Ls2DCamera *camera = userdata;
+        ls2d_camera_set_xy(camera, (SDL_Point){ .x = event->x, .y = event->y });
+        return true;
+}
+
 bool demo_game_init(Ls2DGame *game)
 {
         DemoGame *self = (DemoGame *)game;
+        Ls2DInputManager *imanager = NULL;
+
         SDL_Rect world_bounds = { 0 };
         world_bounds.w = 20 * 70;
         world_bounds.h = 20 * 70;
@@ -34,12 +43,12 @@ bool demo_game_init(Ls2DGame *game)
 
         /* Construct scene */
         self->scene = ls2d_scene_new();
+        imanager = ls2d_engine_get_input_manager(game->engine);
 
         /* Camera */
         self->camera = ls2d_camera_new(self->scene);
         ls2d_scene_add_camera(self->scene, "main_camera", self->camera);
         ls2d_camera_set_world_bounds(self->camera, world_bounds);
-        // ls2d_camera_set_xy(self->camera, (SDL_Point){ .x = 0, .y = 9 * 70 });
 
         /* Tilesheet */
         if (!demo_game_load_tilemap(self)) {
@@ -49,6 +58,8 @@ bool demo_game_init(Ls2DGame *game)
         if (!demo_game_make_player(self)) {
                 return false;
         }*/
+
+        ls2d_input_manager_set_mouse_motion_callback(imanager, mouse_callback, self->camera);
 
         ls2d_engine_add_scene(game->engine, self->scene);
         fprintf(stderr, "Init end!\n");
