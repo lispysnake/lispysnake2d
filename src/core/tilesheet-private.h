@@ -75,7 +75,10 @@ typedef struct Ls2DTileSheetTSX {
         bool in_image;
         bool in_grid;
         bool in_tile;
+        bool in_animation;
+        bool in_frame;
         bool sheet; /**<Whether this is a simple tilesheet */
+        Ls2DAnimation *animation;
         struct {
                 int width;   /**< Tile height */
                 int height;  /**< Tile width */
