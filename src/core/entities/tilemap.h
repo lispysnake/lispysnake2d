@@ -45,7 +45,7 @@ Ls2DEntity *ls2d_tilemap_new(int tilesize, uint16_t map_width, uint16_t map_heig
 /**
  * Construct a new Ls2DTileMap from a TMX file
  */
-Ls2DEntity *ls2d_tilemap_new_from_tmx(const char *filename);
+Ls2DEntity *ls2d_tilemap_new_from_tmx(Ls2DTextureCache *cache, const char *filename);
 
 /**
  * Attempt to insert a new layer in the map

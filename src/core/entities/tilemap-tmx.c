@@ -31,13 +31,14 @@
 
 static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader);
 
-bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, const char *filename)
+bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, Ls2DTextureCache *cache, const char *filename)
 {
         int fd = 0;
         autofree(xmlTextReader) *reader = NULL;
         bool ret = false;
         int r = 0;
         Ls2DTileMapTMX parser = { 0 };
+        parser.cache = cache;
 
         fd = open(filename, O_RDONLY);
         if (fd < 0) {

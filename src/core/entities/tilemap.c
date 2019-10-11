@@ -67,7 +67,7 @@ Ls2DEntity *ls2d_tilemap_new(int tile_size, uint16_t width, uint16_t height)
         return (Ls2DEntity *)self;
 }
 
-Ls2DEntity *ls2d_tilemap_new_from_tmx(const char *filename)
+Ls2DEntity *ls2d_tilemap_new_from_tmx(Ls2DTextureCache *cache, const char *filename)
 {
         Ls2DTileMap *self = NULL;
 
@@ -76,7 +76,7 @@ Ls2DEntity *ls2d_tilemap_new_from_tmx(const char *filename)
                 return NULL;
         }
 
-        if (!ls2d_tilemap_load_tsx(self, filename)) {
+        if (!ls2d_tilemap_load_tsx(self, cache, filename)) {
                 ls2d_tilemap_destroy(self);
                 free(self);
                 return NULL;

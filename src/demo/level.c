@@ -26,13 +26,8 @@
 bool demo_game_load_tilemap(DemoGame *self)
 {
         Ls2DTextureCache *cache = ls2d_scene_get_texture_cache(self->scene);
-        autofree(Ls2DTileSheet) *tsx = ls2d_tile_sheet_new_from_tsx(cache, "data/Overworld.tsx");
-
-        /*
-        self->tilemap = ls2d_tilemap_new(70, 70, 20);
-        self->tilemap = ls2d_tilemap_new_from_tmx("data/level1.tmx");
+        self->tilemap = ls2d_tilemap_new_from_tmx(cache, "data/level1.tmx");
         ls2d_scene_add_entity(self->scene, self->tilemap);
-        * */
 
         return true;
 }
