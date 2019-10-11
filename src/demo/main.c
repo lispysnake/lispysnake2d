@@ -75,7 +75,7 @@ void demo_game_destroy(Ls2DGame *game)
         /* Cleanup allocations */
         ls2d_scene_unref(self->scene);
         ls2d_camera_unref(self->camera);
-        ls2d_camera_unref(self->player);
+        ls2d_tilemap_unref(self->tilemap);
 
         fprintf(stderr, "Destroy end!\n");
 }
