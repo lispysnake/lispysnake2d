@@ -155,24 +155,34 @@ bool ls2d_tile_sheet_put_animation(Ls2DTileSheet *self, void *key, Ls2DAnimation
         return true;
 }
 
-Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key)
+bool ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key, Ls2DTextureHandle *handle)
 {
-        void *ret = NULL;
         Ls2DTileSheetCell *cell = NULL;
 
         if (ls_unlikely(!self)) {
                 return 0;
         }
 
-        ret = ls_hashmap_get(self->textures, key);
-        if (ls_unlikely(!ret)) {
+        cell = ls_hashmap_get(self->textures, key);
+        if (ls_unlikely(!cell)) {
+                *handle = 0;
+                return false;
+        }
+        if (cell->animation) {
+                *handle = ls2d_animation_get_texture(cell->animation);
+        } else {
+                *handle = cell->handle;
+        }
+        return true;
+}
+
+Ls2DTextureHandle ls2d_tile_sheet_get(Ls2DTileSheet *self, void *key)
+{
+        Ls2DTextureHandle ret = 0;
+        if (!ls2d_tile_sheet_lookup(self, key, &ret)) {
                 return 0;
         }
-        cell = ret;
-        if (cell->animation) {
-                return ls2d_animation_get_texture(cell->animation);
-        }
-        return cell->handle;
+        return ret;
 }
 
 void ls2d_tile_sheet_update(Ls2DTileSheet *self, Ls2DFrameInfo *frame)

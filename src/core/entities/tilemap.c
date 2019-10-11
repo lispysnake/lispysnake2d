@@ -234,8 +234,11 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                 if (ls_unlikely(!self->sheet)) {
                                         goto render_square;
                                 }
-                                handle =
-                                    ls2d_tile_sheet_lookup(self->sheet, LS_INT_TO_PTR(tile.gid));
+                                if (!ls2d_tile_sheet_lookup(self->sheet,
+                                                            LS_INT_TO_PTR(tile.gid),
+                                                            &handle)) {
+                                        continue;
+                                }
                                 node = ls2d_texture_cache_lookup(cache, frame, handle);
                                 if (!node) {
                                         continue;

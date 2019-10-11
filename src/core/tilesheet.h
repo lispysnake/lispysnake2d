@@ -39,7 +39,12 @@ Ls2DTileSheet *ls2d_tile_sheet_new_from_tsx(Ls2DTextureCache *cache, const char 
  * Return a texture handle corresponding to the given key
  * This will map to the internal cache's texture handle.
  */
-Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key);
+bool ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key, Ls2DTextureHandle *handle);
+
+/**
+ * Return texture handle without error checking.
+ */
+Ls2DTextureHandle ls2d_tile_sheet_get(Ls2DTileSheet *self, void *key);
 
 /**
  * Unref an allocated Ls2DTileSheet
