@@ -98,8 +98,8 @@ Ls2DEngine *ls2d_engine_new(int width, int height)
         engine->window = SDL_CreateWindow("lispysnake2d",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
-                                          width,
-                                          height,
+                                          width * 5,
+                                          height * 5,
                                           SDL_WINDOW_HIDDEN | SDL_WINDOW_ALLOW_HIGHDPI);
         if (!engine->window) {
                 SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
