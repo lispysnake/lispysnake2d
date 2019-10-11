@@ -21,6 +21,8 @@ core_sources = [
      'entities/basic-entity.c',
      'entities/tilemap.c',
      'entities/tilemap-tmx.c',
+     'spritesheet/sheet.c',
+     'spritesheet/xml.c',
 ]
 
 core_deps = [

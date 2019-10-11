@@ -49,6 +49,7 @@ typedef uint16_t Ls2DTextureHandle;
 typedef struct Ls2DTextureCache Ls2DTextureCache;
 typedef struct Ls2DTextureNode Ls2DTextureNode;
 
+typedef struct Ls2DSpriteSheet Ls2DSpriteSheet;
 typedef struct Ls2DTileSheet Ls2DTileSheet;
 typedef struct Ls2DAnimation Ls2DAnimation;
 typedef struct Ls2DTile Ls2DTile;
@@ -66,6 +67,7 @@ typedef struct Ls2DTileMap Ls2DTileMap;
 #include "game.h"
 #include "input-manager.h"
 #include "scene.h"
+#include "spritesheet.h"
 #include "texture-cache.h"
 #include "tilesheet.h"
 
