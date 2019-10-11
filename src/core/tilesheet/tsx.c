@@ -91,7 +91,6 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
 
         /* Basic sheet logic. */
         if (!parser->sheet) {
-                fprintf(stderr, "Put sheet\n");
                 ls_array_add(self->texture_objs, NULL);
                 cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, parser->tile.id);
                 cell->handle = handle;
@@ -127,11 +126,6 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
                 }
                 cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, tile);
                 cell->handle = subhandle;
-                fprintf(stderr,
-                        "GID %d to %d (of %d)\n",
-                        tile,
-                        cell->handle,
-                        self->texture_objs->len);
         }
 }
 
@@ -225,8 +219,6 @@ static void ls2d_tile_sheet_end_animation(Ls2DTileSheet *self, Ls2DTileSheetTSX 
 {
         Ls2DTileSheetCell *cell = NULL;
 
-        fprintf(stderr, "Pushing animation for tile %d\n", parser->tile.id);
-
         cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, parser->tile.id);
         cell->animation = parser->animation;
         ls_array_add(self->animations, parser->animation);
@@ -251,13 +243,6 @@ static void ls2d_tile_sheet_add_frame(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
         if (!ls2d_animation_add_frame(parser->animation, source_cell->handle, (uint32_t)duration)) {
                 abort();
         }
-
-        fprintf(stderr,
-                "Cell ID %d: Animate to %d at %d: %d\n",
-                parser->tile.id,
-                tile_id,
-                duration,
-                source_cell->handle);
 }
 
 /*
