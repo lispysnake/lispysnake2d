@@ -29,7 +29,7 @@
 void ls2d_engine_draw(Ls2DEngine *self, Ls2DFrameInfo *frame)
 {
         /* Clear the background */
-        SDL_SetRenderDrawColor(self->render, 135, 206, 235, 255);
+        SDL_SetRenderDrawColor(self->render, 0, 0, 0, 255);
         SDL_RenderClear(self->render);
 
         /* Clear old bfufer */

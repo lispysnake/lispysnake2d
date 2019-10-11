@@ -248,14 +248,6 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
 
                                 /* Draw outline texture for layer 0 */
                                 if (tile.gid == 0) {
-                                        if (i == 0) {
-                                                SDL_SetRenderDrawColor(frame->renderer,
-                                                                       255,
-                                                                       255,
-                                                                       255,
-                                                                       255);
-                                                SDL_RenderDrawRect(frame->renderer, &area);
-                                        }
                                         goto draw_next;
                                 }
 
