@@ -39,7 +39,7 @@ bool demo_game_init(Ls2DGame *game)
         self->camera = ls2d_camera_new(self->scene);
         ls2d_scene_add_camera(self->scene, "main_camera", self->camera);
         ls2d_camera_set_world_bounds(self->camera, world_bounds);
-        ls2d_camera_set_xy(self->camera, (SDL_Point){ .x = 0, .y = 9 * 70 });
+        // ls2d_camera_set_xy(self->camera, (SDL_Point){ .x = 0, .y = 9 * 70 });
 
         /* Tilesheet */
         if (!demo_game_load_tilemap(self)) {

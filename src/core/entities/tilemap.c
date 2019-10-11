@@ -208,7 +208,6 @@ bool ls2d_tilemap_set_tile(Ls2DTileMap *self, int layer_index, int x, int y, Ls2
 static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)
 {
         Ls2DTileMap *self = (Ls2DTileMap *)entity;
-        Ls2DTile tile = { 0 };
         SDL_Rect draw_area = { 0 };
         int x_draw, y_draw = 0;
 
@@ -222,6 +221,8 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                              x++) {
                                 Ls2DTextureNode *node = NULL;
                                 Ls2DTextureHandle handle;
+                                Ls2DTile tile = { 0 };
+
                                 SDL_Rect area = { .w = self->tile_size,
                                                   .h = self->tile_size,
                                                   .x = x_draw,
@@ -243,8 +244,14 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                         render_square:
                                 /* Draw outline texture for layer 0 */
                                 if (tile.gid == 0 || !node) {
-                                        SDL_SetRenderDrawColor(frame->renderer, 255, 255, 255, 255);
-                                        SDL_RenderDrawRect(frame->renderer, &area);
+                                        if (i == 0) {
+                                                SDL_SetRenderDrawColor(frame->renderer,
+                                                                       255,
+                                                                       255,
+                                                                       255,
+                                                                       255);
+                                                SDL_RenderDrawRect(frame->renderer, &area);
+                                        }
                                         goto draw_next;
                                 }
 
