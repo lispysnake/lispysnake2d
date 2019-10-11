@@ -29,7 +29,7 @@
 
 #include "tilemap-private.h"
 
-static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader);
+static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader);
 
 bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, const char *filename)
 {
@@ -53,7 +53,9 @@ bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, const char *filename)
         }
 
         while ((r = xmlTextReaderRead(reader)) > 0) {
-                ls2d_tilemap_walk_tmx(self, &parser, reader);
+                if (!ls2d_tilemap_walk_tmx(self, &parser, reader)) {
+                        goto fail;
+                }
         }
         ret = true;
 
@@ -65,27 +67,33 @@ fail:
         return ret;
 }
 
-static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader)
+static bool ls2d_tilemap_load_csv(Ls2DTileMap *self, Ls2DTileMapTMX *parser, const xmlChar *text)
+{
+        fprintf(stderr, "CSV: %s\n", (const char *)text);
+        return true;
+}
+
+static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xmlTextReader *reader)
 {
         const xmlChar *name = NULL;
         const xmlChar *value = NULL;
 
         name = xmlTextReaderConstName(reader);
         if (!name) {
-                return;
+                return true;
         }
 
         /* Encountered tileset */
         if (parser->in_map && xmlStrEqual(name, BAD_CAST "tileset")) {
                 parser->in_tileset = !parser->in_tileset;
-                return;
+                return true;
         }
 
         /* Encountered layer definition */
         if (parser->in_map && xmlStrEqual(name, BAD_CAST "layer")) {
                 parser->in_layer = !parser->in_layer;
                 if (!parser->in_layer) {
-                        return;
+                        return true;
                 }
                 ls2d_tilemap_get_int_attr(reader, &parser->layer.id, "id");
                 ls2d_tilemap_get_int_attr(reader, &parser->layer.width, "width");
@@ -98,23 +106,23 @@ static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
                         parser->layer.height);
 
                 if (!ls2d_tilemap_add_layer(self, parser->layer.id)) {
-                        abort();
+                        return false;
                 }
-                return;
+                return true;
         }
 
         /* Encountered data definition */
         if (parser->in_layer && xmlStrEqual(name, BAD_CAST "data")) {
                 parser->in_data = !parser->in_data;
                 /* TODO: Determine blob type */
-                return;
+                return true;
         }
 
         /* Encountered map definition */
         if (xmlStrEqual(name, BAD_CAST "map")) {
                 parser->in_map = true;
                 if (!parser->in_map) {
-                        return;
+                        return true;
                 }
                 /* Handle map attributes */
                 ls2d_tilemap_get_int_attr(reader, &parser->map.width, "width");
@@ -129,13 +137,16 @@ static void ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
 
                 /* TODO: Move away from tile_size increments and have tile_height/tile_width */
                 self->tile_size = parser->map.tile_width;
-                return;
+                return true;
         }
 
         if (parser->in_data) {
                 value = xmlTextReaderConstValue(reader);
-                fprintf(stderr, "CSV: %s\n", value);
+                if (!ls2d_tilemap_load_csv(self, parser, value)) {
+                        return false;
+                }
         }
+        return true;
 }
 
 /*
