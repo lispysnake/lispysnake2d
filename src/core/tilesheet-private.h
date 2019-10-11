@@ -100,6 +100,7 @@ typedef struct Ls2DTileSheetTSX {
 } Ls2DTileSheetTSX;
 
 bool ls2d_tile_sheet_put_handle(Ls2DTileSheet *self, void *key, Ls2DTextureHandle handle);
+bool ls2d_tile_sheet_put_animation(Ls2DTileSheet *self, void *key, Ls2DAnimation *animation);
 
 /**
  * Attempt to load XML file.

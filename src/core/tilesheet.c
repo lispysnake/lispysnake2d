@@ -133,6 +133,22 @@ bool ls2d_tile_sheet_put_handle(Ls2DTileSheet *self, void *key, Ls2DTextureHandl
         return ls_hashmap_put(self->textures, key, cell);
 }
 
+bool ls2d_tile_sheet_put_animation(Ls2DTileSheet *self, void *key, Ls2DAnimation *animation)
+{
+        Ls2DTileSheetCell *cell = NULL;
+        Ls2DTextureHandle cur_handle = 0;
+
+        cur_handle = ls2d_animation_get_texture(animation);
+
+        cell = ls_hashmap_get(self->textures, key);
+        if (!cell && !ls2d_tile_sheet_put_handle(self, key, cur_handle)) {
+                return false;
+        }
+        cell->handle = cur_handle;
+        cell->animation = animation;
+        return true;
+}
+
 Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key)
 {
         void *ret = NULL;
