@@ -76,6 +76,6 @@ int main(int argc, char **argv)
         game.parent.funcs.init = demo_game_init;
         game.parent.funcs.destroy = demo_game_destroy;
 
-        engine = ls2d_engine_new(1366, 768);
+        engine = ls2d_engine_new(480, 270);
         return ls2d_engine_run(engine, (Ls2DGame *)&game);
 }
