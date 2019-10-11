@@ -121,9 +121,7 @@ static void ls2d_tile_sheet_walk_xml(Ls2DTileSheet *self, Ls2DTileSheetXML *pars
                                                              .w = parser->subtexture.width,
                                                              .h = parser->subtexture.height,
                                                          });
-                ls_hashmap_put(self->textures,
-                               strdup((const char *)filepath),
-                               LS_INT_TO_PTR(subhandle));
+                ls2d_tile_sheet_put_handle(self, strdup((const char *)filepath), subhandle);
         }
 }
 

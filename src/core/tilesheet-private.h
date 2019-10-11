@@ -33,10 +33,17 @@
 struct Ls2DTileSheet {
         Ls2DObject object; /*< Parent */
 
-        LsHashmap *textures;   /*< Cache of textures in a hashmap */
-        LsHashmap *animations; /**<Cache of animations for cells */
+        LsHashmap *textures; /*< Cache of textures in a hashmap */
         Ls2DTextureCache *cache;
 };
+
+/**
+ * Each cell in the table has a handle and a potential animation.
+ */
+typedef struct Ls2DTileSheetCell {
+        Ls2DTextureHandle handle;
+        Ls2DAnimation *animation;
+} Ls2DTileSheetCell;
 
 /**
  * Private API headers for the Ls2DTileSheet implementation
@@ -91,6 +98,8 @@ typedef struct Ls2DTileSheetTSX {
                 char *source;
         } image;
 } Ls2DTileSheetTSX;
+
+bool ls2d_tile_sheet_put_handle(Ls2DTileSheet *self, void *key, Ls2DTextureHandle handle);
 
 /**
  * Attempt to load XML file.

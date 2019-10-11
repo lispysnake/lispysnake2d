@@ -26,6 +26,8 @@
 #include "tilesheet-private.h"
 
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self);
+static void ls2d_tile_sheet_destroy_cell(Ls2DTileSheetCell *cell);
+
 /**
  * We don't yet do anything fancy.
  */
@@ -47,17 +49,12 @@ static Ls2DTileSheet *ls2d_tile_sheet_new_internal(Ls2DTextureCache *cache, bool
                 self->textures = ls_hashmap_new_full(ls_hashmap_string_hash,
                                                      ls_hashmap_string_equal,
                                                      free,
-                                                     NULL);
-                self->animations = ls_hashmap_new_full(ls_hashmap_string_equal,
-                                                       ls_hashmap_string_equal,
-                                                       free,
-                                                       ls2d_animation_unref);
+                                                     ls2d_tile_sheet_destroy_cell);
         } else {
-                self->textures = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
-                self->animations = ls_hashmap_new_full(ls_hashmap_simple_hash,
-                                                       ls_hashmap_simple_equal,
-                                                       NULL,
-                                                       ls2d_animation_unref);
+                self->textures = ls_hashmap_new_full(ls_hashmap_simple_hash,
+                                                     ls_hashmap_simple_equal,
+                                                     NULL,
+                                                     ls2d_tile_sheet_destroy_cell);
         }
 
         if (ls_unlikely(!self->textures)) {
@@ -111,24 +108,46 @@ Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self)
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self)
 {
         ls_hashmap_free(self->textures);
-        ls_hashmap_free(self->animations);
+}
+
+static void ls2d_tile_sheet_destroy_cell(Ls2DTileSheetCell *cell)
+{
+        if (!cell) {
+                return;
+        }
+        if (ls_unlikely(cell->animation != NULL)) {
+                ls2d_animation_unref(cell->animation);
+        }
+        free(cell);
+}
+
+bool ls2d_tile_sheet_put_handle(Ls2DTileSheet *self, void *key, Ls2DTextureHandle handle)
+{
+        Ls2DTileSheetCell *cell = NULL;
+
+        cell = calloc(1, sizeof(struct Ls2DTileSheetCell));
+        if (ls_unlikely(!cell)) {
+                return false;
+        }
+        cell->handle = handle;
+        return ls_hashmap_put(self->textures, key, cell);
 }
 
 Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key)
 {
         void *ret = NULL;
+        Ls2DTileSheetCell *cell = NULL;
 
         if (ls_unlikely(!self)) {
                 return 0;
         }
 
-        ret = ls_hashmap_get(self->animations, key);
-        if (ls_likely(ret == NULL)) {
-                ret = ls_hashmap_get(self->textures, key);
-                return (Ls2DTextureHandle)LS_PTR_TO_INT(ret);
+        ret = ls_hashmap_get(self->textures, key);
+        if (ls_unlikely(!ret)) {
+                return 0;
         }
-
-        return ls2d_animation_get_texture((Ls2DAnimation *)ret);
+        cell = ret;
+        return cell->handle;
 }
 
 /*
