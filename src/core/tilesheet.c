@@ -136,6 +136,7 @@ bool ls2d_tile_sheet_put_handle(Ls2DTileSheet *self, void *key, Ls2DTextureHandl
                 return false;
         }
         cell->handle = handle;
+        fprintf(stderr, "ID: %d Put handle %d\n", LS_PTR_TO_INT(key), handle);
         return ls_hashmap_put(self->textures, key, cell);
 }
 

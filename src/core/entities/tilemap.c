@@ -244,13 +244,9 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                         fprintf(stderr, "Missing tile??!\n");
                                         abort();
                                 }
-                                node = ls2d_tilemap_find_texture_node(self, cache, frame, tile.gid);
-                                if (ls_likely(node != NULL)) {
-                                        goto render_texture;
-                                }
 
                                 /* Draw outline texture for layer 0 */
-                                if (tile.gid == 0 || !node) {
+                                if (tile.gid == 0) {
                                         if (i == 0) {
                                                 SDL_SetRenderDrawColor(frame->renderer,
                                                                        255,
@@ -261,9 +257,11 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                         }
                                         goto draw_next;
                                 }
-                                continue;
 
-                        render_texture:
+                                node = ls2d_tilemap_find_texture_node(self, cache, frame, tile.gid);
+                                if (ls_unlikely(node == NULL)) {
+                                        goto draw_next;
+                                }
 
                                 SDL_RenderCopyEx(frame->renderer,
                                                  node->texture,

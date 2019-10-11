@@ -90,7 +90,8 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
 
         /* Basic sheet logic. */
         if (!parser->sheet) {
-                ls2d_tile_sheet_put_handle(self, LS_PTR_TO_INT(parser->tile.id), handle);
+                fprintf(stderr, "Put sheet\n");
+                ls2d_tile_sheet_put_handle(self, LS_PTR_TO_INT(parser->tile.id + 1), handle);
                 return;
         }
 
@@ -207,7 +208,7 @@ static void ls2d_tile_sheet_start_animation(Ls2DTileSheet *self, Ls2DTileSheetTS
 static void ls2d_tile_sheet_end_animation(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser)
 {
         fprintf(stderr, "Pushing animation for tile %d\n", parser->tile.id);
-        ls2d_tile_sheet_put_animation(self, LS_PTR_TO_INT(parser->tile.id + 1), parser->animation);
+        ls2d_tile_sheet_put_animation(self, LS_PTR_TO_INT(parser->tile.id), parser->animation);
         ls_array_add(self->animations, parser->animation);
         parser->animation = NULL;
 }
@@ -228,7 +229,7 @@ static void ls2d_tile_sheet_add_frame(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
         if (!source_cell) {
                 abort();
         }
-        old_cell = ls_hashmap_get(self->textures, LS_INT_TO_PTR(parser->tile.id) + 1);
+        old_cell = ls_hashmap_get(self->textures, LS_INT_TO_PTR(parser->tile.id));
         if (!old_cell) {
                 abort();
         }
