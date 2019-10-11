@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
- <tileset firstgid="1" source="Inner.tsx"/>
- <tileset firstgid="1001" source="Overworld.tsx"/>
+ <tileset firstgid="1" source="data/Inner.tsx"/>
+ <tileset firstgid="1001" source="data/Overworld.tsx"/>
  <layer id="1" name="Ground" width="20" height="20">
   <data encoding="csv">
 1408,1408,1408,1368,1368,1368,1368,1368,1368,1368,1368,1368,1368,1368,1368,1368,1368,1368,1368,1369,
