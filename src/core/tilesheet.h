@@ -46,6 +46,11 @@ Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key);
  */
 Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self);
 
+/**
+ * Update the tilesheet animations
+ */
+void ls2d_tile_sheet_update(Ls2DTileSheet *self, Ls2DFrameInfo *frame);
+
 DEF_AUTOFREE(Ls2DTileSheet, ls2d_tile_sheet_unref)
 
 /*

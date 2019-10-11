@@ -35,6 +35,7 @@ struct Ls2DTileSheet {
 
         LsHashmap *textures; /*< Cache of textures in a hashmap */
         Ls2DTextureCache *cache;
+        LsPtrArray *animations;
 };
 
 /**

@@ -208,6 +208,7 @@ static void ls2d_tile_sheet_end_animation(Ls2DTileSheet *self, Ls2DTileSheetTSX 
 {
         fprintf(stderr, "Pushing animation for tile %d\n", parser->tile.id);
         ls2d_tile_sheet_put_animation(self, LS_PTR_TO_INT(parser->tile.id + 1), parser->animation);
+        ls_array_add(self->animations, parser->animation);
         parser->animation = NULL;
 }
 

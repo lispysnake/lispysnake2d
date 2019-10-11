@@ -61,6 +61,11 @@ static Ls2DTileSheet *ls2d_tile_sheet_new_internal(Ls2DTextureCache *cache, bool
                 free(self);
                 return NULL;
         }
+        self->animations = ls_ptr_array_new();
+        if (ls_unlikely(!self->animations)) {
+                free(self);
+                return NULL;
+        }
         self->cache = cache;
 
         return ls2d_object_init((Ls2DObject *)self, &tile_sheet_vtable);
@@ -108,6 +113,7 @@ Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self)
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self)
 {
         ls_hashmap_free(self->textures);
+        ls_array_free(self->animations, NULL);
 }
 
 static void ls2d_tile_sheet_destroy_cell(Ls2DTileSheetCell *cell)
@@ -163,7 +169,21 @@ Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key)
                 return 0;
         }
         cell = ret;
+        if (cell->animation) {
+                return ls2d_animation_get_texture(cell->animation);
+        }
         return cell->handle;
+}
+
+void ls2d_tile_sheet_update(Ls2DTileSheet *self, Ls2DFrameInfo *frame)
+{
+        if (ls_unlikely(!self)) {
+                return;
+        }
+        for (uint16_t i = 0; i < self->animations->len; i++) {
+                Ls2DAnimation *animation = (Ls2DAnimation *)self->animations->data[i];
+                ls2d_animation_update(animation, frame);
+        }
 }
 
 /*
