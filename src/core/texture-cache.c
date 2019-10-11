@@ -31,7 +31,7 @@
 
 #include "ls2d.h"
 
-#define DEFAULT_CACHE_SIZE 200
+#define DEFAULT_CACHE_SIZE 2800
 
 DEF_AUTOFREE(SDL_Surface, SDL_FreeSurface)
 

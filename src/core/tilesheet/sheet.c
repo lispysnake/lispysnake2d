@@ -100,6 +100,7 @@ Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, uint32_t gid)
 
         cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, gid - 1);
         handle = cell->handle;
+        fprintf(stderr, "GID %d (index %d) = %d\n", gid, gid - 1, handle);
         return handle;
 }
 
