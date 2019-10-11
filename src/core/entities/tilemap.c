@@ -210,7 +210,8 @@ static Ls2DTextureNode *ls2d_tilemap_find_texture_node(Ls2DTileMap *self, Ls2DTe
                 Ls2DTextureHandle handle = 0;
                 Ls2DTileSheet *sheet = (Ls2DTileSheet *)self->tilesheets->data[i];
 
-                if (!ls2d_tile_sheet_lookup(sheet, LS_INT_TO_PTR(gid), &handle)) {
+                handle = ls2d_tile_sheet_lookup(sheet, gid);
+                if (handle < 1) {
                         continue;
                 }
                 return ls2d_texture_cache_lookup(cache, frame, handle);

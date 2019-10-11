@@ -33,9 +33,9 @@
 struct Ls2DTileSheet {
         Ls2DObject object; /*< Parent */
 
-        LsHashmap *textures; /*< Cache of textures in a hashmap */
         Ls2DTextureCache *cache;
         LsPtrArray *animations;
+        LsArray *texture_objs;
 };
 
 /**
@@ -85,8 +85,12 @@ typedef struct Ls2DTileSheetTSX {
         } image;
 } Ls2DTileSheetTSX;
 
-bool ls2d_tile_sheet_put_handle(Ls2DTileSheet *self, void *key, Ls2DTextureHandle handle);
-bool ls2d_tile_sheet_put_animation(Ls2DTileSheet *self, void *key, Ls2DAnimation *animation);
+__attribute__((always_inline)) static inline Ls2DTileSheetCell *ls2d_tile_sheet_get_cell(
+    void *cache, uint32_t index)
+{
+        Ls2DTileSheetCell *root = cache;
+        return &(root[index]);
+}
 
 /**
  * Attempt to load XML file.

@@ -80,6 +80,7 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
         autofree(xmlChar) *source = NULL;
         Ls2DTextureHandle handle;
         Ls2DTextureHandle subhandle;
+        Ls2DTileSheetCell *cell = NULL;
 
         ls2d_tile_sheet_get_int_attr(reader, &parser->image.width, "width");
         ls2d_tile_sheet_get_int_attr(reader, &parser->image.height, "height");
@@ -91,7 +92,9 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
         /* Basic sheet logic. */
         if (!parser->sheet) {
                 fprintf(stderr, "Put sheet\n");
-                ls2d_tile_sheet_put_handle(self, LS_PTR_TO_INT(parser->tile.id + 1), handle);
+                ls_array_add(self->texture_objs, NULL);
+                cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, parser->tile.id);
+                cell->handle = handle;
                 return;
         }
 
@@ -119,7 +122,16 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
                 }
 
                 subhandle = ls2d_texture_cache_subregion(self->cache, handle, region);
-                ls2d_tile_sheet_put_handle(self, LS_PTR_TO_INT(tile + 1), subhandle);
+                if (!ls_array_add(self->texture_objs, NULL)) {
+                        abort();
+                }
+                cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, tile);
+                cell->handle = subhandle;
+                fprintf(stderr,
+                        "GID %d to %d (of %d)\n",
+                        tile,
+                        cell->handle,
+                        self->texture_objs->len);
         }
 }
 
@@ -188,34 +200,44 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
 
         if (xmlStrEqual(name, BAD_CAST "tileset")) {
                 parser->in_tileset = !parser->in_tileset;
+                if (!parser->in_tileset) {
+                        return;
+                }
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.width, "tilewidth");
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.height, "tileheight");
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.spacing, "spacing");
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.margin, "margin");
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.count, "tilecount");
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tileset.columns, "columns");
+
+                self->texture_objs =
+                    ls_array_new_size(sizeof(Ls2DTileSheetCell), parser->tileset.count);
+                /* TODO: Ensure this is created! */
         }
 }
 
 static void ls2d_tile_sheet_start_animation(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser)
 {
-        if (parser->animation) {
+        /*if (parser->animation) {
                 ls2d_animation_unref(parser->animation);
         }
-        parser->animation = ls2d_animation_new();
+        parser->animation = ls2d_animation_new();*/
 }
 
 static void ls2d_tile_sheet_end_animation(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser)
 {
+        /*
         fprintf(stderr, "Pushing animation for tile %d\n", parser->tile.id);
         ls2d_tile_sheet_put_animation(self, LS_PTR_TO_INT(parser->tile.id), parser->animation);
         ls_array_add(self->animations, parser->animation);
         parser->animation = NULL;
+        * */
 }
 
 static void ls2d_tile_sheet_add_frame(Ls2DTileSheet *self, Ls2DTileSheetTSX *parser,
                                       xmlTextReader *reader)
 {
+        /*
         Ls2DTileSheetCell *old_cell = NULL;
         Ls2DTileSheetCell *source_cell = NULL;
 
@@ -244,6 +266,7 @@ static void ls2d_tile_sheet_add_frame(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
                 tile_id,
                 duration,
                 source_cell->handle);
+        */
 }
 
 /*
