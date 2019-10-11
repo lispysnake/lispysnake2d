@@ -33,7 +33,8 @@
 struct Ls2DTileSheet {
         Ls2DObject object; /*< Parent */
 
-        LsHashmap *textures; /*< Cache of textures in a hashmap */
+        LsHashmap *textures;   /*< Cache of textures in a hashmap */
+        LsHashmap *animations; /**<Cache of animations for cells */
         Ls2DTextureCache *cache;
 };
 

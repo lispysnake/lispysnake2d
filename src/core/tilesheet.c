@@ -48,8 +48,16 @@ static Ls2DTileSheet *ls2d_tile_sheet_new_internal(Ls2DTextureCache *cache, bool
                                                      ls_hashmap_string_equal,
                                                      free,
                                                      NULL);
+                self->animations = ls_hashmap_new_full(ls_hashmap_string_equal,
+                                                       ls_hashmap_string_equal,
+                                                       free,
+                                                       ls2d_animation_unref);
         } else {
                 self->textures = ls_hashmap_new(ls_hashmap_simple_hash, ls_hashmap_simple_equal);
+                self->animations = ls_hashmap_new_full(ls_hashmap_simple_hash,
+                                                       ls_hashmap_simple_equal,
+                                                       NULL,
+                                                       ls2d_animation_unref);
         }
 
         if (ls_unlikely(!self->textures)) {
@@ -103,6 +111,7 @@ Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self)
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self)
 {
         ls_hashmap_free(self->textures);
+        ls_hashmap_free(self->animations);
 }
 
 Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key)
@@ -113,11 +122,13 @@ Ls2DTextureHandle ls2d_tile_sheet_lookup(Ls2DTileSheet *self, void *key)
                 return 0;
         }
 
-        ret = ls_hashmap_get(self->textures, key);
-        if (!ret) {
-                return 0;
+        ret = ls_hashmap_get(self->animations, key);
+        if (ls_likely(ret == NULL)) {
+                ret = ls_hashmap_get(self->textures, key);
+                return (Ls2DTextureHandle)LS_PTR_TO_INT(ret);
         }
-        return (Ls2DTextureHandle)LS_PTR_TO_INT(ret);
+
+        return ls2d_animation_get_texture((Ls2DAnimation *)ret);
 }
 
 /*
