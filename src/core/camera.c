@@ -70,6 +70,22 @@ void ls2d_camera_set_xy(Ls2DCamera *self, SDL_Point look_at)
                 return;
         }
         self->look_at = look_at;
+        if (self->look_at.x < 0) {
+                self->look_at.x = 0;
+        }
+        if (self->look_at.y < 0) {
+                self->look_at.y = 0;
+        }
+        /*
+        if (self->look_at.x + self->view.w > self->world_bounds.w) {
+                self->look_at.x = self->world_bounds.w - self->view.w;
+        }*/
+        if (self->look_at.y + self->view.h > self->world_bounds.h) {
+                self->look_at.y = self->world_bounds.h - self->view.h;
+        }
+        if (self->look_at.x + self->view.w > self->world_bounds.w) {
+                self->look_at.x = self->world_bounds.w - self->view.w;
+        }
         /* TODO: Update camera properly. */
 }
 

@@ -36,8 +36,8 @@ bool demo_game_init(Ls2DGame *game)
         Ls2DInputManager *imanager = NULL;
 
         SDL_Rect world_bounds = { 0 };
-        world_bounds.w = 20 * 70;
-        world_bounds.h = 20 * 70;
+        world_bounds.w = 45 * 16;
+        world_bounds.h = 25 * 16;
 
         fprintf(stderr, "Init begin!\n");
 
