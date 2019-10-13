@@ -33,7 +33,7 @@ static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
 static bool ls2d_tilemap_load_tileset(Ls2DTileMap *self, Ls2DTileMapTMX *parser,
                                       xmlTextReader *reader);
 
-bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, Ls2DTextureCache *cache, const char *filename)
+bool ls2d_tilemap_load_tmx(Ls2DTileMap *self, Ls2DTextureCache *cache, const char *filename)
 {
         int fd = 0;
         autofree(xmlTextReader) *reader = NULL;
@@ -83,7 +83,7 @@ static bool ls2d_tilemap_load_csv(Ls2DTileMap *self, Ls2DTileMapTMX *parser, con
         csv = strtok(dup, ",\n");
         while (csv) {
                 key = atoi(csv);
-                if (!ls2d_tilemap_set_internal(self, parser->layer.id - 1, x, y, key)) {
+                if (!ls2d_tilemap_set_internal(self, parser->layer.idx, x, y, key)) {
                         return false;
                 }
 
@@ -119,6 +119,7 @@ static bool ls2d_tilemap_walk_tmx(Ls2DTileMap *self, Ls2DTileMapTMX *parser, xml
         if (parser->in_map && xmlStrEqual(name, BAD_CAST "layer")) {
                 parser->in_layer = !parser->in_layer;
                 if (!parser->in_layer) {
+                        parser->layer.idx++;
                         return true;
                 }
                 ls2d_tilemap_get_int_attr(reader, &parser->layer.id, "id");

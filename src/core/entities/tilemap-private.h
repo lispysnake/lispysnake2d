@@ -88,12 +88,13 @@ typedef struct Ls2DTileMapTMX {
                 char *name;
                 int width;
                 int height;
+                int idx;
         } layer;
 
         Ls2DTextureCache *cache;
 } Ls2DTileMapTMX;
 
-bool ls2d_tilemap_load_tsx(Ls2DTileMap *self, Ls2DTextureCache *cache, const char *filename);
+bool ls2d_tilemap_load_tmx(Ls2DTileMap *self, Ls2DTextureCache *cache, const char *filename);
 bool ls2d_tilemap_set_internal(Ls2DTileMap *self, int layer_index, int x, int y, uint32_t gid);
 
 DEF_AUTOFREE(xmlTextReader, xmlFreeTextReader)

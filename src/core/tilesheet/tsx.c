@@ -92,6 +92,7 @@ static void ls2d_tile_sheet_image_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *par
         /* Basic sheet logic. */
         if (!parser->sheet) {
                 ls_array_add(self->texture_objs, NULL);
+                fprintf(stderr, "Loading (%d): %s\n", parser->tile.id, source);
                 cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, parser->tile.id);
                 cell->handle = handle;
                 return;
@@ -149,18 +150,12 @@ static void ls2d_tile_sheet_walk_tsx(Ls2DTileSheet *self, Ls2DTileSheetTSX *pars
 
         if (parser->in_tileset && xmlStrEqual(name, BAD_CAST "tile")) {
                 parser->in_tile = !parser->in_tile;
-                if (!parser->in_tile) {
-                        return;
-                }
                 ls2d_tile_sheet_get_int_attr(reader, &parser->tile.id, "id");
                 return;
         }
 
         if (parser->in_tile && xmlStrEqual(name, BAD_CAST "image")) {
                 parser->in_image = !parser->in_image;
-                if (!parser->in_image) {
-                        return;
-                }
                 ls2d_tile_sheet_image_tsx(self, parser, reader);
                 return;
         } else if (parser->in_tileset && xmlStrEqual(name, BAD_CAST "image")) {

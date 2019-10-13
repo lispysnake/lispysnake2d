@@ -77,7 +77,7 @@ Ls2DEntity *ls2d_tilemap_new_from_tmx(Ls2DTextureCache *cache, const char *filen
                 return NULL;
         }
 
-        if (!ls2d_tilemap_load_tsx(self, cache, filename)) {
+        if (!ls2d_tilemap_load_tmx(self, cache, filename)) {
                 ls2d_tilemap_destroy(self);
                 free(self);
                 return NULL;
@@ -255,6 +255,10 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                 node = ls2d_tilemap_find_texture_node(self, cache, frame, tile.gid);
                                 if (ls_unlikely(node == NULL)) {
                                         goto draw_next;
+                                }
+                                if (!node->subregion) {
+                                        area.w = node->area.w;
+                                        area.h = node->area.h;
                                 }
 
                                 SDL_RenderCopyEx(frame->renderer,
