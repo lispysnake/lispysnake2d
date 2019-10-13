@@ -18,6 +18,7 @@ core_sources = [
      'components/position.c',
      'components/sprite.c',
      'entities/basic-entity.c',
+     'entities/image.c',
      'entities/tilemap.c',
      'entities/tilemap-tmx.c',
      'spritesheet/sheet.c',

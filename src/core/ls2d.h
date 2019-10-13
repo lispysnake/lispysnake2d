@@ -54,6 +54,7 @@ typedef struct Ls2DTileSheet Ls2DTileSheet;
 typedef struct Ls2DAnimation Ls2DAnimation;
 typedef struct Ls2DTile Ls2DTile;
 typedef struct Ls2DTileMap Ls2DTileMap;
+typedef struct Ls2DImage Ls2DImage;
 
 #include "libls.h"
 #include "object.h"
@@ -72,6 +73,7 @@ typedef struct Ls2DTileMap Ls2DTileMap;
 #include "tilesheet.h"
 
 #include "entities/basic-entity.h"
+#include "entities/image.h"
 #include "entities/tilemap.h"
 
 /* Our components */
