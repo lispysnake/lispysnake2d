@@ -261,7 +261,8 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                 if (!node->subregion) {
                                         area.w = node->area.w;
                                         area.h = node->area.h;
-                                        if (node->area.w != self->tile_size || node->area.h != self->tile_size) {
+                                        if (node->area.w != self->tile_size ||
+                                            node->area.h != self->tile_size) {
                                                 area.y += self->tile_size;
                                                 area.y -= node->area.h;
                                         }
