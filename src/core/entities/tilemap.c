@@ -256,9 +256,15 @@ static void ls2d_tilemap_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DF
                                 if (ls_unlikely(node == NULL)) {
                                         goto draw_next;
                                 }
+
+                                /* Non-regular tiles, anchor to bottom of cell */
                                 if (!node->subregion) {
                                         area.w = node->area.w;
                                         area.h = node->area.h;
+                                        if (node->area.w != self->tile_size || node->area.h != self->tile_size) {
+                                                area.y += self->tile_size;
+                                                area.y -= node->area.h;
+                                        }
                                 }
 
                                 SDL_RenderCopyEx(frame->renderer,
