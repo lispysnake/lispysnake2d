@@ -67,11 +67,14 @@ Ls2DTileSheet *ls2d_tile_sheet_unref(Ls2DTileSheet *self)
 
 static void ls2d_tile_sheet_destroy(Ls2DTileSheet *self)
 {
-        for (uint32_t i = 0; i < self->texture_objs->len; i++) {
-                Ls2DTileSheetCell *cell = ls2d_tile_sheet_get_cell(self->texture_objs->data, i);
-                ls2d_tile_sheet_destroy_cell(cell);
+        if (ls_likely(self->texture_objs != NULL)) {
+                for (uint32_t i = 0; i < self->texture_objs->len; i++) {
+                        Ls2DTileSheetCell *cell =
+                            ls2d_tile_sheet_get_cell(self->texture_objs->data, i);
+                        ls2d_tile_sheet_destroy_cell(cell);
+                }
+                ls_array_free(self->texture_objs, NULL);
         }
-        ls_array_free(self->texture_objs, NULL);
         ls_array_free(self->animations, NULL);
 }
 

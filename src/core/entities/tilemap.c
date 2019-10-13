@@ -107,16 +107,17 @@ static void ls2d_tilemap_free_layer(void *v)
 
 static void ls2d_tilemap_destroy(Ls2DTileMap *self)
 {
-        if (ls_unlikely(!self->layers)) {
-                return;
+        if (ls_likely(self->layers != NULL)) {
+                for (uint16_t i = 0; i < self->layers->len; i++) {
+                        Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
+                        ls2d_tilemap_free_layer(layer);
+                }
+                ls_array_free(self->layers, NULL);
         }
 
-        for (uint16_t i = 0; i < self->layers->len; i++) {
-                Ls2DTileMapLayer *layer = lookup_layer(self->layers->data, i);
-                ls2d_tilemap_free_layer(layer);
+        if (ls_likely(self->tilesheets != NULL)) {
+                ls_array_free(self->tilesheets, ls2d_tile_sheet_unref);
         }
-        ls_array_free(self->layers, NULL);
-        ls_array_free(self->tilesheets, ls2d_tile_sheet_unref);
 }
 
 bool ls2d_tilemap_add_layer(Ls2DTileMap *self, int render_index)
