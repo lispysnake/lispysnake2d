@@ -73,14 +73,48 @@ static void ls2d_image_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFra
 {
         Ls2DImage *self = (Ls2DImage *)entity;
         const Ls2DTextureNode *node = NULL;
+        SDL_Rect view = { 0 };
+        SDL_Rect draw = { 0 };
+        SDL_Rect source = { 0 };
+        SDL_Rect bounds = { 0 };
 
         node = ls2d_texture_cache_lookup(cache, frame, self->handle);
         if (ls_unlikely(!node)) {
                 return;
         }
 
-        /* TODO: Use CopyEx to draw bg at offsets */
-        SDL_RenderCopy(frame->renderer, node->texture, node->subregion ? &node->area : NULL, NULL);
+        if (!ls2d_camera_get_view(frame->camera, &view)) {
+                return;
+        }
+        if (!ls2d_camera_get_world_bounds(frame->camera, &bounds)) {
+                return;
+        }
+
+        draw.x = 0;
+        draw.y = 0;
+        /* Set the X offset */
+        source.x = node->area.x;
+        source.y = node->area.y;
+
+        /* Clamp renderable width to camera */
+        source.w = view.w;
+        source.h = view.h;
+        draw.w = source.w;
+        draw.h = source.h;
+
+        double fraction = (double)view.x / (double)bounds.w;
+        double mid_x = node->area.w / 2.0;
+        double new_x = mid_x * fraction;
+        source.x = new_x;
+
+        fraction = (double)view.y / (double)bounds.h;
+        double mid_y = node->area.h / 2.0;
+        double new_y = mid_y * fraction;
+
+        source.x = new_x;
+        source.y = new_y;
+
+        SDL_RenderCopy(frame->renderer, node->texture, &source, &draw);
 }
 
 static void ls2d_image_update(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFrameInfo *frame)

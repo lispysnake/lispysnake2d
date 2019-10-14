@@ -172,6 +172,14 @@ bool ls2d_camera_get_view(Ls2DCamera *self, SDL_Rect *view)
         return true;
 }
 
+bool ls2d_camera_get_world_bounds(Ls2DCamera *self, SDL_Rect *view)
+{
+        if (ls_unlikely(!self) || ls_unlikely(!view)) {
+                return false;
+        }
+        *view = self->world_bounds;
+}
+
 /*
  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
  *

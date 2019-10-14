@@ -110,6 +110,8 @@ void ls2d_sprite_component_draw(Ls2DComponent *component, Ls2DTextureCache *cach
                 dst.x = xy.x;
                 dst.y = xy.y;
         }
+        dst.w /= 3;
+        dst.h /= 3;
 
         /* TODO: Add anchor support. */
         SDL_RenderCopyEx(frame->renderer,

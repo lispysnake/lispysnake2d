@@ -61,6 +61,8 @@ bool ls2d_camera_convert_entity_position(Ls2DCamera *self, Ls2DEntity *entity, i
  */
 bool ls2d_camera_get_view(Ls2DCamera *self, SDL_Rect *view);
 
+bool ls2d_camera_get_world_bounds(Ls2DCamera *self, SDL_Rect *view);
+
 /**
  * Update the camera
  */
