@@ -104,11 +104,13 @@ static void ls2d_image_draw(Ls2DEntity *entity, Ls2DTextureCache *cache, Ls2DFra
 
         double fraction = (double)view.x / (double)bounds.w;
         double mid_x = node->area.w / 2.0;
+        mid_x *= 0.15;
         double new_x = mid_x * fraction;
         source.x = new_x;
 
         fraction = (double)view.y / (double)bounds.h;
         double mid_y = node->area.h / 2.0;
+        mid_y *= 0.15;
         double new_y = mid_y * fraction;
 
         source.x = new_x;
